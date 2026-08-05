@@ -219,7 +219,7 @@
   /* ---------- AI CHAT ---------- */
   .chat-wrap{
     background:var(--bg-card);border:1px solid var(--border-soft);border-radius:16px;
-    display:flex;flex-direction:column;height:min(600px,72vh);overflow:hidden;
+    display:flex;flex-direction:column;height:min(520px,52vh);overflow:hidden;
   }
   .chat-top{padding:14px 18px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
   .chat-top-l{display:flex;align-items:center;gap:10px;}
@@ -537,7 +537,7 @@
     .guide-body{padding:0 28px 28px;font-size:15px;line-height:1.7;}
 
     /* Chat */
-    .chat-wrap{height:min(760px,82vh);}
+    .chat-wrap{height:min(640px,68vh);}
     .chat-top{padding:16px 22px;}
     .chat-messages{padding:22px 28px;gap:14px;}
     .chat-input-row{padding:16px 20px;gap:10px;}
@@ -687,12 +687,20 @@
       <p id="aiDesc">Спрашивай как у человека, который собрал сотню кастомных мувсетов.</p>
     </div>
 
+    <div id="aiWarningBanner" style="background:linear-gradient(135deg,rgba(251,146,60,0.12),rgba(239,68,68,0.08));border:1px solid rgba(251,146,60,0.4);border-radius:14px;padding:18px 20px;margin-bottom:16px;position:relative">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px">⚠️ <span data-i18n="ai_warn_title">Важно об ИИ-ассистенте</span></div>
+      <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px;font-size:13px;color:var(--text-dim);line-height:1.5">
+        <li><b data-i18n="ai_warn_unstable_label">Нестабильность</b> — <span data-i18n="ai_warn_unstable">ИИ работает на бесплатном API. В любой момент может не ответить, зависнуть или выдать ошибку — это нормально для беты.</span></li>
+        <li><b data-i18n="ai_warn_limits_label">Лимиты</b> — <span data-i18n="ai_warn_limits">запросы общие на всех пользователей. При высокой нагрузке ИИ временно перестаёт отвечать. Подожди несколько минут и попробуй снова.</span></li>
+        <li><b data-i18n="ai_warn_vpn_label">Проблемы с подключением</b> — <span data-i18n="ai_warn_vpn">некоторые провайдеры блокируют сервис. Если ИИ не отвечает при нормальном интернете — включи VPN. Бесплатно работает <b>Cloudflare WARP</b> (приложение 1.1.1.1).</span></li>
+      </ul>
+    </div>
+
     <div class="chat-wrap">
       <div class="chat-top">
         <div class="chat-top-l"><span class="chat-dot"></span><span class="title" id="chatHeaderTitle">Ассистент Skill Builder</span></div>
         <button class="clearbtn" id="clearchat" data-i18n="ai_clear_btn">Очистить чат</button>
       </div>
-      <div id="chatRateNote" data-i18n="chat_rate_note" style="font-size:10px;color:var(--text-faint);text-align:center;padding:3px 16px;border-bottom:1px solid var(--border-soft)">⚡ Бесплатный ИИ · возможны временные лимиты</div>
       <div class="chat-messages" id="chatmessages">
         <div class="msg-empty" id="emptystate">
           <span data-i18n="ai_empty_state">Задай вопрос или прикрепи скриншот настроек блока.</span>
@@ -827,17 +835,24 @@ const STRINGS = {
     footer_text:'Nodecraft — независимый фан-справочник по Jujutsu Shenanigans Build Mode.<br>Не связан с разработчиком игры.',
     key_missing:'ИИ временно недоступен.',
     no_answer:'Не удалось получить ответ. Попробуй переформулировать вопрос.',
-    cors_error:'Не удалось связаться с ИИ. Проверь интернет-соединение и попробуй снова.',
+    cors_error:'Не удалось связаться с ИИ. Если интернет работает — твой провайдер блокирует сервис. Включи VPN: бесплатный Cloudflare WARP (приложение 1.1.1.1) помогает.',
     export_btn:'💾 Сохранить прогресс',
     import_btn:'📂 Восстановить прогресс',
     groq_error:(m)=>`Ошибка Groq: ${m}`,
     rate_limit_error:'⏳ Лимит запросов исчерпан. Попробуй через несколько минут.',
     chat_rate_note:'⚡ Бесплатный ИИ · возможны временные лимиты',
     copyright:'© F1cus — копирование и использование материалов без разрешения запрещено',
+    ai_warn_title:'Важно об ИИ-ассистенте',
+    ai_warn_unstable_label:'Нестабильность',
+    ai_warn_unstable:'ИИ работает на бесплатном API. В любой момент может не ответить, зависнуть или выдать ошибку — это нормально для беты.',
+    ai_warn_limits_label:'Лимиты',
+    ai_warn_limits:'Запросы общие на всех пользователей. При высокой нагрузке ИИ временно перестаёт отвечать. Подожди несколько минут и попробуй снова.',
+    ai_warn_vpn_label:'Проблемы с подключением',
+    ai_warn_vpn:'Некоторые провайдеры блокируют сервис. Если ИИ не отвечает при нормальном интернете — включи VPN. Бесплатно работает <b>Cloudflare WARP</b> (приложение 1.1.1.1).',
     image_alt:'Прикреплённое фото', media_thumb_alt:'Фото выполненной идеи',
     mode_meta: {
-      skill:{blocksTitle:'Справочник блоков Skill Builder', blocksDesc:'Нажми на блок, чтобы развернуть все поля. Цвет показывает категорию — действие, контакт, визуал/звук или логика.', ideasTitle:'Идеи для Skill Builder', ideasDesc:'Выбери блоки, которые хочешь задействовать, и крути рулетку — получишь идею способности на их основе.', aiTitle:'ИИ-ассистент по Skill Builder', aiDesc:'Спрашивай как у человека, который собрал сотню кастомных мувсетов: про ноды, Tag-логику, баги, координаты, анимации и визуалы.', chatHeader:'Ассистент Skill Builder', placeholder:'Спроси про любой блок или механику…'},
-      build:{blocksTitle:'Справочник блоков обычного строительства', blocksDesc:'Конструкция, Input/Output/Interaction блоки и Logic Gates. Нажми на блок, чтобы развернуть поля.', ideasTitle:'Идеи для строительства', ideasDesc:'Выбери блоки и гейты, которые хочешь задействовать, и крути рулетку — получишь идею механики или комнаты на их основе.', aiTitle:'ИИ-ассистент по строительству', aiDesc:'Спрашивай про блоки, ID-сигналы, гейты и готовые логические схемы.', chatHeader:'Ассистент по строительству', placeholder:'Спроси про блок, гейт или схему…'},
+      skill:{blocksTitle:'Справочник нод Skill Builder', blocksDesc:'Нажми на ноду, чтобы развернуть все поля. Цвет показывает категорию — действие, контакт, визуал/звук или логика.', ideasTitle:'Идеи для Skill Builder', ideasDesc:'Выбери ноды, которые хочешь задействовать, и крути рулетку — получишь идею способности на их основе.', aiTitle:'ИИ-ассистент по Skill Builder', aiDesc:'Спрашивай как у человека, который собрал сотню кастомных мувсетов: про ноды, Tag-логику, баги, координаты, анимации и визуалы.', chatHeader:'Ассистент Skill Builder', placeholder:'Спроси про любую ноду или механику…', navTab:'Ноды', searchPh:'Поиск ноды…', blockCount:(s,t)=>`Показано ${s} из ${t} нод`, aiEmptyState:'Задай вопрос или прикрепи скриншот настроек ноды.', takeIdeaBtn:'🎲 Взять идею с этой нодой', ideasSearchPh:'Поиск по названию ноды…', spinHintHas:'Идея будет связана хотя бы с одной из выбранных нод.', spinHintEmpty:'Можно крутить и без выбора нод — выпадет случайная идея.'},
+      build:{blocksTitle:'Справочник блоков обычного строительства', blocksDesc:'Конструкция, Input/Output/Interaction блоки и Logic Gates. Нажми на блок, чтобы развернуть поля.', ideasTitle:'Идеи для строительства', ideasDesc:'Выбери блоки и гейты, которые хочешь задействовать, и крути рулетку — получишь идею механики или комнаты на их основе.', aiTitle:'ИИ-ассистент по строительству', aiDesc:'Спрашивай про блоки, ID-сигналы, гейты и готовые логические схемы.', chatHeader:'Ассистент по строительству', placeholder:'Спроси про блок, гейт или схему…', navTab:'Блоки', searchPh:'Поиск блока…', blockCount:(s,t)=>`Показано ${s} из ${t} блоков`, aiEmptyState:'Задай вопрос или прикрепи скриншот настроек блока.', takeIdeaBtn:'🎲 Взять идею с этим блоком', ideasSearchPh:'Поиск по названию блока…', spinHintHas:'Идея будет связана хотя бы с одним из выбранных блоков.', spinHintEmpty:'Можно крутить и без выбора блоков — выпадет случайная идея.'},
     },
   },
   en: {
@@ -873,17 +888,24 @@ const STRINGS = {
     footer_text:'Nodecraft — an independent fan reference for Jujutsu Shenanigans Build Mode.<br>Not affiliated with the game\'s developer.',
     key_missing:'AI is temporarily unavailable.',
     no_answer:'Couldn\'t get a response. Try rephrasing your question.',
-    cors_error:'Couldn\'t reach the AI. Check your internet connection and try again.',
+    cors_error:'Couldn\'t reach the AI. If your internet is working — try a VPN (some providers block the service).',
     export_btn:'💾 Save progress',
     import_btn:'📂 Restore progress',
     groq_error:(m)=>`Groq error: ${m}`,
     rate_limit_error:'⏳ Rate limit reached. Please try again in a few minutes.',
     chat_rate_note:'⚡ Free AI · temporary limits may apply',
     copyright:'© F1cus — copying and use of materials without permission is prohibited',
+    ai_warn_title:'About the AI Assistant',
+    ai_warn_unstable_label:'Instability',
+    ai_warn_unstable:'The AI runs on a free API. It may fail to respond, freeze, or throw errors at any time — this is normal for beta.',
+    ai_warn_limits_label:'Rate limits',
+    ai_warn_limits:'Requests are shared across all users. Under heavy load the AI may stop responding temporarily. Wait a few minutes and try again.',
+    ai_warn_vpn_label:'Connection issues',
+    ai_warn_vpn:'Some internet providers block the service. If the AI doesn\'t respond but your internet is fine — enable a VPN. <b>Cloudflare WARP</b> (the 1.1.1.1 app) works for free.',
     image_alt:'Attached photo', media_thumb_alt:'Photo of the completed idea',
     mode_meta: {
-      skill:{blocksTitle:'Skill Builder block reference', blocksDesc:'Tap a block to expand all its fields. Color shows the category — action, contact, visual/audio, or logic.', ideasTitle:'Ideas for Skill Builder', ideasDesc:'Pick the blocks you want to use, then spin the roulette to get an ability idea built around them.', aiTitle:'Skill Builder AI assistant', aiDesc:'Ask like you would a person who has built a hundred custom movesets: about nodes, Tag logic, bugs, coordinates, animations, and visuals.', chatHeader:'Skill Builder Assistant', placeholder:'Ask about any block or mechanic…'},
-      build:{blocksTitle:'Regular building block reference', blocksDesc:'Construction, Input/Output/Interaction blocks, and Logic Gates. Tap a block to expand its fields.', ideasTitle:'Ideas for building', ideasDesc:'Pick the blocks and gates you want to use, then spin the roulette to get a mechanic or room idea built around them.', aiTitle:'Building AI assistant', aiDesc:'Ask about blocks, ID signals, gates, and ready-made logic circuits.', chatHeader:'Building Assistant', placeholder:'Ask about a block, gate, or circuit…'},
+      skill:{blocksTitle:'Skill Builder node reference', blocksDesc:'Tap a node to expand all its fields. Color shows the category — action, contact, visual/audio, or logic.', ideasTitle:'Ideas for Skill Builder', ideasDesc:'Pick the nodes you want to use, then spin the roulette to get an ability idea built around them.', aiTitle:'Skill Builder AI assistant', aiDesc:'Ask like you would a person who has built a hundred custom movesets: about nodes, Tag logic, bugs, coordinates, animations, and visuals.', chatHeader:'Skill Builder Assistant', placeholder:'Ask about any node or mechanic…', navTab:'Nodes', searchPh:'Search a node…', blockCount:(s,t)=>`Showing ${s} of ${t} nodes`, aiEmptyState:"Ask a question or attach a screenshot of a node's settings.", takeIdeaBtn:'🎲 Get an idea with this node', ideasSearchPh:'Search by node name…', spinHintHas:'The idea will involve at least one of your selected nodes.', spinHintEmpty:"You can spin with no nodes selected too — you'll get a random idea."},
+      build:{blocksTitle:'Regular building block reference', blocksDesc:'Construction, Input/Output/Interaction blocks, and Logic Gates. Tap a block to expand its fields.', ideasTitle:'Ideas for building', ideasDesc:'Pick the blocks and gates you want to use, then spin the roulette to get a mechanic or room idea built around them.', aiTitle:'Building AI assistant', aiDesc:'Ask about blocks, ID signals, gates, and ready-made logic circuits.', chatHeader:'Building Assistant', placeholder:'Ask about a block, gate, or circuit…', navTab:'Blocks', searchPh:'Search a block…', blockCount:(s,t)=>`Showing ${s} of ${t} blocks`, aiEmptyState:"Ask a question or attach a screenshot of a block's settings.", takeIdeaBtn:'🎲 Get an idea with this block', ideasSearchPh:'Search by block name…', spinHintHas:'The idea will involve at least one of your selected blocks.', spinHintEmpty:"You can spin with no blocks selected too — you'll get a random idea."},
     },
   },
 };
@@ -925,6 +947,11 @@ function applyStaticI18n(){
   document.getElementById('aiDesc').textContent = mm.aiDesc;
   document.getElementById('chatHeaderTitle').textContent = mm.chatHeader;
   document.getElementById('chatinput').placeholder = mm.placeholder;
+  document.querySelector('[data-i18n="nav_blocks"]').textContent = mm.navTab;
+  document.getElementById('blocksearch').placeholder = mm.searchPh;
+  document.getElementById('ideaBlockSearch').placeholder = mm.ideasSearchPh;
+  const aiEmptyEl = document.querySelector('[data-i18n="ai_empty_state"]');
+  if(aiEmptyEl) aiEmptyEl.textContent = mm.aiEmptyState;
 }
 
 function setLanguageContent(lang){
@@ -1778,7 +1805,7 @@ function renderBlocks(filter=''){
     const fields = b.fields[currentLang];
     return !f || b.name.toLowerCase().includes(f) || desc.includes(f) || fields.some(x=>x[0].toLowerCase().includes(f)||x[1].toLowerCase().includes(f));
   });
-  counter.textContent = t('blockcount')(matched.length, blocks.length);
+  counter.textContent = STRINGS[currentLang].mode_meta[currentMode].blockCount(matched.length, blocks.length);
   matched.forEach(b=>{
     const c = cat[b.cat];
     const desc = b.desc[currentLang];
@@ -1800,7 +1827,7 @@ function renderBlocks(filter=''){
         ${fields.map(f=>`<div class="field-row"><span class="field-name">${f[0]}</span><span class="field-desc">${f[1]}</span></div>`).join('')}
         ${example?`<div class="block-example">💡 ${example}</div>`:''}
         ${note?`<div class="block-note">⚠ ${note}</div>`:''}
-        <button class="take-idea-btn" data-block="${b.name}">${t('take_idea_btn')}</button>
+        <button class="take-idea-btn" data-block="${b.name}">${STRINGS[currentLang].mode_meta[currentMode].takeIdeaBtn}</button>
       </div>
     `;
     card.addEventListener('click',()=>card.classList.toggle('open'));
@@ -2163,7 +2190,8 @@ function updateSpinAvailability(){
   document.getElementById('spinBtn').disabled = false;
   const hint = document.getElementById('spinHint');
   hint.style.display = 'block';
-  hint.textContent = has ? t('spin_hint_has') : t('spin_hint_empty');
+  const mm2 = STRINGS[currentLang].mode_meta[currentMode];
+  hint.textContent = has ? mm2.spinHintHas : mm2.spinHintEmpty;
 }
 
 function takeIdeaFor(blockName){
@@ -2394,6 +2422,11 @@ function setMode(mode){
   document.getElementById('aiDesc').textContent = meta.aiDesc;
   document.getElementById('chatHeaderTitle').textContent = meta.chatHeader;
   document.getElementById('chatinput').placeholder = meta.placeholder;
+  document.querySelector('[data-i18n="nav_blocks"]').textContent = meta.navTab;
+  document.getElementById('blocksearch').placeholder = meta.searchPh;
+  document.getElementById('ideaBlockSearch').placeholder = meta.ideasSearchPh;
+  const aiEmptyEl = document.querySelector('[data-i18n="ai_empty_state"]');
+  if(aiEmptyEl) aiEmptyEl.textContent = meta.aiEmptyState;
   document.getElementById('statBlocks').textContent = currentBlocks().length;
   document.getElementById('blocksearch').value = '';
   renderLegend();
