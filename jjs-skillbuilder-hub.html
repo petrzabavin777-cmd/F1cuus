@@ -1130,6 +1130,68 @@ const BLOCKS_SKILL = [
      ['PROJECTILE TAG','the sound rides along with the projectile'],
    ]}},
 
+  {name:'PARTICLES', cat:'visual',
+   desc:{ru:'Эмиттер частиц — спавнит плоские 2D-изображения в пространстве с полным контролем размера, цвета, движения, времени жизни и формы области спавна. Даёт визуальную "индивидуальность" способности там, где VISUAL не хватает гибкости.', en:'A particle emitter — spawns flat 2D images into the world with full control over size, color, movement, lifetime, and spawn area shape. Gives an ability the visual personality that VISUAL alone can\'t provide.'},
+   fields:{ru:[
+     ['PROJECTILE TAG','привязывает эмиттер к снаряду — частицы следуют за ним, а не висят на месте'],
+     ['LAST HIT','синхронизирует эффект с последним ударом по цели'],
+     ['PART SIZE','размер зоны спавна частиц (не размер самих частиц)'],
+     ['EMIT COUNT','кол-во частиц в одном залпе — работает только когда DURATION = 0'],
+     ['RATE','частиц в секунду при непрерывном режиме (DURATION > 0); при DURATION = 0 игнорируется'],
+     ['DURATION','0 = один разовый залп через EMIT COUNT; > 0 = непрерывный поток через RATE'],
+     ['COLOR','последовательность цветов — левое значение старт, правые — переходы за время жизни'],
+     ['SIZE','размер частиц по времени жизни — тоже последовательность (можно от большого к нулю)'],
+     ['TRANSPARENCY','прозрачность по времени жизни — для плавного появления и угасания'],
+     ['SQUASH','положительное = вытягивает, отрицательное = сжимает частицу по оси движения'],
+     ['LIFETIME','мин/макс время жизни отдельной частицы в секундах'],
+     ['SPEED','мин/макс скорость частиц после спавна'],
+     ['ROTATION','начальный угол поворота при спавне'],
+     ['ROTSPEED','скорость вращения частицы после спавна'],
+     ['ACCELERATION','сила по X/Y/Z, добавляемая каждую секунду — симуляция гравитации, притяжения'],
+     ['DRAG','постепенно замедляет (> 0) или ускоряет (< 0) движение частиц'],
+     ['LIGHT EMISSION','яркость свечения частицы; > 1 даёт эффект Neon'],
+     ['LIGHT INFLUENCE','насколько свет окружения влияет на цвет частиц (0 = игнорирует свет)'],
+     ['Z OFFSET','слой рендера — управляет перекрытием при наложении нескольких эффектов'],
+     ['SPREAD ANGLE','угол разлёта частиц по осям X/Y — 0 = пучок, 180 = сфера'],
+     ['POSITION','смещение эмиттера относительно точки спавна'],
+     ['LOCKED TO PART','частицы следуют за движущимся источником (вкл) или остаются в мире (выкл)'],
+     ['ORIENTATION','ориентация плоскости частицы: Facing Camera / Facing Camera World Up / Velocity Parallel / Velocity Perpendicular'],
+     ['FLIPBOOK','анимированная текстура: Loop / One Shot / Ping Pong / Random'],
+     ['EMITTER SHAPE','форма зоны спавна: Box / Cylinder / Disk'],
+     ['SHAPE PARTIAL','модифицирует выбранную форму — например, создаёт конусный выход у Cylinder'],
+     ['RUN ON SERVER','вкл = видят все игроки; выкл = только клиент-владелец'],
+   ], en:[
+     ['PROJECTILE TAG','binds the emitter to a projectile — particles follow it instead of staying in place'],
+     ['LAST HIT','syncs the effect with the last hit on a target'],
+     ['PART SIZE','size of the particle spawn zone (not the particle\'s own size)'],
+     ['EMIT COUNT','number of particles in a single burst — only active when DURATION = 0'],
+     ['RATE','particles per second in continuous mode (DURATION > 0); ignored when DURATION = 0'],
+     ['DURATION','0 = a one-time burst via EMIT COUNT; > 0 = continuous stream via RATE'],
+     ['COLOR','a color sequence — the leftmost value is the start, later values are transitions over lifetime'],
+     ['SIZE','particle size over lifetime — also a sequence (e.g. large to zero for a fade-out shrink)'],
+     ['TRANSPARENCY','transparency over lifetime — for smooth appear and disappear effects'],
+     ['SQUASH','positive = stretches, negative = squashes the particle along its movement axis'],
+     ['LIFETIME','min/max lifetime of an individual particle in seconds'],
+     ['SPEED','min/max particle speed after spawning'],
+     ['ROTATION','initial rotation angle at spawn'],
+     ['ROTSPEED','rotation speed of the particle after spawning'],
+     ['ACCELERATION','force along X/Y/Z added every second — simulates gravity, attraction'],
+     ['DRAG','gradually slows (> 0) or accelerates (< 0) particle movement'],
+     ['LIGHT EMISSION','particle glow brightness; > 1 gives a Neon-like effect'],
+     ['LIGHT INFLUENCE','how much environment lighting affects particle color (0 = ignores scene light)'],
+     ['Z OFFSET','render layer — controls overlap when multiple effects stack'],
+     ['SPREAD ANGLE','spread angle across X/Y axes — 0 = tight beam, 180 = sphere'],
+     ['POSITION','emitter offset relative to the spawn point'],
+     ['LOCKED TO PART','particles follow the moving source (on) or stay in world space (off)'],
+     ['ORIENTATION','particle plane orientation: Facing Camera / Facing Camera World Up / Velocity Parallel / Velocity Perpendicular'],
+     ['FLIPBOOK','animated texture mode: Loop / One Shot / Ping Pong / Random'],
+     ['EMITTER SHAPE','spawn area shape: Box / Cylinder / Disk'],
+     ['SHAPE PARTIAL','modifies the selected shape — e.g. creates a cone exit on Cylinder'],
+     ['RUN ON SERVER','on = visible to all players; off = client-side only'],
+   ]},
+   example:{ru:'Огненный шлейф за летящим снарядом: PROJECTILE с SPEED 40 → PARTICLES с PROJECTILE TAG совпадающим, DURATION 2, RATE 30, COLOR от оранжевого к красному, LIFETIME 0.3–0.6, SPEED 2–5, LOCKED TO PART выкл — частицы остаются в воздухе позади снаряда.', en:'A fire trail behind a flying projectile: PROJECTILE with SPEED 40 → PARTICLES with a matching PROJECTILE TAG, DURATION 2, RATE 30, COLOR from orange to red, LIFETIME 0.3–0.6, SPEED 2–5, LOCKED TO PART off — particles linger in the air behind the projectile.'},
+   note:{ru:'Главная ловушка: EMIT COUNT и RATE не работают вместе — при DURATION > 0 EMIT COUNT игнорируется полностью. PART SIZE — это размер ЗОНЫ СПАВНА, а не самих частиц; для размера частиц используй поле SIZE.', en:'The main trap: EMIT COUNT and RATE don\'t work together — when DURATION > 0, EMIT COUNT is completely ignored. PART SIZE is the spawn zone size, not the particles themselves; use the SIZE field for particle size.'}},
+
   {name:'STATE', cat:'logic',
    desc:{ru:'Накладывает временное состояние — стан, неуязвимость, запреты, изменение скорости/прыжка/размера.', en:'Applies a temporary state — stun, invulnerability, restrictions, changes to speed/jump/size.'},
    fields:{ru:[
@@ -1241,6 +1303,8 @@ const SUGGESTION_POOL_SKILL = {
     'Какой размер хитбокса ставить для обычного удара?',
     'Почему анимация обрывается посередине?',
     'Как сделать снаряд, который летит к врагу?',
+    'Как сделать огненный шлейф за снарядом через PARTICLES?',
+    'В чём разница между EMIT COUNT и RATE у частиц?',
   ],
   en:[
     'How does Tag Check work?',
@@ -1255,6 +1319,8 @@ const SUGGESTION_POOL_SKILL = {
     'What hitbox size should I use for a regular hit?',
     'Why does my animation cut off mid-way?',
     'How do I make a projectile that flies at the enemy?',
+    'How do I make a fire trail behind a projectile with PARTICLES?',
+    'What\'s the difference between EMIT COUNT and RATE in particles?',
   ],
 };
 
@@ -1845,6 +1911,14 @@ const IDEAS_SKILL = [
 {blocks:['STATE','LOOP','VISUAL','HITBOX','VELO'],title:{ru:'Пульсирующая аура-ловушка',en:'Pulsing Aura Trap'},text:{ru:'Аура каждую секунду расширяется и схлопывается, отталкивая и нанося урон всем, кто оказался в момент волны рядом с игроком.',en:'The aura expands and collapses every second, pushing and damaging anyone who happens to be nearby when the pulse fires.'}},
 {blocks:['TAG','BRANCH','HITBOX','STATE'],title:{ru:'Награда за терпение',en:'Patience Reward'},text:{ru:'Если способность не использовалась последние несколько секунд — следующий удар автоматически усилен. Чем дольше ждёшь, тем больше бонус.',en:'If the ability hasn\'t been used for a few seconds, the next hit is automatically empowered. The longer you wait, the bigger the bonus.'}},
 {blocks:['REQ','TAG','COUNTER','VISUAL','STATE'],title:{ru:'Контр только со стаками',en:'Counter Gated by Stacks'},text:{ru:'Контр-стойка активируется лишь если накоплено хотя бы 2 стака — пустая стойка ничего не делает, но всё равно тратит откат.',en:'The counter stance only activates if at least 2 stacks are built up — an empty stance does nothing but still spends the cooldown.'}},
+// ── PARTICLES-ИДЕИ ──
+{blocks:['PROJECTILE','PARTICLES'],title:{ru:'Огненный шлейф за снарядом',en:'Fire Trail Behind a Projectile'},text:{ru:'Снаряд летит вперёд, оставляя за собой длинный поток огненных частиц. PARTICLES привязан к снаряду через PROJECTILE TAG, LOCKED TO PART выкл — частицы зависают в воздухе по траектории.',en:'A projectile flies forward leaving a long stream of fire particles in its wake. PARTICLES is linked to the projectile via PROJECTILE TAG with LOCKED TO PART off — particles hang in the air along the flight path.'}},
+{blocks:['PARTICLES','VISUAL','HITBOX'],title:{ru:'Взрыв с дымовым облаком',en:'Explosion With a Smoke Cloud'},text:{ru:'При ударе сначала срабатывает VISUAL-вспышка, а затем PARTICLES разовым залпом (DURATION 0, EMIT COUNT 40) выбрасывает густое дымовое облако, которое медленно поднимается и рассеивается.',en:'On hit a VISUAL flash fires first, then PARTICLES with a one-shot burst (DURATION 0, EMIT COUNT 40) launches a thick smoke cloud that slowly rises and fades.'}},
+{blocks:['PARTICLES','STATE'],title:{ru:'Живая аура вокруг персонажа',en:'Living Aura Around the Character'},text:{ru:'Пока активен STATE-бафф, PARTICLES непрерывно (DURATION 3, RATE 20) испускает светящиеся частицы с EMITTER SHAPE Cylinder вокруг игрока — аура визуально «дышит» и медленно поднимается вверх.',en:'While the STATE buff is active, PARTICLES runs continuously (DURATION 3, RATE 20) emitting glowing particles with EMITTER SHAPE Cylinder around the player — the aura visually \"breathes\" and slowly rises upward.'}},
+{blocks:['PARTICLES','VELO','ANIM'],title:{ru:'Частицы в точках телепорта',en:'Particles at Teleport Points'},text:{ru:'Рывок с исчезновением: PARTICLES (DURATION 0, EMIT COUNT 25) выстреливает в точке старта, VELO переносит игрока, и второй PARTICLES — уже в точке прибытия. Два разных цвета — уход и появление.',en:'A vanishing dash: PARTICLES (DURATION 0, EMIT COUNT 25) fires at the start point, VELO moves the player, then a second PARTICLES fires at the arrival point. Two different colors — departure and arrival.'}},
+{blocks:['TAG','PARTICLES','VISUAL'],title:{ru:'Аура, растущая со стаками',en:'Aura That Grows With Stacks'},text:{ru:'Чем больше стаков TAG набрано — тем плотнее частицы вокруг персонажа. Три уровня: 1 стак = редкие искры, 2 = кольцо, 3 = насыщенное свечение с крупными частицами.',en:'The more TAG stacks built up, the denser the particles around the character. Three levels: 1 stack = sparse sparks, 2 = a ring, 3 = dense glow with large particles.'}},
+{blocks:['LOOP','PARTICLES','HITBOX'],title:{ru:'Дождь частиц-снарядов',en:'Particle Rain'},text:{ru:'LOOP повторяет связку: PARTICLES-залп сверху (SPREAD ANGLE 0, ACCELERATION Y -30) + HITBOX — создаёт несколько волн падающих светящихся осколков, каждый из которых наносит урон.',en:'LOOP repeats the pair: a PARTICLES burst from above (SPREAD ANGLE 0, ACCELERATION Y -30) + HITBOX — creating several waves of falling glowing shards that each deal damage.'}},
+{blocks:['PARTICLES','SFX'],title:{ru:'Чистый кинематографичный вход',en:'Clean Cinematic Entrance'},text:{ru:'Ни хитбокса, ни урона — просто эффектный выход персонажа: PARTICLES-всплеск (EMIT COUNT 60, EMITTER SHAPE Disk) + нарастающий SFX. Идеально для вступительной анимации перед основным комбо.',en:'No hitbox, no damage — just a dramatic character entrance: a PARTICLES burst (EMIT COUNT 60, EMITTER SHAPE Disk) + a rising SFX. Perfect as an intro before the main combo.'}},
 ];
 
 
@@ -2473,6 +2547,41 @@ AoE/ЗЕМЛЯ: Earthquake — волна с пылью; Groundslam/Uppercut.
 ДОМЕНЫ: Infinite Void (Honored One), Malevolent Shrine (Vessel), Embodiment of Self-Perfection (Perfection), Authentic Mutual Love (Cursed Partners), Chimera Shadow Garden (Ten Shadows).
 
 В реальном пикере сотни записей — это не полный список. Если анимация не из этого перечня — дай лучшую рекомендацию из подходящей категории и честно скажи проверить в пикере.
+
+=== PARTICLES — ПОЛНОЕ ЭКСПЕРТНОЕ РУКОВОДСТВО ===
+PARTICLES — новый визуальный нод Skill Builder. Спавнит плоские 2D-изображения (частицы) в пространстве. Это не замена VISUAL — они работают вместе: VISUAL для готовых эффектов (Glow, Slash, Mesh), PARTICLES — когда нужен тонко настроенный поток частиц (шлейфы, взрывы, дымы, ауры).
+
+КЛЮЧЕВЫЕ ПРАВИЛА — знать наизусть:
+1. DURATION = 0 → разовый залп, количество задаётся EMIT COUNT; поле RATE полностью игнорируется.
+   DURATION > 0 → непрерывный поток, скорость задаётся RATE (частиц/сек); поле EMIT COUNT игнорируется.
+   Самая частая ошибка — выставить оба поля и ждать, что они сложатся. Они НЕ складываются.
+2. PART SIZE — это размер ЗОНЫ СПАВНА (откуда появляются частицы), НЕ размер самих частиц. Для размера частиц — поле SIZE.
+3. COLOR и SIZE принимают последовательности (sequences): несколько значений по времени жизни. Левое = начало, правое = конец. Можно делать градиент «оранжевый → прозрачный красный» через два-три узла.
+4. LOCKED TO PART: вкл = частицы движутся вместе с источником (хвост за персонажем); выкл = частицы остаются в мировом пространстве (след позади летящего снаряда).
+5. RUN ON SERVER: выкл = эффект видит только сам игрок (экономит трафик для декоративных мелочей); вкл = видят все. Для ударов и важных эффектов — всегда вкл.
+6. PROJECTILE TAG: частицы привязываются к снаряду с совпадающим тегом и следуют за ним. Если снаряд PROJECTILE TAG совпадает с VISUAL TAG того же снаряда — они работают одновременно.
+
+ПОЛЯ ПОДРОБНО:
+- EMIT COUNT / RATE / DURATION: см. правило 1.
+- LIFETIME (мин/макс): разброс времени жизни одной частицы. Больше разброс → более естественный, «живой» эффект.
+- SPEED (мин/макс): разброс начальной скорости. SPREAD ANGLE задаёт направление разлёта.
+- SPREAD ANGLE (X/Y): 0 = все частицы летят в одну сторону (пучок/луч); 180 = равномерно во все стороны (сфера); промежуточное = конус. Для вертикального столба — X=0, Y=180.
+- ACCELERATION: вектор силы (X, Y, Z) применяется к каждой частице каждую секунду. Y=-20 = гравитация. Y=+15 = дым, поднимающийся вверх. X/Z-значения делают «закручивание».
+- DRAG: > 0 = частицы замедляются (эффект тумана, плавающих искр). < 0 = ускоряются (редко нужно).
+- SQUASH: > 0 = вытягивает по направлению движения (эффект скорости, трейл). < 0 = сплющивает. Хорошо работает в паре с VELOCITY PARALLEL ориентацией.
+- LIGHT EMISSION: 0 = не светится; 1–5 = мягкое свечение; > 5 = неоновый, видимый в темноте. Не влияет на производительность напрямую.
+- LIGHT INFLUENCE: 0 = частицы игнорируют свет сцены (цвет всегда чистый). 1 = полностью подчиняются освещению. Для магических эффектов обычно ставят 0–0.3.
+- Z OFFSET: > 0 = рендерится поверх других эффектов; < 0 = уходит под них. Полезно, когда частицы «прячутся» за VISUAL-блоком.
+- ORIENTATION: Facing Camera = всегда смотрит на камеру (классические частицы). Facing Camera World Up = смотрит на камеру, но не наклоняется. Velocity Parallel = вдоль вектора движения (трейл, пламя). Velocity Perpendicular = перпендикулярно движению (диски, кольца).
+- FLIPBOOK: анимированная текстура. Loop = повтор; One Shot = один раз и исчезает; Ping Pong = туда-обратно; Random = случайный кадр.
+- EMITTER SHAPE: Box = прямоугольная зона; Cylinder = цилиндр (с SHAPE PARTIAL можно сделать кольцо или конус); Disk = плоский круг.
+- POSITION: смещение эмиттера относительно точки спавна ноды (например, чуть выше головы персонажа).
+
+ТИПОВЫЕ РЕЦЕПТЫ:
+«Огненный шлейф снаряда»: PROJECTILE TAG совпадает с снарядом. DURATION 1.5, RATE 40. LOCKED TO PART выкл. COLOR: оранжевый → тёмно-красный. SIZE: 1.5 → 0. LIFETIME 0.2–0.5. SPEED 1–3. ACCELERATION Y -5. RUN ON SERVER вкл.
+«Аура вокруг персонажа»: без PROJECTILE TAG. DURATION 3, RATE 20. LOCKED TO PART вкл. EMITTER SHAPE Cylinder. SPREAD ANGLE 180. SIZE 0.5. LIFETIME 0.8–1.2. SPEED 0–2. ACCELERATION Y +4. DRAG 0.5.
+«Взрыв (одноразовый)»: DURATION 0, EMIT COUNT 60. EMITTER SHAPE Disk. SPREAD ANGLE X=180, Y=180. SPEED 8–15. LIFETIME 0.3–0.7. SIZE 2 → 0. COLOR белый → оранжевый. RUN ON SERVER вкл.
+«Дым после удара»: DURATION 0, EMIT COUNT 20. SPREAD ANGLE 90. SPEED 2–5. LIFETIME 0.5–1.2. SIZE 1 → 3. TRANSPARENCY 0 → 1. ACCELERATION Y +3. DRAG 0.8. COLOR серый.
 
 === VISUAL EFFECT ПРЕСЕТЫ ===
 Конкретные EFFECT помимо Glow/Slash/Beam: Dismantle, Cleave Rush, Cursed Strikes, World Slash, Hollow Purple, Lapse Blue, Malevolent Shrine, Thunder God, Open Fire, Earthquake.
