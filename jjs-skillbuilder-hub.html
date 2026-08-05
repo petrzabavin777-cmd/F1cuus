@@ -584,6 +584,11 @@
       <button class="lang-btn" data-lang="en">🇬🇧 English</button>
       <button class="lang-btn" data-lang="ru">🇷🇺 Русский</button>
     </div>
+    <div id="langModalLink" style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+      <p style="font-size:11px;color:var(--text-faint);margin:0 0 8px">🔗 App link / Ссылка на приложение</p>
+      <div onclick="navigator.clipboard.writeText('https://petrzabavin777-cmd.github.io/F1cuus/jjs-skillbuilder-hub.html').then(()=>{this.textContent='✅ Copied!';setTimeout(()=>{this.textContent='https://petrzabavin777-cmd.github.io/F1cuus/jjs-skillbuilder-hub.html'},1500)})" style="background:var(--bg-elev);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--blue);cursor:pointer;word-break:break-all;text-align:left;line-height:1.5">https://petrzabavin777-cmd.github.io/F1cuus/jjs-skillbuilder-hub.html</div>
+      <p style="font-size:10px;color:var(--text-faint);margin:5px 0 0;text-align:center">Tap to copy · Нажми, чтобы скопировать</p>
+    </div>
   </div>
 </div>
 
@@ -774,11 +779,10 @@
 </main>
 
 <footer id="siteFooter">Nodecraft — независимый фан-справочник по Jujutsu Shenanigans Build Mode.<br>Не связан с разработчиком игры.</footer>
-<div style="text-align:center;padding:12px 16px 24px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
+<div style="text-align:center;padding:12px 16px 4px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
   <button id="exportBtn" onclick="exportData()" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim);border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer">💾 Сохранить прогресс</button>
   <button id="importBtn" onclick="importData()" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim);border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer">📂 Восстановить прогресс</button>
 </div>
-
 <script>
 /* ================= I18N ================= */
 let currentLang = 'ru';
@@ -931,6 +935,7 @@ document.querySelectorAll('.lang-btn').forEach(b=>{
   b.addEventListener('click', ()=>applyLanguage(b.dataset.lang));
 });
 document.getElementById('langToggle').addEventListener('click', ()=>{
+  document.getElementById('langModalLink').style.display = 'block';
   document.getElementById('langModal').style.display = 'flex';
 });
 
