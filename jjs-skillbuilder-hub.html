@@ -594,7 +594,7 @@
 
 
 <nav>
-  <div class="brand"><span class="brand-mark">JJS</span>Nodecraft</div>
+  <div class="brand"><span class="brand-mark">JJS</span>Nodecraft<span style="font-size:9px;font-weight:700;background:var(--blue);color:#fff;border-radius:4px;padding:2px 5px;margin-left:6px;vertical-align:middle;letter-spacing:0.05em;opacity:0.85">BETA</span></div>
   <div class="mode-toggle" role="group" aria-label="Reference mode">
     <button class="mode-btn active" data-mode="skill">⚔️ Skill Builder</button>
     <button class="mode-btn" data-mode="build">🧱 Builder</button>
@@ -618,6 +618,10 @@
         <h1 data-i18n="hero_h1">Собирай способности и схемы,<br>не угадывая <span>параметры</span></h1>
         <p class="lead" data-i18n="hero_lead">Два режима в одном месте: <b>Skill Builder</b> для кастомных способностей и <b>обычный Builder</b> — от простого блока до Input/Output/Interaction блоков и Logic Gates. Переключатель режима — в верхнем меню.</p>
         <p class="sub" data-i18n="hero_sub">Полностью бесплатно, без регистрации — весь сайт работает прямо в браузере.</p>
+        <div style="display:inline-flex;align-items:center;gap:8px;background:var(--blue);background:linear-gradient(90deg,rgba(99,102,241,0.15),rgba(99,102,241,0.08));border:1px solid rgba(99,102,241,0.35);border-radius:10px;padding:8px 14px;margin-top:14px;font-size:12px;color:var(--text-dim);line-height:1.4">
+          <span style="font-size:15px">🚧</span>
+          <span data-i18n="beta_notice">Приложение в <b>бете</b> — функции, дизайн и контент могут меняться. Если что-то сломалось — это нормально, всё починим.</span>
+        </div>
 
         <div class="feature-grid">
           <button class="feature-card" data-tab="blocks">
@@ -688,6 +692,7 @@
         <div class="chat-top-l"><span class="chat-dot"></span><span class="title" id="chatHeaderTitle">Ассистент Skill Builder</span></div>
         <button class="clearbtn" id="clearchat" data-i18n="ai_clear_btn">Очистить чат</button>
       </div>
+      <div id="chatRateNote" data-i18n="chat_rate_note" style="font-size:10px;color:var(--text-faint);text-align:center;padding:3px 16px;border-bottom:1px solid var(--border-soft)">⚡ Бесплатный ИИ · возможны временные лимиты</div>
       <div class="chat-messages" id="chatmessages">
         <div class="msg-empty" id="emptystate">
           <span data-i18n="ai_empty_state">Задай вопрос или прикрепи скриншот настроек блока.</span>
@@ -779,6 +784,7 @@
 </main>
 
 <footer id="siteFooter">Nodecraft — независимый фан-справочник по Jujutsu Shenanigans Build Mode.<br>Не связан с разработчиком игры.</footer>
+<div id="copyrightNotice" style="text-align:center;padding:10px 16px 6px;font-size:12px;color:var(--text-faint);opacity:0.7;letter-spacing:0.03em">© F1cus — копирование и использование материалов без разрешения запрещено</div>
 <div style="text-align:center;padding:12px 16px 4px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
   <button id="exportBtn" onclick="exportData()" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim);border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer">💾 Сохранить прогресс</button>
   <button id="importBtn" onclick="importData()" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim);border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer">📂 Восстановить прогресс</button>
@@ -793,6 +799,7 @@ const STRINGS = {
     hero_h1:'Собирай способности и схемы,<br>не угадывая <span>параметры</span>',
     hero_lead:'Два режима в одном месте: <b>Skill Builder</b> для кастомных способностей и <b>обычный Builder</b> — от простого блока до Input/Output/Interaction блоков и Logic Gates. Переключатель режима — в верхнем меню.',
     hero_sub:'Полностью бесплатно, без регистрации — весь сайт работает прямо в браузере.',
+    beta_notice:'Приложение в <b>бете</b> — функции, дизайн и контент могут меняться. Если что-то сломалось — это нормально, всё починим.',
     feature1_title:'Справочник блоков', feature1_desc:'В режиме Skill Builder — ANIM, HITBOX, VISUAL, TAG и другие. В режиме Builder — Part, Moveset Block, AND/NOT/XOR Gate и весь ID-сигнальный движок.',
     feature2_title:'ИИ-ассистент', feature2_desc:'Отдельный ассистент под каждый режим — спрашивай про ноды способностей или про логические гейты и готовые схемы.',
     feature3_title:'Идеи и рулетка', feature3_desc:'Выбери блоки, которые хочешь задействовать — крути рулетку и получи готовую идею способности или механики, а затем сразу спроси ИИ, как её собрать.',
@@ -824,6 +831,9 @@ const STRINGS = {
     export_btn:'💾 Сохранить прогресс',
     import_btn:'📂 Восстановить прогресс',
     groq_error:(m)=>`Ошибка Groq: ${m}`,
+    rate_limit_error:'⏳ Лимит запросов исчерпан. Попробуй через несколько минут.',
+    chat_rate_note:'⚡ Бесплатный ИИ · возможны временные лимиты',
+    copyright:'© F1cus — копирование и использование материалов без разрешения запрещено',
     image_alt:'Прикреплённое фото', media_thumb_alt:'Фото выполненной идеи',
     mode_meta: {
       skill:{blocksTitle:'Справочник блоков Skill Builder', blocksDesc:'Нажми на блок, чтобы развернуть все поля. Цвет показывает категорию — действие, контакт, визуал/звук или логика.', ideasTitle:'Идеи для Skill Builder', ideasDesc:'Выбери блоки, которые хочешь задействовать, и крути рулетку — получишь идею способности на их основе.', aiTitle:'ИИ-ассистент по Skill Builder', aiDesc:'Спрашивай как у человека, который собрал сотню кастомных мувсетов: про ноды, Tag-логику, баги, координаты, анимации и визуалы.', chatHeader:'Ассистент Skill Builder', placeholder:'Спроси про любой блок или механику…'},
@@ -835,6 +845,7 @@ const STRINGS = {
     hero_h1:'Build abilities and mechanics,<br>without guessing <span>parameters</span>',
     hero_lead:'Two modes in one place: <b>Skill Builder</b> for custom abilities and <b>regular Builder</b> — from a basic block to Input/Output/Interaction blocks and Logic Gates. Switch modes from the top menu.',
     hero_sub:'Completely free, no sign-up — the whole site runs right in your browser.',
+    beta_notice:'The app is in <b>beta</b> — features, design, and content may change. If something breaks, that\'s fine — we\'ll fix it.',
     feature1_title:'Block Reference', feature1_desc:'In Skill Builder mode — ANIM, HITBOX, VISUAL, TAG and more. In Builder mode — Part, Moveset Block, AND/NOT/XOR Gate and the whole ID-signal engine.',
     feature2_title:'AI Assistant', feature2_desc:'A dedicated assistant for each mode — ask about ability nodes or logic gates and ready-made circuits.',
     feature3_title:'Ideas & Roulette', feature3_desc:'Pick the blocks you want to use, spin the roulette, and get a ready ability or mechanic idea built around them — then ask the AI right away how to build it.',
@@ -866,6 +877,9 @@ const STRINGS = {
     export_btn:'💾 Save progress',
     import_btn:'📂 Restore progress',
     groq_error:(m)=>`Groq error: ${m}`,
+    rate_limit_error:'⏳ Rate limit reached. Please try again in a few minutes.',
+    chat_rate_note:'⚡ Free AI · temporary limits may apply',
+    copyright:'© F1cus — copying and use of materials without permission is prohibited',
     image_alt:'Attached photo', media_thumb_alt:'Photo of the completed idea',
     mode_meta: {
       skill:{blocksTitle:'Skill Builder block reference', blocksDesc:'Tap a block to expand all its fields. Color shows the category — action, contact, visual/audio, or logic.', ideasTitle:'Ideas for Skill Builder', ideasDesc:'Pick the blocks you want to use, then spin the roulette to get an ability idea built around them.', aiTitle:'Skill Builder AI assistant', aiDesc:'Ask like you would a person who has built a hundred custom movesets: about nodes, Tag logic, bugs, coordinates, animations, and visuals.', chatHeader:'Skill Builder Assistant', placeholder:'Ask about any block or mechanic…'},
@@ -893,6 +907,7 @@ function applyStaticI18n(){
   document.documentElement.lang = currentLang;
   document.title = currentLang === 'en' ? 'Nodecraft — JJS Build Mode & Skill Builder reference' : 'Nodecraft — справочник Build Mode & Skill Builder (JJS)';
   document.getElementById('siteFooter').innerHTML = t('footer_text');
+  document.getElementById('copyrightNotice').textContent = t('copyright');
   document.getElementById('statCost').textContent = currentLang === 'en' ? '$0' : '0₽';
   document.getElementById('exportBtn').textContent = t('export_btn');
   document.getElementById('importBtn').textContent = t('import_btn');
@@ -2315,9 +2330,10 @@ function renderCompletedList(){
     const modeLabel = idea.id.startsWith('skill') ? 'Skill Builder' : 'Builder';
     const rec = completed[id];
     const isPinned = completedStars.includes(id);
-    const mediaHtml = rec.media ? (rec.mediaType === 'video'
-      ? `<video src="${rec.media}" controls class="idea-media-thumb"></video>`
-      : `<img src="${rec.media}" class="idea-media-thumb" alt="${t('media_thumb_alt')}">`) : '';
+    const safeSrc = safeMediaSrc(rec.media);
+    const mediaHtml = safeSrc ? (rec.mediaType === 'video'
+      ? `<video src="${safeSrc}" controls class="idea-media-thumb"></video>`
+      : `<img src="${safeSrc}" class="idea-media-thumb" alt="${t('media_thumb_alt')}">`) : '';
     return `<div class="fav-item${isPinned?' is-pinned':''}" data-id="${idea.id}">
       <div class="fav-item-head">
         <b>${escapeIdeaHtml(idea.title[currentLang])}</b>
@@ -2359,9 +2375,10 @@ function closeCompleteModal(){
 function renderCompleteModalPreview(){
   const box = document.getElementById('completeModalMediaPreview');
   if(!pendingCompleteMedia){ box.innerHTML = ''; return; }
-  box.innerHTML = pendingCompleteMedia.type === 'video'
-    ? `<video src="${pendingCompleteMedia.data}" controls class="idea-media-thumb"></video>`
-    : `<img src="${pendingCompleteMedia.data}" class="idea-media-thumb" alt="Фото">`;
+  const safePendingSrc = safeMediaSrc(pendingCompleteMedia.data);
+  box.innerHTML = safePendingSrc ? (pendingCompleteMedia.type === 'video'
+    ? `<video src="${safePendingSrc}" controls class="idea-media-thumb"></video>`
+    : `<img src="${safePendingSrc}" class="idea-media-thumb" alt="Фото">`) : '';
 }
 
 /* ================= MODE SWITCH ================= */
@@ -2416,9 +2433,17 @@ function importData(){
     reader.onload=ev=>{
       try{
         const d=JSON.parse(ev.target.result);
-        if(d.favorites) safeStorage.set('nodecraft_favorites',d.favorites);
-        if(d.completed) safeStorage.set('nodecraft_completed',d.completed);
-        if(d.completed_stars) safeStorage.set('nodecraft_completed_stars',d.completed_stars);
+        if(d.favorites && Array.isArray(d.favorites)) safeStorage.set('nodecraft_favorites', d.favorites.filter(v=>typeof v==='string'));
+        if(d.completed && typeof d.completed==='object'){
+          const cleaned={};
+          for(const [k,v] of Object.entries(d.completed)){
+            if(typeof k==='string' && typeof v==='object' && v){
+              cleaned[k]={...v, media: safeMediaSrc(v.media)||null, mediaType: v.mediaType==='video'?'video':'image'};
+            }
+          }
+          safeStorage.set('nodecraft_completed', cleaned);
+        }
+        if(d.completed_stars && Array.isArray(d.completed_stars)) safeStorage.set('nodecraft_completed_stars', d.completed_stars.filter(v=>typeof v==='string'));
         favorites=safeStorage.get('nodecraft_favorites')||[];
         completed=safeStorage.get('nodecraft_completed')||{};
         completedStars=safeStorage.get('nodecraft_completed_stars')||[];
@@ -2431,7 +2456,7 @@ function importData(){
   input.click();
 }
 
-const GROQ_MODEL = "llama-3.3-70b-versatile";
+const GROQ_MODEL = "llama-3.1-8b-instant";
 
 const SYSTEM_PROMPT_SKILL = `Ты — разработчик способностей и эксперт по Skill Builder в игре Jujutsu Shenanigans (Roblox). Отвечай на языке пользователя (по умолчанию русский).
 
@@ -2442,76 +2467,28 @@ const SYSTEM_PROMPT_SKILL = `Ты — разработчик способнос�
 
 ЖЁСТКОЕ ПРАВИЛО — ТОЛЬКО 18 БЛОКОВ: ANIM, WAIT, VELO, HITBOX, PROJECTILE, GRAB, COUNTER, HITCNCL, VISUAL, SFX, STATE, BRANCH, LOOP, TAG, SKILL, SPECIAL, REQ, PROP. Никогда не выдумывай блоки или поля за этим списком. Если задача нерешаема — честно скажи. Скриншоты — анализируй, изображения — не генерируй.
 
-=== ТВОРЧЕСКИЙ ПОТЕНЦИАЛ КАЖДОГО БЛОКА — ЧТО КАЖДЫЙ УМЕЕТ НА САМОМ ДЕЛЕ ===
+=== КЛЮЧЕВЫЕ МЕХАНИКИ ===
+TAG — вся логика: Add=счётчик, Set=сброс, Check+BRANCH=if/else. Без TAG нет стаков, зарядов, флагов.
+BRANCH — if-statement таймлайна. Любая нетривиальная способность строится вокруг BRANCH.
+HITBOX→BRANCH TARGET — ветка ТОЛЬКО при попадании. Основа хит-конфёрмов.
+PROJECTILE SPEED=0 — якорь в мировых координатах (лужа, стена, AoE-зона).
+VELO: TRACK=true=летишь туда куда смотришь. LAST HIT: -1=на пользователя, число=на цель.
+STATE IFrame — неуязвимость во время анимации. Нужен при рывках, захватах, длинных анимациях.
+STATE NoM1 — блокирует M1 при заряде/канализации.
+COUNTER→BRANCH TARGET — ветка ТОЛЬКО при успешном парировании. COUNTER сам визуала не создаёт.
+LOOP: AMOUNT=-1=бесконечно. HOLD=true=работает пока зажата кнопка.
+GRAB: шаблон = GRAB→WAIT→VELO(LAST HIT=цель). Баг: ранний конец способности → телепорт к цели.
+VISUAL: OPACITY=0=видимый, OPACITY=1=невидимый (контринтуитивно!).
+HITCNCL AFTER=true — таймлайн идёт даже при получении удара.
 
-TAG — это вся твоя ЛОГИКА. TAG хранит число/флаг на протяжении способности. TAG Add = инкремент (счётчик ударов, уровень заряда, стаки). TAG Set = запись или сброс значения. TAG Check + BRANCH = if/else прямо внутри таймлайна. LOOP + TAG = while-цикл с условием выхода по тегу. Без TAG невозможны: заряжаемые атаки по уровням, накопительные стаки, комбо-счётчики, флаги «нажимали ли R». TAG — самый недооценённый блок в системе.
-
-BRANCH — это if-statement таймлайна. Без BRANCH — линейная последовательность. С BRANCH — дерево решений: попал или промахнулся? сколько стаков накоплено? первое нажатие или второе? Почти любая нетривиальная способность строится вокруг BRANCH.
-
-HITBOX → BRANCH TARGET — «выполни ветку ТОЛЬКО если был удар». Это основа хит-конфёрмов, продолжений комбо при попадании, перехода в другую фазу при успешном ударе. «И если попало — дополнительный эффект» = HITBOX с BRANCH TARGET обязателен. Без него нет возможности отличить попадание от промаха внутри способности.
-
-PROJECTILE со SPEED=0 — ЯКОРЬ В МИРОВЫХ КООРДИНАТАХ. Снаряд с нулевой скоростью висит неподвижно в точке применения — не движется, не едет за игроком. Любые VISUAL/SFX/HITBOX с тем же PROJECTILE TAG привязаны к этой точке в мире. Это единственный способ «заморозить» эффект в пространстве: лужа огня под ногами, неподвижная стена, зона AoE, след позади игрока. SPEED>0 = обычный движущийся снаряд. SPEED=0 = декорация и зона, висящая в мире.
-
-VELO — это движение. TRACK=true: направление фиксируется ПО ВЗГЛЯДУ игрока в момент исполнения (нужно для «рывка туда, куда смотришь»). TRACK=false: мировые координаты (Z+ всегда «вперёд по карте»). RAGDOLL+VELO = зрелищный ragdoll-бросок цели. LAST HIT: -1 = сила летит на САМОГО пользователя (отброс назад/в сторону); положительное число = на цель с этим LAST HIT-индексом. Без правильного LAST HIT сила улетит не туда.
-
-STATE IFrame — ОКНО НЕУЯЗВИМОСТИ. Без него персонаж ловит урон во время анимации. Нужен практически при любом рывке, захвате, трансформации, кинематографической сцене — иначе длинная анимация = смерть от любого тычка.
-
-STATE NoM1 — БЛОКИРОВКА БАЗОВЫХ УДАРОВ. Нужен когда способность канализируется (долгий заряд), работает как таунт, или когда в ходе комбо нельзя прерваться случайным M1.
-
-STATE SpeedMultiplier / JumpMultiplier — мгновенный бафф/дебафф скорости или прыжка. VALUE меньше 1 = замедление, больше 1 = ускорение. Применяется как к пользователю (LAST HIT=-1), так и к врагу.
-
-COUNTER — ОКНО ПАРИРОВАНИЯ. BRANCH TARGET — ветка, выполняющаяся ТОЛЬКО при успешном парировании (поймал чужую атаку в окно). Это не «нажать кнопку» — это «поймать атаку». Отдельная ветка = настоящий parry-riposte: контрудар, рывок к врагу, телепорт, стан. Нужен отдельный ANIM/VISUAL — сам COUNTER визуала не создаёт.
-
-HITCNCL — ПРОДОЛЖЕНИЕ НЕВЗИРАЯ НА ХИТСТАН. AFTER=true: таймлайн продолжается, даже если игрок получил удар (иллюзия «непрерываемой» атаки). FLIP=true: ветвится в зависимости от того, был ли хит или нет — можно сделать «если поймал удар — перейди на другую ветку».
-
-LOOP — ПОВТОРИТЕЛЬ. AMOUNT=-1 = бесконечный цикл. HOLD=true = цикл работает ПОКА ЗАЖАТА КНОПКА (отпустил — цикл останавливается). LOOP BACK = точка, к которой возвращается таймлайн. LOOP + WAIT + HITBOX = атака с многократным уроном: спиновая атака, аура вокруг, пульсирующее поле, непрерывный луч.
-
-GRAB — КИНЕМАТОГРАФИЧЕСКИЙ КОНТРОЛЬ. Захватывает цель, фиксирует части тела в нужной позе. BODY PART2 = якорная точка на захватчике. Шаблон «подтяжка + бросок»: GRAB → WAIT → VELO (LAST HIT = на цель). БАГ: если способность заканчивается раньше чем GRAB завершён — игрок телепортируется к цели.
-
-VISUAL OPACITY=0 значит ПОЛНОСТЬЮ ВИДИМЫЙ. OPACITY=1 значит НЕВИДИМЫЙ. Это контринтуитивно — запомни. SIZE — это множитель от базового размера эффекта. BODY PART=None + PROJECTILE TAG = визуал, привязанный к якорному снаряду в мировом пространстве (работает с SPEED=0 снарядом).
-
-SPECIAL/SKILL с move=«Cancel» — принудительная отмена текущего состояния. Сброс гравитации, выход из анимации, завершение цикла — это универсальный «стоп» для любой фазы.
-
-REQ — УСЛОВИЕ НА ВЕСЬ СЛОТ. Способность вообще не активируется если REQ не выполнен. AIR = только в воздухе. HP = при определённом уровне здоровья. ULT = только в ультимейте. Используй для создания «ситуативных» умений.
-
-=== ПРОВЕРЕННЫЕ КОМБО-ПАТТЕРНЫ ===
-
-«Хит-конфёрм — продолжение только при попадании»:
-Default: ANIM → HITBOX [BRANCH TARGET=on_hit, DAMAGE=X]
-Ветка on_hit: STATE IFrame [0.15s] → VELO [к цели] → HITBOX [финальный]
-→ Попал: продолжение + доп.удар. Промахнулся: способность просто закончилась.
-
-«Рывок к врагу»:
-ANIM [рывок] → STATE IFrame [TIME совпадает с VELO] → VELO [FORCE 0,0,80, TRACK=true, TIME=0.35, LAST HIT=цель] → WAIT [0.2] → HITBOX
-→ TRACK=true = летишь туда куда смотришь. IFrame = неуязвим в полёте.
-
-«Якорная зона AoE (висит в точке)»:
-PROJECTILE [SPEED=0, TAG=zone, TIME=3] → VISUAL [PROJECTILE TAG=zone, EFFECT=Glow, SIZE=5] → HITBOX [PROJECTILE TAG=zone, DAMAGE=X, STUN=Y]
-→ И визуал, и хитбокс висят в точке применения 3 секунды.
-
-«Аура/поле урона на удержание кнопки»:
-LOOP [HOLD=true, AMOUNT=-1] → WAIT [0.1] → HITBOX [SIZE 4x4x4 вокруг игрока, DAMAGE небольшой] → LOOP BACK
-→ Пока зажата кнопка — непрерывный урон по кругу.
-
-«Трёхуровневый заряд (три фазы силы)»:
-TAG Add value=1 → TAG Check value=1 [BRANCH=lv1] → TAG Check value=2 [BRANCH=lv2] → TAG Check value=3 [BRANCH=lv3]
-Ветка lv1: слабый эффект. lv2: средний. lv3: сильный + TAG Set value=0 [сброс].
-
-«Парирование с контратакой»:
-Default: STATE NoM1 → COUNTER [TIME=0.8, BRANCH TARGET=punish]
-Ветка punish: STATE IFrame [0.3] → ANIM [контрудар] → VELO [к врагу] → HITBOX
-→ Только успешное парирование уводит в punish.
-
-«Стаки с усилением на N-м применении»:
-Каждое применение: TAG Add value=1 → TAG Check value=3 [BRANCH=max_stacks]
-Default (не накоплено): обычный удар. Ветка max_stacks: усиленный финиш + TAG Set value=0.
-
-«Рывок с последующей телепортацией — бег сквозь врага»:
-STATE IFrame → VELO [FORCE 0,0,120, TRACK=true, TIME=0.4] → WAIT [0.35] → HITBOX [вокруг старой позиции или в точке приземления]
-
-«Двухфазная способность (нажать дважды)»:
-Первое нажатие: TAG Check value=0 [BRANCH=first_press] → (ветка first_press) ANIM + TAG Set value=1
-Второе нажатие: TAG Check value=1 [BRANCH=second_press] → (ветка second_press) финальный эффект + TAG Set value=0
+=== КОМБО-ПАТТЕРНЫ ===
+«Хит-конфёрм»: ANIM→HITBOX[BRANCH TARGET=on_hit] / on_hit: STATE IFrame→VELO→HITBOX
+«Рывок к врагу»: ANIM→STATE IFrame[=VELO.TIME]→VELO[TRACK=true, LAST HIT=цель]
+«AoE якорь»: PROJECTILE[SPEED=0,TAG=z]→VISUAL[TAG=z]→HITBOX[TAG=z]
+«Аура на удержание»: LOOP[HOLD=true,AMOUNT=-1]→WAIT[0.1]→HITBOX[вокруг игрока]
+«Парирование+контр»: STATE NoM1→COUNTER[BRANCH TARGET=punish] / punish: IFrame→ANIM→HITBOX
+«Двухфазная»: TAG Check 0[BRANCH=first] / first: ANIM+TAG Set 1 / second: финал+TAG Set 0
+«Стаки+усиление»: TAG Add 1→TAG Check 3[BRANCH=max] / max: усиленный удар+TAG Set 0
 
 === БЛОКИ И ПОЛЯ (технические значения) ===
 - ANIM: ANIM_USE [группа,индекс], SPEED, LOOPED, FADE IN/OUT.
@@ -2534,54 +2511,21 @@ STATE IFrame → VELO [FORCE 0,0,120, TRACK=true, TIME=0.4] → WAIT [0.35] → 
 
 Координаты (в студах, от разворота пользователя): X+ влево, Y+ вверх, Z+ вперёд. Персонаж ~5 студов ростом.
 
-=== АНИМАЦИИ (ANIM_USE) ===
-Персонажи по эпитетам: Honored One=Годжо, Vessel=Юджи/Сукуна, Perfection=Махито, Switcher=Тодо, Ten Shadows=Мегуми, Blood Manipulator=Чосо, Cursed Partners=Юта, Salaryman=Нанами, Restless Gambler=Хакари, Star Rage=Юки, Head of the Hei=Наоя, Defense Attorney=Хигурума.
+=== АНИМАЦИИ ===
+КУЛАК: Restless Gambler(M1), Divergent Fist, Rapid Punches, Elbow Rush, Focus Strike.
+НОГА/СЛЭШ: Twofold Kick, Severance Kick, World Slash, Dismantle, Resolute Slash, Cleave.
+ДАЛЬНИЕ/РЫВКИ: Lapse Blue/Red, Hollow Purple, Brute Force, Veilstep, Plasma Wave.
+ДОМЕНЫ: Infinite Void, Malevolent Shrine, Chimera Shadow Garden, Authentic Mutual Love.
+В пикере сотни записей — рекомендуй по категории, говори проверить в пикере.
 
-КУЛАК/РУКА: Restless Gambler — единственный с дефолтными M1-кулаками (лучший источник чистого удара рукой); Divergent Fist (Vessel) — кулак, вариант Black Flash Chain 4 хита; Rapid Punches (Honored One) — серия кулаков; Elbow Rush — локоть/кулак; Cursed Punches — списанный Vessel; Focus Strike (Switcher) — силовой удар рукой.
-НОГА: Twofold Kick (Honored One) — комбо-удлинитель; Severance Kick (Salaryman) — нейтральный; Idol's Debut (Switcher) — подход и сбивающий удар.
-РЕЖУЩИЕ: World Slash (Vessel awakened) — разрез измерения; Dismantle (Vessel/Sukuna) — слэш; Resolute Slash, Slicing Exorcism, Cleave/Cleave Rush.
-ДАЛЬНИЕ/ЭНЕРГИЯ: Lapse Blue/MAX, Reversal Red/MAX (Honored One); Hollow Purple — финишер; Plasma Wave, Ultimate Cannon (Blood Manipulator); True Love Beam (Cursed Partners); Pebble Throw (Switcher).
-ЗАХВАТЫ: Rika Downslam, Rika Slam (Cursed Partners); Crushing Blow (Vessel).
-AoE/ЗЕМЛЯ: Earthquake — волна с пылью; Groundslam/Uppercut.
-РЫВКИ: Brute Force (Switcher) — Black Flash-рывок; Veilstep; Execution, Sacrilege, Climax Jumping.
-ДОМЕНЫ: Infinite Void (Honored One), Malevolent Shrine (Vessel), Embodiment of Self-Perfection (Perfection), Authentic Mutual Love (Cursed Partners), Chimera Shadow Garden (Ten Shadows).
-
-В реальном пикере сотни записей — это не полный список. Если анимация не из этого перечня — дай лучшую рекомендацию из подходящей категории и честно скажи проверить в пикере.
-
-=== PARTICLES — ПОЛНОЕ ЭКСПЕРТНОЕ РУКОВОДСТВО ===
-PARTICLES — новый визуальный нод Skill Builder. Спавнит плоские 2D-изображения (частицы) в пространстве. Это не замена VISUAL — они работают вместе: VISUAL для готовых эффектов (Glow, Slash, Mesh), PARTICLES — когда нужен тонко настроенный поток частиц (шлейфы, взрывы, дымы, ауры).
-
-КЛЮЧЕВЫЕ ПРАВИЛА — знать наизусть:
-1. DURATION = 0 → разовый залп, количество задаётся EMIT COUNT; поле RATE полностью игнорируется.
-   DURATION > 0 → непрерывный поток, скорость задаётся RATE (частиц/сек); поле EMIT COUNT игнорируется.
-   Самая частая ошибка — выставить оба поля и ждать, что они сложатся. Они НЕ складываются.
-2. PART SIZE — это размер ЗОНЫ СПАВНА (откуда появляются частицы), НЕ размер самих частиц. Для размера частиц — поле SIZE.
-3. COLOR и SIZE принимают последовательности (sequences): несколько значений по времени жизни. Левое = начало, правое = конец. Можно делать градиент «оранжевый → прозрачный красный» через два-три узла.
-4. LOCKED TO PART: вкл = частицы движутся вместе с источником (хвост за персонажем); выкл = частицы остаются в мировом пространстве (след позади летящего снаряда).
-5. RUN ON SERVER: выкл = эффект видит только сам игрок (экономит трафик для декоративных мелочей); вкл = видят все. Для ударов и важных эффектов — всегда вкл.
-6. PROJECTILE TAG: частицы привязываются к снаряду с совпадающим тегом и следуют за ним. Если снаряд PROJECTILE TAG совпадает с VISUAL TAG того же снаряда — они работают одновременно.
-
-ПОЛЯ ПОДРОБНО:
-- EMIT COUNT / RATE / DURATION: см. правило 1.
-- LIFETIME (мин/макс): разброс времени жизни одной частицы. Больше разброс → более естественный, «живой» эффект.
-- SPEED (мин/макс): разброс начальной скорости. SPREAD ANGLE задаёт направление разлёта.
-- SPREAD ANGLE (X/Y): 0 = все частицы летят в одну сторону (пучок/луч); 180 = равномерно во все стороны (сфера); промежуточное = конус. Для вертикального столба — X=0, Y=180.
-- ACCELERATION: вектор силы (X, Y, Z) применяется к каждой частице каждую секунду. Y=-20 = гравитация. Y=+15 = дым, поднимающийся вверх. X/Z-значения делают «закручивание».
-- DRAG: > 0 = частицы замедляются (эффект тумана, плавающих искр). < 0 = ускоряются (редко нужно).
-- SQUASH: > 0 = вытягивает по направлению движения (эффект скорости, трейл). < 0 = сплющивает. Хорошо работает в паре с VELOCITY PARALLEL ориентацией.
-- LIGHT EMISSION: 0 = не светится; 1–5 = мягкое свечение; > 5 = неоновый, видимый в темноте. Не влияет на производительность напрямую.
-- LIGHT INFLUENCE: 0 = частицы игнорируют свет сцены (цвет всегда чистый). 1 = полностью подчиняются освещению. Для магических эффектов обычно ставят 0–0.3.
-- Z OFFSET: > 0 = рендерится поверх других эффектов; < 0 = уходит под них. Полезно, когда частицы «прячутся» за VISUAL-блоком.
-- ORIENTATION: Facing Camera = всегда смотрит на камеру (классические частицы). Facing Camera World Up = смотрит на камеру, но не наклоняется. Velocity Parallel = вдоль вектора движения (трейл, пламя). Velocity Perpendicular = перпендикулярно движению (диски, кольца).
-- FLIPBOOK: анимированная текстура. Loop = повтор; One Shot = один раз и исчезает; Ping Pong = туда-обратно; Random = случайный кадр.
-- EMITTER SHAPE: Box = прямоугольная зона; Cylinder = цилиндр (с SHAPE PARTIAL можно сделать кольцо или конус); Disk = плоский круг.
-- POSITION: смещение эмиттера относительно точки спавна ноды (например, чуть выше головы персонажа).
-
-ТИПОВЫЕ РЕЦЕПТЫ:
-«Огненный шлейф снаряда»: PROJECTILE TAG совпадает с снарядом. DURATION 1.5, RATE 40. LOCKED TO PART выкл. COLOR: оранжевый → тёмно-красный. SIZE: 1.5 → 0. LIFETIME 0.2–0.5. SPEED 1–3. ACCELERATION Y -5. RUN ON SERVER вкл.
-«Аура вокруг персонажа»: без PROJECTILE TAG. DURATION 3, RATE 20. LOCKED TO PART вкл. EMITTER SHAPE Cylinder. SPREAD ANGLE 180. SIZE 0.5. LIFETIME 0.8–1.2. SPEED 0–2. ACCELERATION Y +4. DRAG 0.5.
-«Взрыв (одноразовый)»: DURATION 0, EMIT COUNT 60. EMITTER SHAPE Disk. SPREAD ANGLE X=180, Y=180. SPEED 8–15. LIFETIME 0.3–0.7. SIZE 2 → 0. COLOR белый → оранжевый. RUN ON SERVER вкл.
-«Дым после удара»: DURATION 0, EMIT COUNT 20. SPREAD ANGLE 90. SPEED 2–5. LIFETIME 0.5–1.2. SIZE 1 → 3. TRANSPARENCY 0 → 1. ACCELERATION Y +3. DRAG 0.8. COLOR серый.
+=== PARTICLES ===
+Спавнит 2D-частицы. Работает вместе с VISUAL, не вместо.
+DURATION=0 → залп через EMIT COUNT (RATE игнорируется). DURATION>0 → поток через RATE (EMIT COUNT игнорируется). Не суммируются.
+PART SIZE = зона спавна, НЕ размер частиц (для этого — SIZE).
+COLOR/SIZE = последовательности (левое=начало, правое=конец). LOCKED TO PART вкл=едут за источником; выкл=остаются в мире. RUN ON SERVER вкл = видят все. PROJECTILE TAG = привязка к снаряду.
+Поля: LIFETIME(мин/макс), SPEED(мин/макс), SPREAD ANGLE(0=пучок,180=сфера), ACCELERATION(Y-20=гравитация,Y+15=вверх), DRAG(>0=замедляет), SQUASH(>0=вытягивает), ORIENTATION(Velocity Parallel=трейл), EMITTER SHAPE(Box/Cylinder/Disk).
+Шлейф снаряда: PROJECTILE TAG совпадает, DURATION 1.5, RATE 40, LOCKED TO PART выкл.
+Взрыв: DURATION 0, EMIT COUNT 60, EMITTER SHAPE Disk, SPREAD ANGLE 180.
 
 === VISUAL EFFECT ПРЕСЕТЫ ===
 Конкретные EFFECT помимо Glow/Slash/Beam: Dismantle, Cleave Rush, Cursed Strikes, World Slash, Hollow Purple, Lapse Blue, Malevolent Shrine, Thunder God, Open Fire, Earthquake.
@@ -2698,6 +2642,11 @@ function escapeHtml(str){
   const d = document.createElement('div');
   d.textContent = str;
   return d.innerHTML;
+}
+function safeMediaSrc(src){
+  if(typeof src !== 'string') return '';
+  if(/^data:(image|video)\/(jpeg|png|gif|webp|mp4|webm|ogg);base64,/.test(src)) return src;
+  return '';
 }
 function formatAssistantText(raw){
   return escapeHtml(raw||'').replace(/\n/g,'<br>');
@@ -2818,6 +2767,7 @@ async function sendMessage(rawText){
     });
 
     if(!response.ok){
+      if(response.status === 429) throw new Error('rate_limit');
       let msg = 'код ' + response.status;
       try{
         const errData = await response.json();
@@ -2891,9 +2841,12 @@ async function sendMessage(rawText){
     const div = document.createElement('div');
     div.className='msg error';
     const isCors = err.message === 'Failed to fetch' || err instanceof TypeError;
+    const isRateLimit = err.message === 'rate_limit' || err.message.toLowerCase().includes('rate limit');
     div.textContent = isCors
       ? t('cors_error')
-      : t('groq_error')(err.message);
+      : isRateLimit
+        ? t('rate_limit_error')
+        : t('groq_error')(err.message);
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
   } finally {
