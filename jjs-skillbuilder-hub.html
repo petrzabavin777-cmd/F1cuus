@@ -1130,6 +1130,8 @@
   /* ══════════════ BUG REPORT BUTTON ══════════════ */
   .bug-float-btn{position:fixed;left:16px;bottom:16px;z-index:890;background:var(--bg-card);border:1px solid var(--border-soft);color:var(--text-faint);font-family:var(--font-display);font-size:12px;font-weight:600;padding:7px 12px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 4px 20px rgba(0,0,0,.35);transition:all .2s;backdrop-filter:blur(12px);}
   .bug-float-btn:hover{color:var(--coral);border-color:rgba(255,107,122,.4);background:rgba(255,107,122,.06);transform:translateY(-2px);}
+  .suggest-float-btn{position:fixed;left:16px;bottom:58px;z-index:890;background:var(--bg-card);border:1px solid var(--border-soft);color:var(--text-faint);font-family:var(--font-display);font-size:12px;font-weight:600;padding:7px 12px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 4px 20px rgba(0,0,0,.35);transition:all .2s;backdrop-filter:blur(12px);}
+  .suggest-float-btn:hover{color:var(--accent);border-color:rgba(176,122,255,.4);background:rgba(176,122,255,.06);transform:translateY(-2px);}
   .bug-section-select,.bug-desc-ta{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:var(--font-body);font-size:13px;box-sizing:border-box;outline:none;transition:border-color .2s;}
   .bug-section-select{margin-bottom:10px;cursor:pointer;}
   .bug-desc-ta{resize:vertical;min-height:100px;margin-bottom:10px;}
@@ -1222,10 +1224,10 @@
       </div>
       <div class="pass-hint" data-i18n="auth_pass_hint">Мин. 8 символов · хотя бы один спецсимвол (!@#$%^&*…)</div>
       <label style="display:flex;align-items:flex-start;gap:8px;margin:10px 0 2px;cursor:pointer;font-size:12px;color:var(--text-faint);line-height:1.5">
-        <input type="checkbox" id="regTermsCheck" style="margin-top:2px;accent-color:var(--accent);width:15px;height:15px;flex-shrink:0;cursor:pointer">
+        <input type="checkbox" id="regTermsCheck" style="margin-top:2px;accent-color:var(--accent);width:15px;height:15px;flex-shrink:0;cursor:pointer" onchange="document.getElementById('authRegBtn').disabled=!this.checked">
         <span>Я принимаю <a onclick="openPrivacyModal()" style="color:var(--accent);text-decoration:underline;cursor:pointer;font-weight:600">Политику конфиденциальности</a> и <a onclick="openRulesModal()" style="color:var(--accent);text-decoration:underline;cursor:pointer;font-weight:600">Правила</a> JJS Nodecraft</span>
       </label>
-      <button class="auth-btn" id="authRegBtn" data-i18n="auth_reg_btn" onclick="doRegister()">Создать аккаунт</button>
+      <button class="auth-btn" id="authRegBtn" data-i18n="auth_reg_btn" onclick="doRegister()" disabled>Создать аккаунт</button>
     </div>
     <div class="auth-divider" data-i18n="auth_or">или</div>
     <button class="auth-guest-btn" data-i18n="auth_guest_btn" onclick="doGuest()">👤 Войти как гость</button>
@@ -5891,6 +5893,10 @@ function switchAuthTab(tab){
   document.getElementById('authFormLogin').style.display=l?'':'none';
   document.getElementById('authFormReg').style.display=l?'none':'';
   document.getElementById('authErrMsg').textContent='';
+  if(!l){
+    const cb=document.getElementById('regTermsCheck');
+    if(cb){cb.checked=false;document.getElementById('authRegBtn').disabled=true;}
+  }
 }
 function setAuthErr(m){ document.getElementById('authErrMsg').textContent=m; }
 
@@ -7843,6 +7849,52 @@ async function submitSuggestion(){
   setTimeout(()=>{const c=document.getElementById('suggestCard');if(c)c.style.display='none';},2500);
 }
 
+/* ─── WISH LIST FLOAT ─── */
+function openSuggestFloat(){
+  const ov=document.getElementById('suggestFloatOv');
+  if(!ov) return;
+  const sub=document.getElementById('suggestFloatSubtitle');
+  if(sub) sub.textContent=t('suggest_subtitle');
+  const ta=document.getElementById('suggestFloatText');
+  if(ta){ta.value='';ta.placeholder=t('suggest_ph');}
+  const btn=document.getElementById('suggestFloatSendBtn');
+  if(btn){btn.disabled=false;btn.textContent=t('suggest_send_btn');}
+  const body=document.getElementById('suggestFloatBody');
+  if(body&&!body.querySelector('textarea')){
+    body.innerHTML=`<textarea id="suggestFloatText" class="bug-desc-ta" rows="4" style="resize:vertical;margin-bottom:12px" placeholder="${t('suggest_ph')}"></textarea>
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button onclick="closeSuggestFloat()" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim);font-family:var(--font-display);font-size:13px;font-weight:600;padding:8px 16px;border-radius:8px;cursor:pointer">Close</button>
+        <button id="suggestFloatSendBtn" onclick="submitSuggestFloat()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;padding:8px 20px;border-radius:8px;cursor:pointer">${t('suggest_send_btn')}</button>
+      </div>`;
+  }
+  ov.classList.add('on');
+}
+function closeSuggestFloat(){
+  document.getElementById('suggestFloatOv')?.classList.remove('on');
+}
+async function submitSuggestFloat(){
+  const txt=(document.getElementById('suggestFloatText')?.value||'').trim();
+  if(!txt) return;
+  const btn=document.getElementById('suggestFloatSendBtn');
+  if(btn){btn.disabled=true;btn.textContent='…';}
+  if(_supa){
+    const{data:admins}=await _supa.from('admins').select('user_id');
+    if(admins?.length){
+      for(const a of admins){
+        await _supa.from('notifications').insert({
+          user_id:a.user_id,
+          from_user_id:_supaUser?.id||null,
+          type:'suggestion',
+          message:txt
+        });
+      }
+    }
+  }
+  const body=document.getElementById('suggestFloatBody');
+  if(body) body.innerHTML=`<div style="display:flex;align-items:center;gap:14px;padding:12px 0"><span style="font-size:32px">🙏</span><span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--accent)">${t('suggest_thanks')}</span></div>`;
+  setTimeout(()=>closeSuggestFloat(),2200);
+}
+
 /* ─── BUG REPORT ─── */
 function openBugReport(){
   if(!_supaUser){alert('Log in to report a bug');return;}
@@ -8100,62 +8152,82 @@ if(savedLang && _allLangs.includes(savedLang)){
       <span class="changelog-v" style="font-size:20px">🔒</span>
       <span class="changelog-badge">PRIVACY POLICY</span>
     </div>
-    <div class="changelog-subtitle">JJS Nodecraft — Политика конфиденциальности</div>
+    <div class="changelog-subtitle">JJS Nodecraft — Privacy Policy</div>
 
     <div class="changelog-sec">
-      <div class="changelog-sec-title">1. Какие данные мы собираем</div>
-      <div class="changelog-item"><span class="changelog-ico">📝</span><span><b>При регистрации:</b> никнейм, хэш пароля (хранится в зашифрованном виде через Supabase Auth). Настоящее имя и телефон мы не запрашиваем.</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🖼</span><span><b>Профиль:</b> аватар (эмодзи или загруженное фото), биография, опциональный @username и ссылка (только для верифицированных).</span></div>
-      <div class="changelog-item"><span class="changelog-ico">📣</span><span><b>Контент:</b> посты, комментарии, лайки, подписки — всё, что вы публикуете на платформе.</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🖥</span><span><b>Технические данные:</b> анонимный цифровой отпечаток устройства (browser fingerprint) для защиты от злоупотреблений и обхода банов. Реальный IP-адрес не хранится.</span></div>
+      <div class="changelog-sec-title">1. What Data We Collect</div>
+      <div class="changelog-item"><span class="changelog-ico">📝</span><span><b>At registration:</b> your nickname and a hashed password stored securely via Supabase Auth. We do not ask for your real name, phone number, or email address.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🖼</span><span><b>Profile:</b> avatar (emoji or uploaded photo), bio, optional @username, and a link (verified accounts only). All optional.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">📣</span><span><b>Content:</b> posts, comments, likes, and follows — everything you choose to publish on the platform.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🖥</span><span><b>Technical data:</b> an anonymous browser fingerprint used solely to prevent abuse and ban evasion. Your real IP address is never stored.</span></div>
     </div>
 
     <div class="changelog-sec">
-      <div class="changelog-sec-title">2. Как мы используем ваши данные</div>
-      <div class="changelog-item"><span class="changelog-ico">⚙️</span><span>Для предоставления и работы платформы JJS Nodecraft.</span></div>
-      <div class="changelog-item"><span class="changelog-ico">👥</span><span>Для отображения вашего публичного профиля и контента другим пользователям.</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🛡</span><span>Для предотвращения спама, злоупотреблений и несанкционированного доступа.</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🔔</span><span>Для отправки внутрисайтовых уведомлений (лайки, комментарии, подписчики).</span></div>
+      <div class="changelog-sec-title">2. How We Use Your Data</div>
+      <div class="changelog-item"><span class="changelog-ico">⚙️</span><span>To operate and provide the JJS Nodecraft platform.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">👥</span><span>To display your public profile and content to other users.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🛡</span><span>To prevent spam, abuse, and unauthorized access.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🔔</span><span>To send in-app notifications (likes, comments, new followers).</span></div>
     </div>
 
     <div class="changelog-sec">
-      <div class="changelog-sec-title">3. Хранение и безопасность</div>
-      <div class="changelog-item"><span class="changelog-ico">🗄</span><span>Все данные хранятся в базе данных <b>Supabase</b> (PostgreSQL) на защищённой облачной инфраструктуре.</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🔑</span><span>Пароли никогда не хранятся в открытом виде. Используется стандарт bcrypt через Supabase Auth.</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🚀</span><span>Медиафайлы (фото, видео) хранятся в Supabase Storage с доступом только по публичным ссылкам.</span></div>
+      <div class="changelog-sec-title">3. Storage & Security</div>
+      <div class="changelog-item"><span class="changelog-ico">🗄</span><span>All data is stored in a <b>Supabase</b> (PostgreSQL) database on a secure cloud infrastructure.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🔑</span><span>Passwords are never stored in plain text. Supabase Auth uses bcrypt hashing.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🚀</span><span>Media files (photos, videos) are stored in Supabase Storage and accessible only via public links you generate.</span></div>
     </div>
 
     <div class="changelog-sec">
-      <div class="changelog-sec-title">4. Передача данных третьим лицам</div>
-      <div class="changelog-item"><span class="changelog-ico">🚫</span><span>Мы <b>не продаём и не передаём</b> ваши данные третьим лицам в маркетинговых или коммерческих целях.</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🌐</span><span>Ваш публичный профиль (никнейм, аватар, посты) виден всем пользователям платформы, включая гостей.</span></div>
+      <div class="changelog-sec-title">4. Third-Party Sharing</div>
+      <div class="changelog-item"><span class="changelog-ico">🚫</span><span>We <b>do not sell or share</b> your data with third parties for marketing or commercial purposes.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🌐</span><span>Your public profile (nickname, avatar, posts) is visible to all users of the platform, including guests.</span></div>
     </div>
 
     <div class="changelog-sec">
-      <div class="changelog-sec-title">5. Ваши права</div>
-      <div class="changelog-item"><span class="changelog-ico">📂</span><span><b>Доступ к данным:</b> вы можете просмотреть все свои данные в своём профиле.</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🗑</span><span><b>Удаление аккаунта:</b> отправьте запрос администратору — мы удалим аккаунт и весь связанный контент в течение 7 дней.</span></div>
-      <div class="changelog-item"><span class="changelog-ico">✏️</span><span><b>Исправление данных:</b> никнейм, аватар, биографию вы можете изменить самостоятельно в настройках профиля.</span></div>
+      <div class="changelog-sec-title">5. Your Rights</div>
+      <div class="changelog-item"><span class="changelog-ico">📂</span><span><b>Access:</b> you can view all your data at any time through your profile.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🗑</span><span><b>Deletion:</b> send a request to the administrator — we will delete your account and all associated content within 7 days.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">✏️</span><span><b>Correction:</b> you can update your nickname, avatar, and bio yourself from profile settings at any time.</span></div>
     </div>
 
     <div class="changelog-sec">
-      <div class="changelog-sec-title">6. Cookies и локальное хранилище</div>
-      <div class="changelog-item"><span class="changelog-ico">💾</span><span>Мы используем исключительно <b>localStorage</b> браузера для хранения ваших настроек (язык, тема, шрифт). Рекламные или трекинговые куки не используются.</span></div>
+      <div class="changelog-sec-title">6. Cookies & Local Storage</div>
+      <div class="changelog-item"><span class="changelog-ico">💾</span><span>We use only the browser's <b>localStorage</b> to store your preferences (language, theme, font). No advertising or tracking cookies are used.</span></div>
     </div>
 
     <div class="changelog-sec">
-      <div class="changelog-sec-title">7. Изменения политики</div>
-      <div class="changelog-item"><span class="changelog-ico">📣</span><span>Существенные изменения будут объявлены через систему объявлений внутри приложения. Продолжение использования платформы означает согласие с актуальной версией политики.</span></div>
+      <div class="changelog-sec-title">7. Policy Changes</div>
+      <div class="changelog-item"><span class="changelog-ico">📣</span><span>Material changes will be announced through the in-app announcement system. Continued use of the platform constitutes acceptance of the current version.</span></div>
     </div>
 
     <div class="changelog-sec">
-      <div class="changelog-sec-title">8. Контакт</div>
-      <div class="changelog-item"><span class="changelog-ico">📧</span><span>По вопросам конфиденциальности и удалению данных: <b>F1cuus@proton.me</b></span></div>
+      <div class="changelog-sec-title">8. Contact</div>
+      <div class="changelog-item"><span class="changelog-ico">📧</span><span>For privacy inquiries and data deletion requests: <b>F1cuus@proton.me</b></span></div>
     </div>
 
     <div class="changelog-footer">
-      <span style="font-size:12px;color:var(--text-faint)">JJS Nodecraft · Вступает в силу 15 августа 2026</span>
-      <button onclick="closePrivacyModal()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;padding:8px 22px;border-radius:8px;cursor:pointer">Понятно ✓</button>
+      <span style="font-size:12px;color:var(--text-faint)">JJS Nodecraft · Effective August 15, 2026</span>
+      <button onclick="closePrivacyModal()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;padding:8px 22px;border-radius:8px;cursor:pointer">Got it ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= WISH LIST BUTTON + MODAL ================= -->
+<button class="suggest-float-btn" onclick="openSuggestFloat()" title="Share an idea">💡 Wish List</button>
+
+<div class="changelog-ov" id="suggestFloatOv" onclick="if(event.target===this)closeSuggestFloat()" style="z-index:1100">
+  <div class="changelog-box" style="max-width:440px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:2px">
+      <span style="font-size:22px">💡</span>
+      <span class="changelog-v" style="font-size:20px">Wish List</span>
+    </div>
+    <div class="changelog-subtitle" id="suggestFloatSubtitle"></div>
+    <div id="suggestFloatBody" style="margin-top:14px">
+      <textarea id="suggestFloatText" class="bug-desc-ta" rows="4" style="resize:vertical;margin-bottom:12px"></textarea>
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button onclick="closeSuggestFloat()" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim);font-family:var(--font-display);font-size:13px;font-weight:600;padding:8px 16px;border-radius:8px;cursor:pointer">Close</button>
+        <button id="suggestFloatSendBtn" onclick="submitSuggestFloat()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;padding:8px 20px;border-radius:8px;cursor:pointer"></button>
+      </div>
     </div>
   </div>
 </div>
