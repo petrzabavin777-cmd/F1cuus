@@ -1221,6 +1221,10 @@
         <button class="pass-eye" type="button" onclick="togglePass('regPass',this)" tabindex="-1">👁</button>
       </div>
       <div class="pass-hint" data-i18n="auth_pass_hint">Мин. 8 символов · хотя бы один спецсимвол (!@#$%^&*…)</div>
+      <label style="display:flex;align-items:flex-start;gap:8px;margin:10px 0 2px;cursor:pointer;font-size:12px;color:var(--text-faint);line-height:1.5">
+        <input type="checkbox" id="regTermsCheck" style="margin-top:2px;accent-color:var(--accent);width:15px;height:15px;flex-shrink:0;cursor:pointer">
+        <span>Я принимаю <a onclick="openPrivacyModal()" style="color:var(--accent);text-decoration:underline;cursor:pointer;font-weight:600">Политику конфиденциальности</a> и <a onclick="openRulesModal()" style="color:var(--accent);text-decoration:underline;cursor:pointer;font-weight:600">Правила</a> JJS Nodecraft</span>
+      </label>
       <button class="auth-btn" id="authRegBtn" data-i18n="auth_reg_btn" onclick="doRegister()">Создать аккаунт</button>
     </div>
     <div class="auth-divider" data-i18n="auth_or">или</div>
@@ -1710,7 +1714,7 @@
       <div class="media-thumbs" id="cpMediaThumbs"></div>
       <label style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer;font-size:13px;color:var(--text-dim);line-height:1.45">
         <input type="checkbox" id="cpRulesCheck" style="margin-top:2px;accent-color:var(--accent);width:16px;height:16px;flex-shrink:0;cursor:pointer" onchange="document.getElementById('submitPostBtn').disabled=!this.checked">
-        <span data-i18n="cp_rules_text">Я прочитал правила сообщества и подтверждаю, что мой пост не содержит оскорблений, спама, NSFW-контента или нарушений правил JJS Nodecraft</span>
+        <span id="cpRulesLabel">Я прочитал <a onclick="openRulesModal()" style="color:var(--accent);text-decoration:underline;cursor:pointer;font-weight:600">правила форума</a> и подтверждаю, что мой пост не содержит оскорблений, спама, NSFW-контента или нарушений правил JJS Nodecraft</span>
       </label>
       <div class="create-post-footer">
         <button class="cancel-btn" data-i18n="cancel_btn" onclick="closeCreatePost()">Отмена</button>
@@ -2064,6 +2068,13 @@ const STRINGS = {
     suggest_skip_btn:'Пропустить',
     suggest_thanks:'Спасибо за идею! 🙏 Я учту её.',
     edited_label:'Изменено',
+    ban_screen_title:'Аккаунт заблокирован',
+    ban_screen_msg:'Ваш аккаунт был заблокирован администратором.<br>Если считаете это ошибкой — свяжитесь с поддержкой.',
+    ban_screen_reason:'📋 Причина:',
+    ban_screen_try_login:'Уже разбанен? Попробовать войти →',
+    banned_guest_alert:'Доступ запрещён. Ваш аккаунт был заблокирован администратором.',
+    logout_confirm:'Выйти из аккаунта?',
+    logout_btn:'↩ Выйти',
     mode_meta: {
       skill:{blocksTitle:'Справочник нод Skill Builder', blocksDesc:'Нажми на ноду, чтобы развернуть все поля. Цвет показывает категорию — действие, контакт, визуал/звук или логика.', ideasTitle:'Идеи для Skill Builder', ideasDesc:'Выбери ноды, которые хочешь задействовать, и крути рулетку — получишь идею способности на их основе.', aiTitle:'ИИ-ассистент по Skill Builder', aiDesc:'Спрашивай как у человека, который собрал сотню кастомных мувсетов: про ноды, Tag-логику, баги, координаты, анимации и визуалы.', chatHeader:'Ассистент Skill Builder', placeholder:'Спроси про любую ноду или механику…', navTab:'Ноды', searchPh:'Поиск ноды…', blockCount:(s,t)=>`Показано ${s} из ${t} нод`, aiEmptyState:'Задай вопрос или прикрепи скриншот настроек ноды.', takeIdeaBtn:'🎲 Взять идею с этой нодой', ideasSearchPh:'Поиск по названию ноды…', spinHintHas:'Идея будет связана хотя бы с одной из выбранных нод.', spinHintEmpty:'Можно крутить и без выбора нод — выпадет случайная идея.'},
       build:{blocksTitle:'Справочник блоков обычного строительства', blocksDesc:'Конструкция, Input/Output/Interaction блоки и Logic Gates. Нажми на блок, чтобы развернуть поля.', ideasTitle:'Идеи для строительства', ideasDesc:'Выбери блоки и гейты, которые хочешь задействовать, и крути рулетку — получишь идею механики или комнаты на их основе.', aiTitle:'ИИ-ассистент по строительству', aiDesc:'Спрашивай про блоки, ID-сигналы, гейты и готовые логические схемы.', chatHeader:'Ассистент по строительству', placeholder:'Спроси про блок, гейт или схему…', navTab:'Блоки', searchPh:'Поиск блока…', blockCount:(s,t)=>`Показано ${s} из ${t} блоков`, aiEmptyState:'Задай вопрос или прикрепи скриншот настроек блока.', takeIdeaBtn:'🎲 Взять идею с этим блоком', ideasSearchPh:'Поиск по названию блока…', spinHintHas:'Идея будет связана хотя бы с одним из выбранных блоков.', spinHintEmpty:'Можно крутить и без выбора блоков — выпадет случайная идея.'},
@@ -2306,6 +2317,13 @@ const STRINGS = {
     suggest_skip_btn:'Skip',
     suggest_thanks:'Thanks for your idea! 🙏 I\'ll consider it.',
     edited_label:'Edited',
+    ban_screen_title:'Account banned',
+    ban_screen_msg:'Your account has been banned by an administrator.<br>If you think this is a mistake — contact support.',
+    ban_screen_reason:'📋 Reason:',
+    ban_screen_try_login:'Already unbanned? Try logging in →',
+    banned_guest_alert:'Access denied. Your account has been banned by an administrator.',
+    logout_confirm:'Log out of your account?',
+    logout_btn:'↩ Log out',
     mode_meta: {
       skill:{blocksTitle:'Skill Builder node reference', blocksDesc:'Tap a node to expand all its fields. Color shows the category — action, contact, visual/audio, or logic.', ideasTitle:'Ideas for Skill Builder', ideasDesc:'Pick the nodes you want to use, then spin the roulette to get an ability idea built around them.', aiTitle:'Skill Builder AI assistant', aiDesc:'Ask like you would a person who has built a hundred custom movesets: about nodes, Tag logic, bugs, coordinates, animations, and visuals.', chatHeader:'Skill Builder Assistant', placeholder:'Ask about any node or mechanic…', navTab:'Nodes', searchPh:'Search a node…', blockCount:(s,t)=>`Showing ${s} of ${t} nodes`, aiEmptyState:"Ask a question or attach a screenshot of a node's settings.", takeIdeaBtn:'🎲 Get an idea with this node', ideasSearchPh:'Search by node name…', spinHintHas:'The idea will involve at least one of your selected nodes.', spinHintEmpty:"You can spin with no nodes selected too — you'll get a random idea."},
       build:{blocksTitle:'Regular building block reference', blocksDesc:'Construction, Input/Output/Interaction blocks, and Logic Gates. Tap a block to expand its fields.', ideasTitle:'Ideas for building', ideasDesc:'Pick the blocks and gates you want to use, then spin the roulette to get a mechanic or room idea built around them.', aiTitle:'Building AI assistant', aiDesc:'Ask about blocks, ID signals, gates, and ready-made logic circuits.', chatHeader:'Building Assistant', placeholder:'Ask about a block, gate, or circuit…', navTab:'Blocks', searchPh:'Search a block…', blockCount:(s,t)=>`Showing ${s} of ${t} blocks`, aiEmptyState:"Ask a question or attach a screenshot of a block's settings.", takeIdeaBtn:'🎲 Get an idea with this block', ideasSearchPh:'Search by block name…', spinHintHas:'The idea will involve at least one of your selected blocks.', spinHintEmpty:"You can spin with no blocks selected too — you'll get a random idea."},
@@ -2413,6 +2431,14 @@ const STRINGS = {
     admin_tab_posts:'📌 Beiträge',admin_tab_announce:'📣 Ankündigungen',admin_tab_stats:'📊 Statistik',
     settings_title:'⚙ Einstellungen',settings_accent:'🎨 Akzentfarbe',settings_font:'🔤 Schriftart',settings_interface:'⚡ Interface',
     suggest_title:'💡 Was möchtest du als Nächstes sehen?',suggest_subtitle:'Teile deine Idee — ich lese jeden Vorschlag und berücksichtige ihn in den nächsten Updates.',suggest_ph:'Deine Ideen und Wünsche für das nächste Update…',suggest_send_btn:'📤 Senden',suggest_skip_btn:'Überspringen',suggest_thanks:'Danke für deine Idee! 🙏 Ich berücksichtige sie.',
+    edited_label:'Bearbeitet',
+    ban_screen_title:'Konto gesperrt',
+    ban_screen_msg:'Dein Konto wurde von einem Administrator gesperrt.<br>Wenn du das für einen Fehler hältst, wende dich an den Support.',
+    ban_screen_reason:'📋 Grund:',
+    ban_screen_try_login:'Bereits entsperrt? Einloggen versuchen →',
+    banned_guest_alert:'Zugriff verweigert. Dein Konto wurde von einem Administrator gesperrt.',
+    logout_confirm:'Vom Konto abmelden?',
+    logout_btn:'↩ Abmelden',
     mode_meta: {
       skill:{blocksTitle:'Skill Builder Node-Referenz', blocksDesc:'Klicke auf eine Node, um alle Felder zu sehen. Farbe zeigt die Kategorie.', ideasTitle:'Ideen für Skill Builder', ideasDesc:'Wähle die Nodes, die du verwenden möchtest, drehe das Roulette und erhalte eine Fähigkeitsidee.', aiTitle:'Skill Builder KI-Assistent', aiDesc:'Frag wie jemanden, der hundert eigene Movesets gebaut hat: über Nodes, Tag-Logik, Bugs, Koordinaten, Animationen und Visuals.', chatHeader:'Skill Builder Assistent', placeholder:'Frag über eine Node oder Mechanik…', navTab:'Nodes', searchPh:'Node suchen…', blockCount:(s,t)=>`${s} von ${t} Nodes`, aiEmptyState:'Stell eine Frage oder hänge einen Screenshot der Node-Einstellungen an.', takeIdeaBtn:'🎲 Idee mit dieser Node', ideasSearchPh:'Nach Node-Name suchen…', spinHintHas:'Die Idee enthält mindestens eine deiner gewählten Nodes.', spinHintEmpty:'Du kannst auch ohne Auswahl drehen — dann kommt eine Zufallsidee.'},
       build:{blocksTitle:'Builder-Blöcke Referenz', blocksDesc:'Konstruktion, Input/Output/Interaction-Blöcke und Logic Gates. Klicke auf einen Block, um die Felder zu sehen.', ideasTitle:'Ideen für Builder', ideasDesc:'Wähle Blöcke und Gates, drehe das Roulette und erhalte eine Mechanik- oder Raumidee.', aiTitle:'Builder KI-Assistent', aiDesc:'Frag über Blöcke, ID-Signale, Gates und fertige Schaltungen.', chatHeader:'Builder Assistent', placeholder:'Frag über einen Block, Gate oder Schaltung…', navTab:'Blöcke', searchPh:'Block suchen…', blockCount:(s,t)=>`${s} von ${t} Blöcken`, aiEmptyState:'Stell eine Frage oder hänge einen Screenshot der Block-Einstellungen an.', takeIdeaBtn:'🎲 Idee mit diesem Block', ideasSearchPh:'Nach Block-Name suchen…', spinHintHas:'Die Idee enthält mindestens einen deiner gewählten Blöcke.', spinHintEmpty:'Du kannst auch ohne Auswahl drehen — dann kommt eine Zufallsidee.'},
@@ -2520,6 +2546,14 @@ const STRINGS = {
     admin_tab_posts:'📌 Posty',admin_tab_announce:'📣 Ogłoszenia',admin_tab_stats:'📊 Statystyki',
     settings_title:'⚙ Ustawienia',settings_accent:'🎨 Kolor akcentu',settings_font:'🔤 Czcionka interfejsu',settings_interface:'⚡ Interfejs',
     suggest_title:'💡 Co chcesz zobaczyć dalej?',suggest_subtitle:'Podziel się pomysłem — czytam każdą sugestię i uwzględniam je w kolejnych aktualizacjach.',suggest_ph:'Twoje pomysły i życzenia na następną aktualizację…',suggest_send_btn:'📤 Wyślij',suggest_skip_btn:'Pomiń',suggest_thanks:'Dzięki za pomysł! 🙏 Uwzględnię go.',
+    edited_label:'Edytowano',
+    ban_screen_title:'Konto zablokowane',
+    ban_screen_msg:'Twoje konto zostało zablokowane przez administratora.<br>Jeśli uważasz to za błąd — skontaktuj się z pomocą techniczną.',
+    ban_screen_reason:'📋 Powód:',
+    ban_screen_try_login:'Już odblokowano? Spróbuj się zalogować →',
+    banned_guest_alert:'Dostęp zabroniony. Twoje konto zostało zablokowane przez administratora.',
+    logout_confirm:'Wylogować się?',
+    logout_btn:'↩ Wyloguj',
     mode_meta: {
       skill:{blocksTitle:'Baza węzłów Skill Builder', blocksDesc:'Kliknij węzeł, aby zobaczyć wszystkie pola. Kolor wskazuje kategorię.', ideasTitle:'Pomysły dla Skill Builder', ideasDesc:'Wybierz węzły, których chcesz użyć, i kręć ruletką — dostaniesz pomysł na umiejętność.', aiTitle:'Asystent AI Skill Builder', aiDesc:'Pytaj jak kogoś, kto zbudował setki własnych movesetów: o węzły, logikę Tag, błędy, koordynaty, animacje i wizuale.', chatHeader:'Asystent Skill Builder', placeholder:'Zapytaj o węzeł lub mechanikę…', navTab:'Węzły', searchPh:'Szukaj węzła…', blockCount:(s,t)=>`${s} z ${t} węzłów`, aiEmptyState:'Zadaj pytanie lub dołącz zrzut ekranu ustawień węzła.', takeIdeaBtn:'🎲 Weź pomysł z tym węzłem', ideasSearchPh:'Szukaj po nazwie węzła…', spinHintHas:'Pomysł będzie związany z przynajmniej jednym wybranym węzłem.', spinHintEmpty:'Możesz kręcić bez wyboru — dostaniesz losowy pomysł.'},
       build:{blocksTitle:'Baza bloków Builder', blocksDesc:'Konstrukcja, bloki Input/Output/Interaction i Logic Gates. Kliknij blok, aby zobaczyć pola.', ideasTitle:'Pomysły dla Builder', ideasDesc:'Wybierz bloki i bramki, których chcesz użyć, i kręć ruletką — dostaniesz pomysł na mechanikę lub pomieszczenie.', aiTitle:'Asystent AI Builder', aiDesc:'Pytaj o bloki, sygnały ID, bramki i gotowe układy logiczne.', chatHeader:'Asystent Builder', placeholder:'Zapytaj o blok, bramkę lub układ…', navTab:'Bloki', searchPh:'Szukaj bloku…', blockCount:(s,t)=>`${s} z ${t} bloków`, aiEmptyState:'Zadaj pytanie lub dołącz zrzut ekranu ustawień bloku.', takeIdeaBtn:'🎲 Weź pomysł z tym blokiem', ideasSearchPh:'Szukaj po nazwie bloku…', spinHintHas:'Pomysł będzie związany z przynajmniej jednym wybranym blokiem.', spinHintEmpty:'Możesz kręcić bez wyboru — dostaniesz losowy pomysł.'},
@@ -2627,6 +2661,14 @@ const STRINGS = {
     admin_tab_posts:'📌 Publicações',admin_tab_announce:'📣 Anúncios',admin_tab_stats:'📊 Estatísticas',
     settings_title:'⚙ Definições',settings_accent:'🎨 Cor de destaque',settings_font:'🔤 Tipo de letra',settings_interface:'⚡ Interface',
     suggest_title:'💡 O que queres ver a seguir?',suggest_subtitle:'Partilha a tua ideia — leio cada sugestão e considero-as nas próximas atualizações.',suggest_ph:'As tuas ideias e desejos para a próxima atualização…',suggest_send_btn:'📤 Enviar',suggest_skip_btn:'Ignorar',suggest_thanks:'Obrigado pela ideia! 🙏 Vou considerá-la.',
+    edited_label:'Editado',
+    ban_screen_title:'Conta banida',
+    ban_screen_msg:'A tua conta foi banida por um administrador.<br>Se achares que é um erro — contacta o suporte.',
+    ban_screen_reason:'📋 Motivo:',
+    ban_screen_try_login:'Já desbanido? Tentar iniciar sessão →',
+    banned_guest_alert:'Acesso negado. A tua conta foi banida por um administrador.',
+    logout_confirm:'Sair da conta?',
+    logout_btn:'↩ Sair',
     mode_meta: {
       skill:{blocksTitle:'Referência de nodes do Skill Builder', blocksDesc:'Clique em uma node para ver todos os campos. A cor indica a categoria.', ideasTitle:'Ideias para Skill Builder', ideasDesc:'Escolha as nodes que quer usar e gire a roleta para receber uma ideia de habilidade.', aiTitle:'Assistente IA do Skill Builder', aiDesc:'Pergunte como quem já montou centenas de movesets: sobre nodes, lógica de Tag, bugs, coordenadas, animações e visuais.', chatHeader:'Assistente Skill Builder', placeholder:'Pergunte sobre uma node ou mecânica…', navTab:'Nodes', searchPh:'Buscar node…', blockCount:(s,t)=>`${s} de ${t} nodes`, aiEmptyState:'Faça uma pergunta ou anexe um print das configurações da node.', takeIdeaBtn:'🎲 Pegar ideia com essa node', ideasSearchPh:'Buscar por nome da node…', spinHintHas:'A ideia vai usar pelo menos uma das nodes selecionadas.', spinHintEmpty:'Dá pra girar sem selecionar nada — vai sair uma ideia aleatória.'},
       build:{blocksTitle:'Referência de blocos do Builder', blocksDesc:'Construção, blocos Input/Output/Interaction e Logic Gates. Clique em um bloco para ver os campos.', ideasTitle:'Ideias para Builder', ideasDesc:'Escolha blocos e gates que quer usar e gire a roleta para uma ideia de mecânica ou sala.', aiTitle:'Assistente IA do Builder', aiDesc:'Pergunte sobre blocos, sinais ID, gates e circuitos prontos.', chatHeader:'Assistente Builder', placeholder:'Pergunte sobre um bloco, gate ou circuito…', navTab:'Blocos', searchPh:'Buscar bloco…', blockCount:(s,t)=>`${s} de ${t} blocos`, aiEmptyState:'Faça uma pergunta ou anexe um print das configurações do bloco.', takeIdeaBtn:'🎲 Pegar ideia com esse bloco', ideasSearchPh:'Buscar por nome do bloco…', spinHintHas:'A ideia vai usar pelo menos um dos blocos selecionados.', spinHintEmpty:'Dá pra girar sem selecionar nada — vai sair uma ideia aleatória.'},
@@ -2736,6 +2778,14 @@ const STRINGS = {
     admin_tab_posts:'📌 Posts',admin_tab_announce:'📣 Anúncios',admin_tab_stats:'📊 Estatísticas',
     settings_title:'⚙ Configurações',settings_accent:'🎨 Cor de destaque',settings_font:'🔤 Fonte da interface',settings_interface:'⚡ Interface',
     suggest_title:'💡 O que você quer ver a seguir?',suggest_subtitle:'Compartilhe sua ideia — leio cada sugestão e levo em conta nas próximas atualizações.',suggest_ph:'Suas ideias e desejos para a próxima atualização…',suggest_send_btn:'📤 Enviar',suggest_skip_btn:'Pular',suggest_thanks:'Obrigado pela ideia! 🙏 Vou levar em conta.',
+    edited_label:'Editado',
+    ban_screen_title:'Conta banida',
+    ban_screen_msg:'Sua conta foi banida por um administrador.<br>Se achar que é um erro — entre em contato com o suporte.',
+    ban_screen_reason:'📋 Motivo:',
+    ban_screen_try_login:'Já desbanido? Tentar entrar →',
+    banned_guest_alert:'Acesso negado. Sua conta foi banida por um administrador.',
+    logout_confirm:'Sair da conta?',
+    logout_btn:'↩ Sair',
     mode_meta: {
       skill:{blocksTitle:'Referência de nodes do Skill Builder', blocksDesc:'Clique em um node para ver todos os campos. A cor indica a categoria.', ideasTitle:'Ideias para Skill Builder', ideasDesc:'Escolha os nodes que quer usar e gire a roleta para receber uma ideia de habilidade.', aiTitle:'Assistente IA do Skill Builder', aiDesc:'Pergunte como quem já montou centenas de movesets: sobre nodes, lógica de Tag, bugs, coordenadas, animações e visuais.', chatHeader:'Assistente Skill Builder', placeholder:'Pergunte sobre um node ou mecânica…', navTab:'Nodes', searchPh:'Buscar node…', blockCount:(s,t)=>`${s} de ${t} nodes`, aiEmptyState:'Faça uma pergunta ou anexe um print das configurações do node.', takeIdeaBtn:'🎲 Pegar ideia com esse node', ideasSearchPh:'Buscar por nome do node…', spinHintHas:'A ideia vai usar pelo menos um dos nodes selecionados.', spinHintEmpty:'Dá pra girar sem selecionar nada — vai sair uma ideia aleatória.'},
       build:{blocksTitle:'Referência de blocos do Builder', blocksDesc:'Construção, blocos Input/Output/Interaction e Logic Gates. Clique em um bloco para ver os campos.', ideasTitle:'Ideias para Builder', ideasDesc:'Escolha blocos e gates que quer usar e gire a roleta para uma ideia de mecânica ou sala.', aiTitle:'Assistente IA do Builder', aiDesc:'Pergunte sobre blocos, sinais ID, gates e circuitos prontos.', chatHeader:'Assistente Builder', placeholder:'Pergunte sobre um bloco, gate ou circuito…', navTab:'Blocos', searchPh:'Buscar bloco…', blockCount:(s,t)=>`${s} de ${t} blocos`, aiEmptyState:'Faça uma pergunta ou anexe um print das configurações do bloco.', takeIdeaBtn:'🎲 Pegar ideia com esse bloco', ideasSearchPh:'Buscar por nome do bloco…', spinHintHas:'A ideia vai usar pelo menos um dos blocos selecionados.', spinHintEmpty:'Dá pra girar sem selecionar nada — vai sair uma ideia aleatória.'},
@@ -2843,6 +2893,14 @@ const STRINGS = {
     admin_tab_posts:'📌 Postingan',admin_tab_announce:'📣 Pengumuman',admin_tab_stats:'📊 Statistik',
     settings_title:'⚙ Pengaturan',settings_accent:'🎨 Warna aksen',settings_font:'🔤 Font antarmuka',settings_interface:'⚡ Antarmuka',
     suggest_title:'💡 Apa yang ingin kamu lihat selanjutnya?',suggest_subtitle:'Bagikan idemu — aku membaca setiap saran dan mempertimbangkannya untuk pembaruan berikutnya.',suggest_ph:'Ide dan harapanmu untuk pembaruan selanjutnya…',suggest_send_btn:'📤 Kirim',suggest_skip_btn:'Lewati',suggest_thanks:'Terima kasih atas idenya! 🙏 Akan aku pertimbangkan.',
+    edited_label:'Diedit',
+    ban_screen_title:'Akun diblokir',
+    ban_screen_msg:'Akun kamu telah diblokir oleh administrator.<br>Jika kamu merasa ini kesalahan — hubungi dukungan.',
+    ban_screen_reason:'📋 Alasan:',
+    ban_screen_try_login:'Sudah diunblokir? Coba masuk →',
+    banned_guest_alert:'Akses ditolak. Akun kamu telah diblokir oleh administrator.',
+    logout_confirm:'Keluar dari akun?',
+    logout_btn:'↩ Keluar',
     mode_meta: {
       skill:{blocksTitle:'Referensi node Skill Builder', blocksDesc:'Klik node untuk melihat semua field. Warna menunjukkan kategori.', ideasTitle:'Ide untuk Skill Builder', ideasDesc:'Pilih node yang ingin kamu pakai dan putar roulette — dapat ide skill.', aiTitle:'Asisten AI Skill Builder', aiDesc:'Tanya seperti ke orang yang sudah bikin ratusan moveset: soal node, logika Tag, bug, koordinat, animasi, dan visual.', chatHeader:'Asisten Skill Builder', placeholder:'Tanya tentang node atau mekanik…', navTab:'Nodes', searchPh:'Cari node…', blockCount:(s,t)=>`${s} dari ${t} node`, aiEmptyState:'Ajukan pertanyaan atau lampirkan screenshot pengaturan node.', takeIdeaBtn:'🎲 Ambil ide dengan node ini', ideasSearchPh:'Cari nama node…', spinHintHas:'Ide akan menggunakan minimal satu node yang kamu pilih.', spinHintEmpty:'Bisa putar tanpa pilih apa-apa — dapat ide acak.'},
       build:{blocksTitle:'Referensi blok Builder', blocksDesc:'Konstruksi, blok Input/Output/Interaction, dan Logic Gates. Klik blok untuk melihat field-nya.', ideasTitle:'Ide untuk Builder', ideasDesc:'Pilih blok dan gate yang ingin kamu pakai dan putar roulette — dapat ide mekanik atau ruangan.', aiTitle:'Asisten AI Builder', aiDesc:'Tanya tentang blok, sinyal ID, gate, dan rangkaian logika siap pakai.', chatHeader:'Asisten Builder', placeholder:'Tanya tentang blok, gate, atau rangkaian…', navTab:'Blok', searchPh:'Cari blok…', blockCount:(s,t)=>`${s} dari ${t} blok`, aiEmptyState:'Ajukan pertanyaan atau lampirkan screenshot pengaturan blok.', takeIdeaBtn:'🎲 Ambil ide dengan blok ini', ideasSearchPh:'Cari nama blok…', spinHintHas:'Ide akan menggunakan minimal satu blok yang kamu pilih.', spinHintEmpty:'Bisa putar tanpa pilih apa-apa — dapat ide acak.'},
@@ -2949,6 +3007,14 @@ const STRINGS = {
     admin_tab_posts:'📌 Bài',admin_tab_announce:'📣 Thông báo',admin_tab_stats:'📊 Thống kê',
     settings_title:'⚙ Cài đặt',settings_accent:'🎨 Màu nhấn',settings_font:'🔤 Font giao diện',settings_interface:'⚡ Giao diện',
     suggest_title:'💡 Bạn muốn thấy gì tiếp theo?',suggest_subtitle:'Chia sẻ ý tưởng của bạn — tôi đọc mọi đề xuất và cân nhắc cho các bản cập nhật.',suggest_ph:'Ý tưởng và mong muốn của bạn cho bản cập nhật tiếp theo…',suggest_send_btn:'📤 Gửi',suggest_skip_btn:'Bỏ qua',suggest_thanks:'Cảm ơn vì ý tưởng! 🙏 Tôi sẽ xem xét.',
+    edited_label:'Đã chỉnh sửa',
+    ban_screen_title:'Tài khoản bị khóa',
+    ban_screen_msg:'Tài khoản của bạn đã bị khóa bởi quản trị viên.<br>Nếu bạn cho đây là lỗi — hãy liên hệ hỗ trợ.',
+    ban_screen_reason:'📋 Lý do:',
+    ban_screen_try_login:'Đã được mở khóa? Thử đăng nhập →',
+    banned_guest_alert:'Truy cập bị từ chối. Tài khoản của bạn đã bị khóa bởi quản trị viên.',
+    logout_confirm:'Đăng xuất khỏi tài khoản?',
+    logout_btn:'↩ Đăng xuất',
     mode_meta: {
       skill:{blocksTitle:'Tham chiếu node Skill Builder', blocksDesc:'Nhấn vào node để xem tất cả các trường. Màu sắc chỉ danh mục.', ideasTitle:'Ý tưởng cho Skill Builder', ideasDesc:'Chọn các node muốn dùng và quay vòng — nhận ý tưởng kỹ năng.', aiTitle:'Trợ lý AI Skill Builder', aiDesc:'Hỏi như người đã tạo hàng trăm moveset tự chế: về node, logic Tag, lỗi, toạ độ, animation và visual.', chatHeader:'Trợ lý Skill Builder', placeholder:'Hỏi về node hay cơ chế nào đó…', navTab:'Nodes', searchPh:'Tìm node…', blockCount:(s,t)=>`${s} / ${t} node`, aiEmptyState:'Đặt câu hỏi hoặc đính kèm ảnh chụp màn hình cài đặt node.', takeIdeaBtn:'🎲 Lấy ý tưởng với node này', ideasSearchPh:'Tìm theo tên node…', spinHintHas:'Ý tưởng sẽ liên quan đến ít nhất một node đã chọn.', spinHintEmpty:'Có thể quay không cần chọn gì — sẽ ra ý tưởng ngẫu nhiên.'},
       build:{blocksTitle:'Tham chiếu block Builder', blocksDesc:'Xây dựng, block Input/Output/Interaction và Logic Gates. Nhấn vào block để xem các trường.', ideasTitle:'Ý tưởng cho Builder', ideasDesc:'Chọn block và gate muốn dùng và quay vòng — nhận ý tưởng cơ chế hoặc phòng.', aiTitle:'Trợ lý AI Builder', aiDesc:'Hỏi về block, tín hiệu ID, gate và mạch logic có sẵn.', chatHeader:'Trợ lý Builder', placeholder:'Hỏi về block, gate hoặc mạch nào đó…', navTab:'Khối', searchPh:'Tìm block…', blockCount:(s,t)=>`${s} / ${t} block`, aiEmptyState:'Đặt câu hỏi hoặc đính kèm ảnh chụp màn hình cài đặt block.', takeIdeaBtn:'🎲 Lấy ý tưởng với block này', ideasSearchPh:'Tìm theo tên block…', spinHintHas:'Ý tưởng sẽ liên quan đến ít nhất một block đã chọn.', spinHintEmpty:'Có thể quay không cần chọn gì — sẽ ra ý tưởng ngẫu nhiên.'},
@@ -3055,6 +3121,14 @@ const STRINGS = {
     admin_tab_posts:'📌 โพสต์',admin_tab_announce:'📣 ประกาศ',admin_tab_stats:'📊 สถิติ',
     settings_title:'⚙ การตั้งค่า',settings_accent:'🎨 สีเน้น',settings_font:'🔤 ฟอนต์อินเทอร์เฟซ',settings_interface:'⚡ อินเทอร์เฟซ',
     suggest_title:'💡 คุณอยากเห็นอะไรต่อไป?',suggest_subtitle:'แชร์ไอเดียของคุณ — ฉันอ่านทุกข้อเสนอแนะและนำมาพิจารณาในอัปเดตถัดไป',suggest_ph:'ไอเดียและความปรารถนาของคุณสำหรับอัปเดตถัดไป…',suggest_send_btn:'📤 ส่ง',suggest_skip_btn:'ข้าม',suggest_thanks:'ขอบคุณสำหรับไอเดีย! 🙏 ฉันจะนำไปพิจารณา',
+    edited_label:'แก้ไขแล้ว',
+    ban_screen_title:'บัญชีถูกระงับ',
+    ban_screen_msg:'บัญชีของคุณถูกระงับโดยผู้ดูแลระบบ<br>หากคิดว่าเป็นข้อผิดพลาด — โปรดติดต่อฝ่ายสนับสนุน',
+    ban_screen_reason:'📋 เหตุผล:',
+    ban_screen_try_login:'ถูกปลดระงับแล้ว? ลองเข้าสู่ระบบ →',
+    banned_guest_alert:'ปฏิเสธการเข้าถึง บัญชีของคุณถูกระงับโดยผู้ดูแลระบบ',
+    logout_confirm:'ออกจากบัญชีหรือไม่?',
+    logout_btn:'↩ ออกจากระบบ',
     mode_meta: {
       skill:{blocksTitle:'คู่มือโหนด Skill Builder', blocksDesc:'คลิกที่โหนดเพื่อดูทุกฟิลด์ สีบอกหมวดหมู่', ideasTitle:'ไอเดียสำหรับ Skill Builder', ideasDesc:'เลือกโหนดที่อยากใช้แล้วหมุนรูเล็ต — ได้ไอเดียสกิล', aiTitle:'ผู้ช่วย AI Skill Builder', aiDesc:'ถามเหมือนถามคนที่สร้างมูฟเซ็ตมาเป็นร้อย: เรื่องโหนด Tag-logic บัก พิกัด แอนิเมชัน และวิชวล', chatHeader:'ผู้ช่วย Skill Builder', placeholder:'ถามเกี่ยวกับโหนดหรือกลไก…', navTab:'Nodes', searchPh:'ค้นหาโหนด…', blockCount:(s,t)=>`${s} จาก ${t} โหนด`, aiEmptyState:'ถามคำถามหรือแนบสกรีนช็อตการตั้งค่าโหนด', takeIdeaBtn:'🎲 รับไอเดียกับโหนดนี้', ideasSearchPh:'ค้นหาชื่อโหนด…', spinHintHas:'ไอเดียจะเกี่ยวกับอย่างน้อยหนึ่งโหนดที่เลือก', spinHintEmpty:'หมุนโดยไม่ต้องเลือกก็ได้ — จะออกไอเดียสุ่ม'},
       build:{blocksTitle:'คู่มือบล็อก Builder', blocksDesc:'การก่อสร้าง บล็อก Input/Output/Interaction และ Logic Gates คลิกบล็อกเพื่อดูฟิลด์', ideasTitle:'ไอเดียสำหรับ Builder', ideasDesc:'เลือกบล็อกและเกตที่อยากใช้แล้วหมุนรูเล็ต — ได้ไอเดียกลไกหรือห้อง', aiTitle:'ผู้ช่วย AI Builder', aiDesc:'ถามเรื่องบล็อก สัญญาณ ID เกต และวงจรลอจิกสำเร็จรูป', chatHeader:'ผู้ช่วย Builder', placeholder:'ถามเกี่ยวกับบล็อก เกต หรือวงจร…', navTab:'บล็อก', searchPh:'ค้นหาบล็อก…', blockCount:(s,t)=>`${s} จาก ${t} บล็อก`, aiEmptyState:'ถามคำถามหรือแนบสกรีนช็อตการตั้งค่าบล็อก', takeIdeaBtn:'🎲 รับไอเดียกับบล็อกนี้', ideasSearchPh:'ค้นหาชื่อบล็อก…', spinHintHas:'ไอเดียจะเกี่ยวกับอย่างน้อยหนึ่งบล็อกที่เลือก', spinHintEmpty:'หมุนโดยไม่ต้องเลือกก็ได้ — จะออกไอเดียสุ่ม'},
@@ -3161,6 +3235,14 @@ const STRINGS = {
     admin_tab_posts:'📌 Mga Post',admin_tab_announce:'📣 Mga Anunsyo',admin_tab_stats:'📊 Estadistika',
     settings_title:'⚙ Mga Setting',settings_accent:'🎨 Kulay ng accent',settings_font:'🔤 Font ng interface',settings_interface:'⚡ Interface',
     suggest_title:'💡 Ano ang gusto mong makita susunod?',suggest_subtitle:'Ibahagi ang iyong ideya — binabasa ko ang bawat mungkahi at isinasaalang-alang sa mga susunod na update.',suggest_ph:'Ang iyong mga ideya at mithiin para sa susunod na update…',suggest_send_btn:'📤 Ipadala',suggest_skip_btn:'Laktawan',suggest_thanks:'Salamat sa iyong ideya! 🙏 Isasaalang-alang ko ito.',
+    edited_label:'Na-edit',
+    ban_screen_title:'Na-ban ang account',
+    ban_screen_msg:'Ang iyong account ay na-ban ng isang administrator.<br>Kung sa tingin mo ay may pagkakamali — makipag-ugnayan sa suporta.',
+    ban_screen_reason:'📋 Dahilan:',
+    ban_screen_try_login:'Na-unban na? Subukang mag-login →',
+    banned_guest_alert:'Tinanggihan ang access. Ang iyong account ay na-ban ng isang administrator.',
+    logout_confirm:'Mag-logout sa account?',
+    logout_btn:'↩ Mag-logout',
     mode_meta: {
       skill:{blocksTitle:'Skill Builder node reference', blocksDesc:'I-click ang node para makita ang lahat ng field. Ang kulay ay nagpapakita ng kategorya.', ideasTitle:'Mga Ideya para sa Skill Builder', ideasDesc:'Pumili ng nodes na gusto mong gamitin at i-spin ang roulette para makakuha ng skill idea.', aiTitle:'Skill Builder AI Assistant', aiDesc:'Magtanong tulad ng sa taong nakapagbuo ng daan-daang custom moveset: tungkol sa nodes, Tag logic, bugs, coordinates, animations, at visuals.', chatHeader:'Skill Builder Assistant', placeholder:'Magtanong tungkol sa anumang node o mechanic…', navTab:'Mga Node', searchPh:'Maghanap ng node…', blockCount:(s,t)=>`${s} sa ${t} nodes`, aiEmptyState:'Magtanong o mag-attach ng screenshot ng node settings.', takeIdeaBtn:'🎲 Kumuha ng ideya gamit ang node na ito', ideasSearchPh:'Maghanap sa pangalan ng node…', spinHintHas:'Ang ideya ay gagamitin ng kahit isa sa mga napiling node.', spinHintEmpty:'Puwede ring mag-spin nang walang napili — makakatanggap ng random na ideya.'},
       build:{blocksTitle:'Builder block reference', blocksDesc:'Konstruksyon, Input/Output/Interaction blocks, at Logic Gates. I-click ang block para makita ang mga field nito.', ideasTitle:'Mga Ideya para sa Builder', ideasDesc:'Pumili ng blocks at gates na gusto mong gamitin at i-spin ang roulette para sa mechanic o room idea.', aiTitle:'Builder AI Assistant', aiDesc:'Magtanong tungkol sa blocks, ID signals, gates, at ready-made logic circuits.', chatHeader:'Builder Assistant', placeholder:'Magtanong tungkol sa block, gate, o circuit…', navTab:'Mga Block', searchPh:'Maghanap ng block…', blockCount:(s,t)=>`${s} sa ${t} blocks`, aiEmptyState:'Magtanong o mag-attach ng screenshot ng block settings.', takeIdeaBtn:'🎲 Kumuha ng ideya gamit ang block na ito', ideasSearchPh:'Maghanap sa pangalan ng block…', spinHintHas:'Ang ideya ay gagamitin ng kahit isa sa mga napiling block.', spinHintEmpty:'Puwede ring mag-spin nang walang napili — makakatanggap ng random na ideya.'},
@@ -3267,6 +3349,14 @@ const STRINGS = {
     admin_tab_posts:'📌 البوستات',admin_tab_announce:'📣 الإعلانات',admin_tab_stats:'📊 الإحصائيات',
     settings_title:'⚙ الإعدادات',settings_accent:'🎨 لون التمييز',settings_font:'🔤 خط الواجهة',settings_interface:'⚡ الواجهة',
     suggest_title:'💡 ما الذي تريد رؤيته لاحقاً؟',suggest_subtitle:'شارك فكرتك — أقرأ كل اقتراح وأضعه في الاعتبار للتحديثات القادمة.',suggest_ph:'أفكارك وتمنياتك للتحديث القادم…',suggest_send_btn:'📤 إرسال',suggest_skip_btn:'تخطي',suggest_thanks:'شكراً على الفكرة! 🙏 سأضعها في الاعتبار.',
+    edited_label:'تم التعديل',
+    ban_screen_title:'تم حظر الحساب',
+    ban_screen_msg:'تم حظر حسابك من قِبل مشرف.<br>إذا كنت تعتقد أن هذا خطأ — تواصل مع الدعم.',
+    ban_screen_reason:'📋 السبب:',
+    ban_screen_try_login:'تم رفع الحظر؟ جرّب تسجيل الدخول →',
+    banned_guest_alert:'الوصول مرفوض. تم حظر حسابك من قِبل مشرف.',
+    logout_confirm:'تسجيل الخروج من الحساب؟',
+    logout_btn:'↩ خروج',
     mode_meta: {
       skill:{blocksTitle:'مرجع nodes الـ Skill Builder', blocksDesc:'اضغط على node لترى كل الحقول. اللون بيبيّن الفئة.', ideasTitle:'أفكار لـ Skill Builder', ideasDesc:'اختار nodes اللي عايز تستخدمها ودوّر العجلة — هتطلع فكرة مهارة.', aiTitle:'مساعد AI لـ Skill Builder', aiDesc:'اسأل زي ما تسأل حد بنى مية moveset مخصصة: عن nodes، منطق Tag، bugs، الإحداثيات، الأنيميشن والبصريات.', chatHeader:'مساعد Skill Builder', placeholder:'اسأل عن أي node أو ميكانيكا…', navTab:'Nodes', searchPh:'ابحث عن node…', blockCount:(s,t)=>`${s} من ${t} node`, aiEmptyState:'اطرح سؤالاً أو ارفق screenshot لإعدادات الـ node.', takeIdeaBtn:'🎲 فكرة مع هذا الـ node', ideasSearchPh:'ابحث باسم الـ node…', spinHintHas:'الفكرة هتتعلق بأقل node واحد من اللي اخترتهم.', spinHintEmpty:'ممكن تدوّر من غير اختيار — هتطلع فكرة عشوائية.'},
       build:{blocksTitle:'مرجع بلوكات Builder', blocksDesc:'البناء، بلوكات Input/Output/Interaction وLogic Gates. اضغط على بلوك لترى حقوله.', ideasTitle:'أفكار لـ Builder', ideasDesc:'اختار بلوكات وgates اللي عايز تستخدمها ودوّر العجلة — هتطلع فكرة ميكانيكا أو غرفة.', aiTitle:'مساعد AI لـ Builder', aiDesc:'اسأل عن البلوكات، إشارات ID، gates والدوائر المنطقية الجاهزة.', chatHeader:'مساعد Builder', placeholder:'اسأل عن بلوك، gate، أو دايرة…', navTab:'البلوكات', searchPh:'ابحث عن بلوك…', blockCount:(s,t)=>`${s} من ${t} بلوك`, aiEmptyState:'اطرح سؤالاً أو ارفق screenshot لإعدادات البلوك.', takeIdeaBtn:'🎲 فكرة مع هذا البلوك', ideasSearchPh:'ابحث باسم البلوك…', spinHintHas:'الفكرة هتتعلق بأقل بلوك واحد من اللي اخترتهم.', spinHintEmpty:'ممكن تدوّر من غير اختيار — هتطلع فكرة عشوائية.'},
@@ -3374,6 +3464,14 @@ const STRINGS = {
     admin_tab_posts:'📌 Publicaciones',admin_tab_announce:'📣 Anuncios',admin_tab_stats:'📊 Estadísticas',
     settings_title:'⚙ Configuración',settings_accent:'🎨 Color de acento',settings_font:'🔤 Fuente de interfaz',settings_interface:'⚡ Interfaz',
     suggest_title:'💡 ¿Qué quieres ver a continuación?',suggest_subtitle:'Comparte tu idea — leo cada sugerencia y las tengo en cuenta en las próximas actualizaciones.',suggest_ph:'Tus ideas y deseos para la próxima actualización…',suggest_send_btn:'📤 Enviar',suggest_skip_btn:'Omitir',suggest_thanks:'¡Gracias por tu idea! 🙏 La tendré en cuenta.',
+    edited_label:'Editado',
+    ban_screen_title:'Cuenta baneada',
+    ban_screen_msg:'Tu cuenta ha sido baneada por un administrador.<br>Si crees que es un error — contacta con el soporte.',
+    ban_screen_reason:'📋 Motivo:',
+    ban_screen_try_login:'¿Ya desbaneado? Intentar iniciar sesión →',
+    banned_guest_alert:'Acceso denegado. Tu cuenta ha sido baneada por un administrador.',
+    logout_confirm:'¿Cerrar sesión?',
+    logout_btn:'↩ Salir',
     mode_meta: {
       skill:{blocksTitle:'Referencia de nodos Skill Builder', blocksDesc:'Toca un nodo para ver todos sus campos. El color indica la categoría.', ideasTitle:'Ideas para Skill Builder', ideasDesc:'Elige los nodos que quieres usar y gira la ruleta para obtener una idea de habilidad.', aiTitle:'Asistente IA Skill Builder', aiDesc:'Pregunta como a alguien que ha creado cientos de movesets: sobre nodos, lógica Tag, bugs, coordenadas, animaciones y visuales.', chatHeader:'Asistente Skill Builder', placeholder:'Pregunta sobre cualquier nodo o mecánica…', navTab:'Nodos', searchPh:'Buscar nodo…', blockCount:(s,t)=>`Mostrando ${s} de ${t} nodos`, aiEmptyState:'Haz una pregunta o adjunta una captura de la configuración del nodo.', takeIdeaBtn:'🎲 Obtener idea con este nodo', ideasSearchPh:'Buscar por nombre de nodo…', spinHintHas:'La idea usará al menos uno de los nodos seleccionados.', spinHintEmpty:'También puedes girar sin seleccionar nada — saldrá una idea aleatoria.'},
       build:{blocksTitle:'Referencia de bloques Builder', blocksDesc:'Construcción, bloques Input/Output/Interaction y Logic Gates. Toca un bloque para ver sus campos.', ideasTitle:'Ideas para Builder', ideasDesc:'Elige los bloques y gates que quieres usar y gira la ruleta para obtener una idea de mecánica o sala.', aiTitle:'Asistente IA Builder', aiDesc:'Pregunta sobre bloques, señales ID, gates y circuitos lógicos listos.', chatHeader:'Asistente Builder', placeholder:'Pregunta sobre un bloque, gate o circuito…', navTab:'Bloques', searchPh:'Buscar bloque…', blockCount:(s,t)=>`Mostrando ${s} de ${t} bloques`, aiEmptyState:'Haz una pregunta o adjunta una captura de la configuración del bloque.', takeIdeaBtn:'🎲 Obtener idea con este bloque', ideasSearchPh:'Buscar por nombre de bloque…', spinHintHas:'La idea usará al menos uno de los bloques seleccionados.', spinHintEmpty:'También puedes girar sin seleccionar nada — saldrá una idea aleatoria.'},
@@ -3481,6 +3579,14 @@ const STRINGS = {
     admin_tab_posts:'📌 Publications',admin_tab_announce:'📣 Annonces',admin_tab_stats:'📊 Statistiques',
     settings_title:'⚙ Paramètres',settings_accent:'🎨 Couleur d\'accentuation',settings_font:'🔤 Police d\'interface',settings_interface:'⚡ Interface',
     suggest_title:'💡 Que veux-tu voir ensuite ?',suggest_subtitle:'Partage ton idée — je lis chaque suggestion et les prends en compte pour les prochaines mises à jour.',suggest_ph:'Tes idées et souhaits pour la prochaine mise à jour…',suggest_send_btn:'📤 Envoyer',suggest_skip_btn:'Ignorer',suggest_thanks:'Merci pour ton idée ! 🙏 Je vais la prendre en compte.',
+    edited_label:'Modifié',
+    ban_screen_title:'Compte banni',
+    ban_screen_msg:'Ton compte a été banni par un administrateur.<br>Si tu penses que c\'est une erreur — contacte le support.',
+    ban_screen_reason:'📋 Raison :',
+    ban_screen_try_login:'Déjà débanni ? Essayer de se connecter →',
+    banned_guest_alert:'Accès refusé. Ton compte a été banni par un administrateur.',
+    logout_confirm:'Se déconnecter ?',
+    logout_btn:'↩ Déconnecter',
     mode_meta: {
       skill:{blocksTitle:'Référence des nœuds Skill Builder', blocksDesc:'Clique sur un nœud pour voir tous ses champs. La couleur indique la catégorie.', ideasTitle:'Idées pour Skill Builder', ideasDesc:'Choisis les nœuds que tu veux utiliser et fais tourner la roulette pour obtenir une idée de compétence.', aiTitle:'Assistant IA Skill Builder', aiDesc:'Pose des questions comme à quelqu\'un qui a créé des centaines de movesets : sur les nœuds, la logique Tag, les bugs, les coordonnées, les animations et les visuels.', chatHeader:'Assistant Skill Builder', placeholder:'Pose une question sur un nœud ou une mécanique…', navTab:'Nœuds', searchPh:'Rechercher un nœud…', blockCount:(s,t)=>`Affichage de ${s} sur ${t} nœuds`, aiEmptyState:'Pose une question ou joins une capture d\'écran des paramètres du nœud.', takeIdeaBtn:'🎲 Obtenir une idée avec ce nœud', ideasSearchPh:'Rechercher par nom de nœud…', spinHintHas:'L\'idée utilisera au moins un des nœuds sélectionnés.', spinHintEmpty:'Tu peux aussi tourner sans sélection — tu obtiendras une idée aléatoire.'},
       build:{blocksTitle:'Référence des blocs Builder', blocksDesc:'Construction, blocs Input/Output/Interaction et Logic Gates. Clique sur un bloc pour voir ses champs.', ideasTitle:'Idées pour Builder', ideasDesc:'Choisis les blocs et gates que tu veux utiliser et fais tourner la roulette pour une idée de mécanique ou de salle.', aiTitle:'Assistant IA Builder', aiDesc:'Pose des questions sur les blocs, signaux ID, gates et circuits logiques prêts à l\'emploi.', chatHeader:'Assistant Builder', placeholder:'Pose une question sur un bloc, gate ou circuit…', navTab:'Blocs', searchPh:'Rechercher un bloc…', blockCount:(s,t)=>`Affichage de ${s} sur ${t} blocs`, aiEmptyState:'Pose une question ou joins une capture d\'écran des paramètres du bloc.', takeIdeaBtn:'🎲 Obtenir une idée avec ce bloc', ideasSearchPh:'Rechercher par nom de bloc…', spinHintHas:'L\'idée utilisera au moins un des blocs sélectionnés.', spinHintEmpty:'Tu peux aussi tourner sans sélection — tu obtiendras une idée aléatoire.'},
@@ -3588,6 +3694,14 @@ const STRINGS = {
     admin_tab_posts:'📌 Gönderiler',admin_tab_announce:'📣 Duyurular',admin_tab_stats:'📊 İstatistikler',
     settings_title:'⚙ Ayarlar',settings_accent:'🎨 Vurgu rengi',settings_font:'🔤 Arayüz yazı tipi',settings_interface:'⚡ Arayüz',
     suggest_title:'💡 Bundan sonra ne görmek istersin?',suggest_subtitle:'Fikrini paylaş — her öneriyi okuyorum ve gelecek güncellemelerde dikkate alıyorum.',suggest_ph:'Sonraki güncelleme için fikir ve isteklerin…',suggest_send_btn:'📤 Gönder',suggest_skip_btn:'Atla',suggest_thanks:'Fikrin için teşekkürler! 🙏 Dikkate alacağım.',
+    edited_label:'Düzenlendi',
+    ban_screen_title:'Hesap engellendi',
+    ban_screen_msg:'Hesabın bir yönetici tarafından engellendi.<br>Bunun bir hata olduğunu düşünüyorsan — destek ile iletişime geç.',
+    ban_screen_reason:'📋 Sebep:',
+    ban_screen_try_login:'Engel kaldırıldı mı? Giriş yapmayı dene →',
+    banned_guest_alert:'Erişim reddedildi. Hesabın bir yönetici tarafından engellendi.',
+    logout_confirm:'Hesaptan çıkış yapılsın mı?',
+    logout_btn:'↩ Çıkış',
     mode_meta: {
       skill:{blocksTitle:'Skill Builder nod referansı', blocksDesc:'Tüm alanları görmek için bir noda tıkla. Renk kategoriyi gösterir.', ideasTitle:'Skill Builder için fikirler', ideasDesc:'Kullanmak istediğin nodları seç ve bir beceri fikri almak için ruleti çevir.', aiTitle:'Skill Builder YZ Asistanı', aiDesc:'Yüzlerce özel moveset oluşturmuş birine sorar gibi sor: nodlar, Tag mantığı, buglar, koordinatlar, animasyonlar ve görseller hakkında.', chatHeader:'Skill Builder Asistanı', placeholder:'Herhangi bir nod veya mekanik hakkında sor…', navTab:'Nodlar', searchPh:'Nod ara…', blockCount:(s,t)=>`${t} noddan ${s} gösteriliyor`, aiEmptyState:'Bir soru sor veya nod ayarlarının ekran görüntüsünü ekle.', takeIdeaBtn:'🎲 Bu nodla fikir al', ideasSearchPh:'Nod adına göre ara…', spinHintHas:'Fikir, seçilen nodlardan en az birini içerecek.', spinHintEmpty:'Seçim yapmadan da çevirebilirsin — rastgele bir fikir çıkar.'},
       build:{blocksTitle:'Builder blok referansı', blocksDesc:'İnşaat, Input/Output/Interaction blokları ve Logic Gates. Alanları görmek için bloka tıkla.', ideasTitle:'Builder için fikirler', ideasDesc:'Kullanmak istediğin blokları ve gateleri seç ve bir mekanik veya oda fikri için ruleti çevir.', aiTitle:'Builder YZ Asistanı', aiDesc:'Bloklar, ID sinyalleri, gateler ve hazır mantık devreleri hakkında sor.', chatHeader:'Builder Asistanı', placeholder:'Bir blok, gate veya devre hakkında sor…', navTab:'Bloklar', searchPh:'Blok ara…', blockCount:(s,t)=>`${t} bloktan ${s} gösteriliyor`, aiEmptyState:'Bir soru sor veya blok ayarlarının ekran görüntüsünü ekle.', takeIdeaBtn:'🎲 Bu blokla fikir al', ideasSearchPh:'Blok adına göre ara…', spinHintHas:'Fikir, seçilen bloklardan en az birini içerecek.', spinHintEmpty:'Seçim yapmadan da çevirebilirsin — rastgele bir fikir çıkar.'},
@@ -5810,6 +5924,7 @@ async function doRegister(){
   const nick=document.getElementById('regNick').value.trim();
   const pass=document.getElementById('regPass').value;
   if(!nick||!pass){setAuthErr(t('auth_fill_all'));return;}
+  if(!document.getElementById('regTermsCheck')?.checked){setAuthErr('Примите Политику конфиденциальности и Правила для продолжения');return;}
   if(nick.length<2||nick.length>20){setAuthErr('Nickname: 2–20 characters');return;}
   if(pass.length<8){setAuthErr('Password: minimum 8 characters');return;}
   if(!/[!@#$%^&*()\-_=+\[\]{};:'"\\|,.<>/?`~]/.test(pass)){setAuthErr('Password must contain at least one special character (!@#$%…)');return;}
@@ -5841,29 +5956,38 @@ async function doRegister(){
 
 function doGuest(){
   if(safeStorage.get('jjs_was_banned')==='1'){
-    alert('Доступ запрещён. Ваш аккаунт был заблокирован администратором.');
+    alert(t('banned_guest_alert'));
     return;
   }
   safeStorage.set('jjs_guest_mode','1');
   setGuestMode(); hideAuthModal();
 }
+async function doLogout(){
+  if(!confirm(t('logout_confirm'))) return;
+  document.getElementById('profileOv')?.classList.remove('on');
+  await _supa.auth.signOut();
+}
 function showBannedScreen(){
   document.querySelectorAll('.big-modal-ov.on,.changelog-ov.on').forEach(el=>el.classList.remove('on'));
   safeStorage.set('jjs_was_banned','1');
   safeStorage.set('jjs_guest_mode','0');
+  const reason=safeStorage.get('jjs_ban_reason')||'';
   let el=document.getElementById('bannedScreen');
   if(!el){
     el=document.createElement('div');
     el.id='bannedScreen';
     el.style.cssText='position:fixed;inset:0;background:rgba(8,8,14,.98);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:var(--font-display);text-align:center;padding:24px';
-    el.innerHTML=`<div style="font-size:72px;line-height:1">🚫</div>
-      <div style="font-size:22px;font-weight:700;color:#fff;margin-top:4px">Аккаунт заблокирован</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.4);max-width:300px;line-height:1.65">Ваш аккаунт был заблокирован администратором.<br>Если считаете это ошибкой — свяжитесь с поддержкой.</div>`;
     document.body.appendChild(el);
   }
+  el.innerHTML=`<div style="font-size:72px;line-height:1">🚫</div>
+    <div style="font-size:22px;font-weight:700;color:#fff;margin-top:4px">${t('ban_screen_title')}</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.4);max-width:300px;line-height:1.65">${t('ban_screen_msg')}</div>
+    ${reason?`<div style="font-size:12px;color:rgba(255,120,120,.8);background:rgba(255,77,90,.1);border:1px solid rgba(255,77,90,.25);border-radius:8px;padding:8px 16px;max-width:320px;line-height:1.5">${t('ban_screen_reason')} ${escHtml(reason)}</div>`:''}
+    <button onclick="safeStorage.set('jjs_was_banned','0');document.getElementById('bannedScreen').style.display='none';showAuthModal()" style="margin-top:8px;background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.3);font-family:var(--font-display);font-size:11px;padding:6px 16px;border-radius:8px;cursor:pointer">${t('ban_screen_try_login')}</button>`;
   el.style.display='flex';
 }
 function setGuestMode(){
+  if(safeStorage.get('jjs_was_banned')==='1'){showBannedScreen();return;}
   _isGuest=true;_supaUser=null;_supaProfile=null;_isAdmin=false;
   updateNavUI(); loadForum();
 }
@@ -5880,6 +6004,8 @@ async function handleAuthUser(user){
   _supaProfile=prof;
   // Check if banned
   if(prof?.is_banned){
+    safeStorage.set('jjs_ban_reason',prof?.ban_reason||'');
+    safeStorage.set('jjs_was_banned','1');
     _justBanned=true;
     await _supa.auth.signOut();
     return;
@@ -5904,6 +6030,8 @@ async function handleAuthUser(user){
     _banWatchChannel=_supa.channel('ban-watch-'+user.id)
       .on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:`user_id=eq.${user.id}`},payload=>{
         if(payload.new?.is_banned&&_supaUser){
+          safeStorage.set('jjs_ban_reason',payload.new?.ban_reason||'');
+          safeStorage.set('jjs_was_banned','1');
           _justBanned=true;
           _supa.auth.signOut();
         }
@@ -6814,7 +6942,8 @@ async function openProfileModal(userId){
         ${prof.bio?`<div class="profile-bio">${escHtml(prof.bio)}</div>`:''}
         ${linkHtml}
         <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
-          ${isMine?`<button class="profile-edit-btn" onclick="toggleProfileEdit()">${t('edit_profile_btn')}</button>`:''}
+          ${isMine?`<button class="profile-edit-btn" onclick="toggleProfileEdit()">${t('edit_profile_btn')}</button>
+          <button onclick="doLogout()" style="background:rgba(255,77,90,.08);border:1px solid rgba(255,77,90,.2);color:var(--coral);font-family:var(--font-display);font-size:12px;font-weight:700;padding:6px 14px;border-radius:8px;cursor:pointer;white-space:nowrap">${t('logout_btn')}</button>`:''}
           ${!isMine&&_supaUser?`<button class="follow-btn ${amFollowing?'following':'not-following'}" id="followBtn-${targetId}" onclick="toggleFollow('${targetId}')">${amFollowing?t('unfollow_label'):t('follow_label')}</button>`:''}
           ${isFriend?`<span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--accent);background:var(--bg-card);border:1px solid var(--border-soft);border-radius:20px;padding:4px 10px;">${t('friends_label')}</span>`:''}
           ${adminBtns}
@@ -7677,6 +7806,10 @@ function closeChangelog(markSeen){
   document.getElementById('changelogOv').classList.remove('on');
   if(markSeen) safeStorage.set('nodecraft_seen_v111','1');
 }
+function openRulesModal(){ document.getElementById('rulesModalOv').classList.add('on'); }
+function closeRulesModal(){ document.getElementById('rulesModalOv').classList.remove('on'); }
+function openPrivacyModal(){ document.getElementById('privacyModalOv').classList.add('on'); }
+function closePrivacyModal(){ document.getElementById('privacyModalOv').classList.remove('on'); }
 function closeSuggestBox(){
   const card=document.getElementById('suggestCard');
   if(card) card.style.display='none';
@@ -7893,6 +8026,125 @@ if(savedLang && _allLangs.includes(savedLang)){
       </div>
 
       <div style="font-size:12px;color:var(--text-faint);margin-top:8px">JJS Nodecraft · August 14, 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= RULES MODAL ================= -->
+<div class="changelog-ov" id="rulesModalOv" onclick="if(event.target===this)closeRulesModal()" style="z-index:1200">
+  <div class="changelog-box" style="max-width:620px;max-height:85vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+      <span class="changelog-v" style="font-size:20px">📋</span>
+      <span class="changelog-badge">COMMUNITY RULES</span>
+    </div>
+    <div class="changelog-subtitle">JJS Nodecraft Forum — Official Rules</div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">§1 — Respect & Conduct</div>
+      <div class="changelog-item"><span class="changelog-ico">🤝</span><span><b>Treat everyone with respect.</b> Insults, harassment, personal attacks, threats, and hate speech based on nationality, gender, religion, or any other characteristic are strictly prohibited.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🚫</span><span><b>No bullying.</b> Coordinated pressure on specific users, public shaming, or targeted mockery will result in an immediate ban.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🎭</span><span><b>No impersonation.</b> Creating accounts or content impersonating other players, content creators, or community figures is prohibited.</span></div>
+    </div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">§2 — Content Standards</div>
+      <div class="changelog-item"><span class="changelog-ico">🎯</span><span><b>Stay on topic.</b> Posts must relate to JJS Nodecraft — builds, skill combos, strategies, tips, or community discussion. Unrelated content will be removed.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🔞</span><span><b>No NSFW content.</b> Sexually explicit material, graphic violence, or any content inappropriate for a general audience is strictly forbidden.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">📢</span><span><b>No spam or self-promotion.</b> Duplicate posts, chain messages, and advertising unrelated products or services are not allowed. Sharing your own builds is fine — unsolicited promotion is not.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🏷</span><span><b>Tag correctly.</b> Use the appropriate mode tag (Skill Builder or Builder) that matches your post. Misleading tags disrupt the experience for everyone.</span></div>
+    </div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">§3 — Fair Play & Integrity</div>
+      <div class="changelog-item"><span class="changelog-ico">⚔️</span><span><b>No cheats or exploits.</b> Sharing methods to cheat, exploit bugs for unfair advantages, or bypass game mechanics is prohibited and may result in a permanent ban.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">✍️</span><span><b>Credit original creators.</b> If you share a build or technique created by someone else, give proper credit. Plagiarism — presenting others' work as your own — is not tolerated.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🔒</span><span><b>No doxxing.</b> Sharing another user's real name, address, contact details, or any personal information without their consent is a serious violation and will result in a permanent ban.</span></div>
+    </div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">§4 — Accounts & Moderation</div>
+      <div class="changelog-item"><span class="changelog-ico">👤</span><span><b>One account per person.</b> Creating multiple accounts to bypass a ban or restriction is prohibited. All associated accounts will be banned.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🔧</span><span><b>Respect moderation decisions.</b> If your post is removed or your account is actioned, do not publicly argue or harass moderators. You may contact the administrator privately to appeal.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">📣</span><span><b>Rules are subject to change.</b> The community rules may be updated at any time. Continued use of the forum constitutes acceptance of the current version.</span></div>
+    </div>
+
+    <div class="changelog-sec" style="background:rgba(255,77,90,.04);border:1px solid rgba(255,77,90,.15);border-radius:8px;padding:12px 14px;margin-top:4px">
+      <div class="changelog-sec-title" style="color:var(--coral)">⚖️ Consequences</div>
+      <div class="changelog-item"><span class="changelog-ico">⚠️</span><span><b>Minor violation:</b> Warning + content removal</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🔇</span><span><b>Repeated violations:</b> Temporary mute (1–720 hours)</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🚫</span><span><b>Severe violations</b> (harassment, doxxing, cheats, ban evasion): <b>Permanent ban</b></span></div>
+    </div>
+
+    <div class="changelog-footer">
+      <span style="font-size:12px;color:var(--text-faint)">JJS Nodecraft · Effective August 15, 2026</span>
+      <button onclick="closeRulesModal()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;padding:8px 22px;border-radius:8px;cursor:pointer">Понятно ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PRIVACY POLICY MODAL ================= -->
+<div class="changelog-ov" id="privacyModalOv" onclick="if(event.target===this)closePrivacyModal()" style="z-index:1200">
+  <div class="changelog-box" style="max-width:620px;max-height:85vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+      <span class="changelog-v" style="font-size:20px">🔒</span>
+      <span class="changelog-badge">PRIVACY POLICY</span>
+    </div>
+    <div class="changelog-subtitle">JJS Nodecraft — Политика конфиденциальности</div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">1. Какие данные мы собираем</div>
+      <div class="changelog-item"><span class="changelog-ico">📝</span><span><b>При регистрации:</b> никнейм, хэш пароля (хранится в зашифрованном виде через Supabase Auth). Настоящее имя и телефон мы не запрашиваем.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🖼</span><span><b>Профиль:</b> аватар (эмодзи или загруженное фото), биография, опциональный @username и ссылка (только для верифицированных).</span></div>
+      <div class="changelog-item"><span class="changelog-ico">📣</span><span><b>Контент:</b> посты, комментарии, лайки, подписки — всё, что вы публикуете на платформе.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🖥</span><span><b>Технические данные:</b> анонимный цифровой отпечаток устройства (browser fingerprint) для защиты от злоупотреблений и обхода банов. Реальный IP-адрес не хранится.</span></div>
+    </div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">2. Как мы используем ваши данные</div>
+      <div class="changelog-item"><span class="changelog-ico">⚙️</span><span>Для предоставления и работы платформы JJS Nodecraft.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">👥</span><span>Для отображения вашего публичного профиля и контента другим пользователям.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🛡</span><span>Для предотвращения спама, злоупотреблений и несанкционированного доступа.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🔔</span><span>Для отправки внутрисайтовых уведомлений (лайки, комментарии, подписчики).</span></div>
+    </div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">3. Хранение и безопасность</div>
+      <div class="changelog-item"><span class="changelog-ico">🗄</span><span>Все данные хранятся в базе данных <b>Supabase</b> (PostgreSQL) на защищённой облачной инфраструктуре.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🔑</span><span>Пароли никогда не хранятся в открытом виде. Используется стандарт bcrypt через Supabase Auth.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🚀</span><span>Медиафайлы (фото, видео) хранятся в Supabase Storage с доступом только по публичным ссылкам.</span></div>
+    </div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">4. Передача данных третьим лицам</div>
+      <div class="changelog-item"><span class="changelog-ico">🚫</span><span>Мы <b>не продаём и не передаём</b> ваши данные третьим лицам в маркетинговых или коммерческих целях.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🌐</span><span>Ваш публичный профиль (никнейм, аватар, посты) виден всем пользователям платформы, включая гостей.</span></div>
+    </div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">5. Ваши права</div>
+      <div class="changelog-item"><span class="changelog-ico">📂</span><span><b>Доступ к данным:</b> вы можете просмотреть все свои данные в своём профиле.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🗑</span><span><b>Удаление аккаунта:</b> отправьте запрос администратору — мы удалим аккаунт и весь связанный контент в течение 7 дней.</span></div>
+      <div class="changelog-item"><span class="changelog-ico">✏️</span><span><b>Исправление данных:</b> никнейм, аватар, биографию вы можете изменить самостоятельно в настройках профиля.</span></div>
+    </div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">6. Cookies и локальное хранилище</div>
+      <div class="changelog-item"><span class="changelog-ico">💾</span><span>Мы используем исключительно <b>localStorage</b> браузера для хранения ваших настроек (язык, тема, шрифт). Рекламные или трекинговые куки не используются.</span></div>
+    </div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">7. Изменения политики</div>
+      <div class="changelog-item"><span class="changelog-ico">📣</span><span>Существенные изменения будут объявлены через систему объявлений внутри приложения. Продолжение использования платформы означает согласие с актуальной версией политики.</span></div>
+    </div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">8. Контакт</div>
+      <div class="changelog-item"><span class="changelog-ico">📧</span><span>По вопросам конфиденциальности и удалению данных: <b>F1cuus@proton.me</b></span></div>
+    </div>
+
+    <div class="changelog-footer">
+      <span style="font-size:12px;color:var(--text-faint)">JJS Nodecraft · Вступает в силу 15 августа 2026</span>
+      <button onclick="closePrivacyModal()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;padding:8px 22px;border-radius:8px;cursor:pointer">Понятно ✓</button>
     </div>
   </div>
 </div>
