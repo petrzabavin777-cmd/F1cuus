@@ -997,6 +997,11 @@
   .rte-content:empty::before{content:attr(data-placeholder);color:var(--text-faint);}
   .rte-wrap{border:1px solid rgba(176,122,255,.1);border-radius:var(--radius-sm);overflow:hidden;background:var(--bg-elev);transition:border-color .3s;}
   .rte-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow-accent);}
+  .moveset-code{display:block;background:rgba(0,0,0,.32);border:1px solid rgba(176,122,255,.18);border-radius:8px;padding:12px 14px;font-family:var(--font-mono);font-size:11.5px;color:#b0c4d8;overflow-x:auto;white-space:pre;word-break:normal;margin:10px 0;max-width:100%;box-sizing:border-box;line-height:1.5;}
+  .moveset-code-wrap{position:relative;margin:10px 0;}
+  .moveset-code-wrap .moveset-code{margin:0;}
+  .moveset-copy-btn{position:absolute;top:7px;right:7px;background:rgba(176,122,255,.18);border:1px solid rgba(176,122,255,.28);border-radius:6px;color:var(--text-dim);padding:3px 10px;font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap;z-index:1;}
+  .moveset-copy-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
   .create-post-label{font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--text-dim);margin-bottom:6px;margin-top:14px;}
   .create-post-input{width:100%;background:rgba(176,122,255,.04);border:1px solid rgba(176,122,255,.1);border-radius:var(--radius);padding:12px 14px;color:var(--text);font-family:var(--font-body);font-size:14px;box-sizing:border-box;transition:all .3s var(--ease-smooth);}
   .create-post-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--glow-accent);}
@@ -1166,7 +1171,10 @@
       <button class="lang-btn" data-lang="ru">🇷🇺 Русский</button>
       <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
       <button class="lang-btn" data-lang="pl">🇵🇱 Polski</button>
-      <button class="lang-btn" data-lang="pt">🇧🇷 Português</button>
+      <button class="lang-btn" data-lang="pt">🇵🇹 Português</button>
+      <button class="lang-btn" data-lang="es">🇪🇸 Español</button>
+      <button class="lang-btn" data-lang="fr">🇫🇷 Français</button>
+      <button class="lang-btn" data-lang="tr">🇹🇷 Türkçe</button>
       <button class="lang-btn" data-lang="id">🇮🇩 Indonesia</button>
       <button class="lang-btn" data-lang="vi">🇻🇳 Tiếng Việt</button>
       <button class="lang-btn" data-lang="th">🇹🇭 ภาษาไทย</button>
@@ -1448,7 +1456,7 @@
             <p>Share builds, discuss mechanics, follow players — all in one place.</p>
           </button>
         </div>
-        <button onclick="showChangelog(true)" style="margin-top:12px;background:none;border:1px solid rgba(176,122,255,.2);color:var(--text-dim);font-size:12px;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:var(--font-display);font-weight:600;transition:all .2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">📋 v1.1 — what's new?</button>
+        <button onclick="showChangelog(true)" style="margin-top:12px;background:none;border:1px solid rgba(176,122,255,.2);color:var(--text-dim);font-size:12px;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:var(--font-display);font-weight:600;transition:all .2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">📋 v1.1.1 — what's new?</button>
       </div>
 
       <div class="hero-right">
@@ -1660,6 +1668,7 @@
           <div class="rte-sep"></div>
           <button class="rte-btn" title="Code" onmousedown="event.preventDefault()" onclick="rteInsertCode()">〈/〉</button>
           <button class="rte-btn" title="Quote" onmousedown="event.preventDefault()" onclick="rteInsertQuote()">❝</button>
+          <button class="rte-btn" title="Moveset Code" onmousedown="event.preventDefault()" onclick="rteInsertMoveset()">📋</button>
           <div class="rte-sep"></div>
           <button class="rte-btn" title="List" onmousedown="event.preventDefault()" onclick="rteCmd('insertUnorderedList')">• —</button>
           <button class="rte-btn" title="Ordered list" onmousedown="event.preventDefault()" onclick="rteCmd('insertOrderedList')">1.</button>
@@ -1698,7 +1707,7 @@
 </div>
 
 <!-- ===== PROFILE MODAL ===== -->
-<div id="profileOv" class="big-modal-ov">
+<div id="profileOv" class="big-modal-ov" style="z-index:200">
   <div class="big-modal">
     <div class="big-modal-hdr">
       <span class="big-modal-title" id="profileModalTitle">Profile</span>
@@ -2022,6 +2031,9 @@ const STRINGS = {
     settings_accent:'🎨 Цвет акцента',
     settings_font:'🔤 Шрифт интерфейса',
     settings_interface:'⚡ Интерфейс',
+    copy_code_btn:'📋 Скопировать',
+    copied_code_btn:'✓ Скопировано!',
+    moveset_ph:'Вставь код мувсета',
     mode_meta: {
       skill:{blocksTitle:'Справочник нод Skill Builder', blocksDesc:'Нажми на ноду, чтобы развернуть все поля. Цвет показывает категорию — действие, контакт, визуал/звук или логика.', ideasTitle:'Идеи для Skill Builder', ideasDesc:'Выбери ноды, которые хочешь задействовать, и крути рулетку — получишь идею способности на их основе.', aiTitle:'ИИ-ассистент по Skill Builder', aiDesc:'Спрашивай как у человека, который собрал сотню кастомных мувсетов: про ноды, Tag-логику, баги, координаты, анимации и визуалы.', chatHeader:'Ассистент Skill Builder', placeholder:'Спроси про любую ноду или механику…', navTab:'Ноды', searchPh:'Поиск ноды…', blockCount:(s,t)=>`Показано ${s} из ${t} нод`, aiEmptyState:'Задай вопрос или прикрепи скриншот настроек ноды.', takeIdeaBtn:'🎲 Взять идею с этой нодой', ideasSearchPh:'Поиск по названию ноды…', spinHintHas:'Идея будет связана хотя бы с одной из выбранных нод.', spinHintEmpty:'Можно крутить и без выбора нод — выпадет случайная идея.'},
       build:{blocksTitle:'Справочник блоков обычного строительства', blocksDesc:'Конструкция, Input/Output/Interaction блоки и Logic Gates. Нажми на блок, чтобы развернуть поля.', ideasTitle:'Идеи для строительства', ideasDesc:'Выбери блоки и гейты, которые хочешь задействовать, и крути рулетку — получишь идею механики или комнаты на их основе.', aiTitle:'ИИ-ассистент по строительству', aiDesc:'Спрашивай про блоки, ID-сигналы, гейты и готовые логические схемы.', chatHeader:'Ассистент по строительству', placeholder:'Спроси про блок, гейт или схему…', navTab:'Блоки', searchPh:'Поиск блока…', blockCount:(s,t)=>`Показано ${s} из ${t} блоков`, aiEmptyState:'Задай вопрос или прикрепи скриншот настроек блока.', takeIdeaBtn:'🎲 Взять идею с этим блоком', ideasSearchPh:'Поиск по названию блока…', spinHintHas:'Идея будет связана хотя бы с одним из выбранных блоков.', spinHintEmpty:'Можно крутить и без выбора блоков — выпадет случайная идея.'},
@@ -2254,6 +2266,9 @@ const STRINGS = {
     settings_accent:'🎨 Accent color',
     settings_font:'🔤 Interface font',
     settings_interface:'⚡ Interface',
+    copy_code_btn:'📋 Copy code',
+    copied_code_btn:'✓ Copied!',
+    moveset_ph:'Paste moveset code',
     mode_meta: {
       skill:{blocksTitle:'Skill Builder node reference', blocksDesc:'Tap a node to expand all its fields. Color shows the category — action, contact, visual/audio, or logic.', ideasTitle:'Ideas for Skill Builder', ideasDesc:'Pick the nodes you want to use, then spin the roulette to get an ability idea built around them.', aiTitle:'Skill Builder AI assistant', aiDesc:'Ask like you would a person who has built a hundred custom movesets: about nodes, Tag logic, bugs, coordinates, animations, and visuals.', chatHeader:'Skill Builder Assistant', placeholder:'Ask about any node or mechanic…', navTab:'Nodes', searchPh:'Search a node…', blockCount:(s,t)=>`Showing ${s} of ${t} nodes`, aiEmptyState:"Ask a question or attach a screenshot of a node's settings.", takeIdeaBtn:'🎲 Get an idea with this node', ideasSearchPh:'Search by node name…', spinHintHas:'The idea will involve at least one of your selected nodes.', spinHintEmpty:"You can spin with no nodes selected too — you'll get a random idea."},
       build:{blocksTitle:'Regular building block reference', blocksDesc:'Construction, Input/Output/Interaction blocks, and Logic Gates. Tap a block to expand its fields.', ideasTitle:'Ideas for building', ideasDesc:'Pick the blocks and gates you want to use, then spin the roulette to get a mechanic or room idea built around them.', aiTitle:'Building AI assistant', aiDesc:'Ask about blocks, ID signals, gates, and ready-made logic circuits.', chatHeader:'Building Assistant', placeholder:'Ask about a block, gate, or circuit…', navTab:'Blocks', searchPh:'Search a block…', blockCount:(s,t)=>`Showing ${s} of ${t} blocks`, aiEmptyState:"Ask a question or attach a screenshot of a block's settings.", takeIdeaBtn:'🎲 Get an idea with this block', ideasSearchPh:'Search by block name…', spinHintHas:'The idea will involve at least one of your selected blocks.', spinHintEmpty:"You can spin with no blocks selected too — you'll get a random idea."},
@@ -2308,6 +2323,58 @@ const STRINGS = {
     ai_warn_vpn_label:'Verbindungsprobleme',
     ai_warn_vpn:'Manche Provider blockieren Cloudflare. Wenn der KI bei normalem Internet nicht antwortet — schalte ein VPN ein. <b>Cloudflare WARP</b> (1.1.1.1 App) ist kostenlos.',
     image_alt:'Angehängtes Foto', media_thumb_alt:'Foto der erledigten Idee',
+    forum_no_posts:'Noch keine Beiträge. Sei der Erste! ✍️',
+    post_mode_both:'⚔️🧱 Beide',post_pinned:'📌 Angepinnt',show_more:'Mehr anzeigen ▾',collapse_text:'Einklappen ▴',popular_label:'Beliebt:',mini_posts:'Beiträge',mini_likes:'Likes',
+    post_not_found:'Beitrag nicht gefunden',comment_ph:'Kommentar schreiben…',attach_photo_title:'Foto anhängen',send_btn:'Senden',
+    guest_login_cta:'Anmelden oder registrieren',guest_login_suffix:', um zu kommentieren.',muted_comment_msg:'Du bist stummgeschaltet.',
+    report_btn:'🚩 Melden',del_post_btn:'🗑 Löschen',share_btn:'🔗 Teilen',comments_header:'Kommentare',author_badge:'Autor',reply_btn:'↩ Antworten',
+    error_prefix:'Fehler: ',del_comment_confirm:'Kommentar löschen?',del_error:'Löschfehler: ',reply_ph:'Antworten…',
+    cooldown_msg:(w)=>`Warte noch ${w} Sek. — du kannst nur einmal pro Minute posten.`,
+    publishing_text:'Wird veröffentlicht…',uploading_media:(i,t)=>`Medien hochladen (${i}/${t})…`,post_btn_label:'Veröffentlichen',
+    code_ph:'Code',quote_ph:'Zitat',login_for_profile:'Anmelden, um Profil zu sehen',profile_not_found:'Profil nicht gefunden',
+    my_profile_label:'Mein Profil',profile_label:'Profil',verified_tip:'Verifiziertes Konto',unfollow_label:'Entfolgen',follow_label:'Folgen',
+    friends_label:'🤝 Freunde',edit_profile_btn:'✏️ Bearbeiten',nick_label:'Spitzname',username_ph:'Buchstaben, Zahlen und _',
+    bio_label:'Über mich',bio_ph:'Ein paar Worte über dich…',link_label:'Link',verified_only_note:'✓ nur für Verifizierte',
+    cancel_btn:'Abbrechen',save_btn:'Speichern',following_label:'Abonniert',followers_label:'Abonnenten',likes_label:'Likes',
+    member_since_label:'Mitglied seit',my_posts_label:'Meine Beiträge',posts_label_profile:'Beiträge',active_label:'aktiv',deleted_label:'gelöscht',
+    no_posts_profile:'Noch keine Beiträge',username_err:'@username: 3–20 Zeichen, Buchstaben, Zahlen und _',save_err:'Speicherfehler: ',
+    followers_title:'Abonnenten',following_title:'Abonniert',no_reports:'Keine Meldungen ✅',deleted_post_ref:'Gelöschter Beitrag',
+    accept_btn:'Annehmen',dismiss_btn:'Ablehnen',report_acc_toast:'✅ Meldung angenommen',report_dis_toast:'❌ Meldung abgelehnt',
+    nobody_found:'Niemanden gefunden',col_nick_id:'Nick / ID',col_posts:'Beiträge',col_status:'Status',col_actions:'Aktionen',
+    col_reports:'Meldungen',col_from:'Von',col_reasons:'Gründe',col_post:'Beitrag',col_author:'Autor',
+    status_verified:'✓ Verifiziert',status_banned:'🚫 Gesperrt',status_muted:'🔇 Stummgeschaltet',
+    rm_verify_btn:'✓ Entfernen',verify_btn:'✓ Verifizieren',unmute_btn:'Ton an',mute_btn:'Stumm',unban_btn:'Entsperren',ban_btn:'Sperren',
+    mute_removed:'🔊 Stummschaltung aufgehoben',mute_prompt_text:'Wie viele Stunden stumm?\n(z. B. 24)',
+    muted_toast:(h)=>`🔇 ${h}h stummgeschaltet`,unban_done:'✅ Entsperrung abgeschlossen',ban_prompt_text:'Sperrgrund (optional):',banned_toast:'🚫 Nutzer gesperrt',
+    deleted_label_admin:'GELÖSCHT',unpin_btn:'Entpinnen',pin_btn:'📌 Anpinnen',del_post_admin:'Löschen',no_posts_admin:'Keine Beiträge',
+    no_announcements:'Keine Ankündigungen',hide_ann:'Ausblenden',show_ann:'Einblenden',
+    stat_users:'Nutzer',stat_posts_admin:'Beiträge',stat_comments:'Kommentare',stat_posts_today:'Beiträge heute',stat_users_today:'Neue Nutzer heute',
+    no_notifs:'Keine Benachrichtigungen 🔕',notif_just_now:'gerade eben',
+    notif_min_ago:(m)=>`vor ${m} Min.`,notif_hr_ago:(h)=>`vor ${h} Std.`,notif_day_ago:(d)=>`vor ${d} Tag${d===1?'':'en'}`,
+    notif_someone:'Jemand',liked_your_post:(n)=>`${n} hat deinen Beitrag geliked`,commented_your_post:(n)=>`${n} hat kommentiert`,followed_you:(n)=>`${n} folgt dir jetzt`,
+    notif_like_def:'Jemand hat deinen Beitrag geliked',notif_comment_def:'Neuer Kommentar zu deinem Beitrag',
+    notif_reply_def:'Jemand hat geantwortet',notif_follow_def:'Neuer Follower',notif_mute_def:'Du wurdest stummgeschaltet',
+    notif_ban_def:'Konto gesperrt',notif_system_def:'Systemnachricht',notif_acc_def:'Meldung angenommen',notif_dis_def:'Meldung abgelehnt',
+    notif_bug_def:'Neuer Fehlerbericht',notif_generic:'Benachrichtigung',
+    new_posts_banner:(n)=>`▲ +${n} neuer Beitrag${n===1?'':'e'} — tippen zum Laden`,
+    new_comments_ind:(n)=>`▼ ${n} neuer Kommentar${n===1?'':'e'} — tippen`,
+    bug_sending:'Wird gesendet…',bug_steps_prefix:'Schritte: ',loading_error:'Ladefehler',
+    nav_forum:'💬 Forum',forum_filter_all:'Alle',forum_new_btn:'✏️ Beitrag',forum_search_ph:'🔍 Beiträge und Hashtags suchen…',
+    auth_sub:'Anmelden oder registrieren — Forum und Synchronisation',auth_tab_login:'Anmelden',auth_tab_reg:'Registrieren',
+    auth_nick_ph:'Spitzname',auth_pass_ph:'Passwort',auth_nick_reg_ph:'Spitzname (2–20 Zeichen)',
+    auth_pass_hint:'Mind. 8 Zeichen · min. ein Sonderzeichen (!@#$%^&*…)',auth_or:'oder',auth_guest_btn:'👤 Als Gast weiter',
+    auth_login_btn:'Anmelden',auth_reg_btn:'Konto erstellen',auth_logging_in:'Anmelden…',auth_creating:'Wird erstellt…',
+    auth_fill_all:'Bitte alle Felder ausfüllen',auth_wrong_creds:'Falscher Spitzname oder Passwort',
+    auth_nick_taken:'Dieser Spitzname ist vergeben',auth_too_many:'Zu viele Versuche, bitte eine Minute warten',guest_badge:'Gast',
+    cp_modal_title:'✏️ Neuer Beitrag',cp_mode_label:'Modus *',cp_title_label:'Titel *',cp_title_ph:'Kurze Beschreibung des Builds…',
+    cp_content_label:'Inhalt *',cp_content_ph:'Beschreib den Build, wie er funktioniert, welche Nodes man wählt…',
+    cp_nodes_label:'Nodes / Blöcke (im Build verwendet)',cp_hashtags_label:'Hashtags',cp_hashtags_ph:'#schaden #kombo #speed — getrennt durch Leerzeichen',
+    cp_media_label:'Medien (Foto/Video, max. 10 MB je)',cp_media_upload:'📎 Klicken zum Anhängen',
+    cp_rules_text:'Ich habe die Community-Regeln gelesen und bestätige, dass mein Beitrag keine Beleidigungen, Spam oder NSFW-Inhalte enthält',
+    notif_panel_title:'🔔 Benachrichtigungen',notif_mark_all:'Alle als gelesen markieren',
+    admin_panel_title:'🔧 Adminbereich',admin_tab_reports:'🚩 Meldungen',admin_tab_bugs:'🐛 Bugs',admin_tab_users:'👥 Nutzer',
+    admin_tab_posts:'📌 Beiträge',admin_tab_announce:'📣 Ankündigungen',admin_tab_stats:'📊 Statistik',
+    settings_title:'⚙ Einstellungen',settings_accent:'🎨 Akzentfarbe',settings_font:'🔤 Schriftart',settings_interface:'⚡ Interface',
     mode_meta: {
       skill:{blocksTitle:'Skill Builder Node-Referenz', blocksDesc:'Klicke auf eine Node, um alle Felder zu sehen. Farbe zeigt die Kategorie.', ideasTitle:'Ideen für Skill Builder', ideasDesc:'Wähle die Nodes, die du verwenden möchtest, drehe das Roulette und erhalte eine Fähigkeitsidee.', aiTitle:'Skill Builder KI-Assistent', aiDesc:'Frag wie jemanden, der hundert eigene Movesets gebaut hat: über Nodes, Tag-Logik, Bugs, Koordinaten, Animationen und Visuals.', chatHeader:'Skill Builder Assistent', placeholder:'Frag über eine Node oder Mechanik…', navTab:'Nodes', searchPh:'Node suchen…', blockCount:(s,t)=>`${s} von ${t} Nodes`, aiEmptyState:'Stell eine Frage oder hänge einen Screenshot der Node-Einstellungen an.', takeIdeaBtn:'🎲 Idee mit dieser Node', ideasSearchPh:'Nach Node-Name suchen…', spinHintHas:'Die Idee enthält mindestens eine deiner gewählten Nodes.', spinHintEmpty:'Du kannst auch ohne Auswahl drehen — dann kommt eine Zufallsidee.'},
       build:{blocksTitle:'Builder-Blöcke Referenz', blocksDesc:'Konstruktion, Input/Output/Interaction-Blöcke und Logic Gates. Klicke auf einen Block, um die Felder zu sehen.', ideasTitle:'Ideen für Builder', ideasDesc:'Wähle Blöcke und Gates, drehe das Roulette und erhalte eine Mechanik- oder Raumidee.', aiTitle:'Builder KI-Assistent', aiDesc:'Frag über Blöcke, ID-Signale, Gates und fertige Schaltungen.', chatHeader:'Builder Assistent', placeholder:'Frag über einen Block, Gate oder Schaltung…', navTab:'Blöcke', searchPh:'Block suchen…', blockCount:(s,t)=>`${s} von ${t} Blöcken`, aiEmptyState:'Stell eine Frage oder hänge einen Screenshot der Block-Einstellungen an.', takeIdeaBtn:'🎲 Idee mit diesem Block', ideasSearchPh:'Nach Block-Name suchen…', spinHintHas:'Die Idee enthält mindestens einen deiner gewählten Blöcke.', spinHintEmpty:'Du kannst auch ohne Auswahl drehen — dann kommt eine Zufallsidee.'},
@@ -2362,6 +2429,58 @@ const STRINGS = {
     ai_warn_vpn_label:'Problemy z połączeniem',
     ai_warn_vpn:'Niektórzy dostawcy blokują Cloudflare. Jeśli AI nie odpowiada przy normalnym internecie — włącz VPN. <b>Cloudflare WARP</b> (aplikacja 1.1.1.1) jest darmowy.',
     image_alt:'Dołączone zdjęcie', media_thumb_alt:'Zdjęcie ukończonego pomysłu',
+    forum_no_posts:'Brak postów. Bądź pierwszy! ✍️',
+    post_mode_both:'⚔️🧱 Oba',post_pinned:'📌 Przypięty',show_more:'Pokaż więcej ▾',collapse_text:'Zwiń ▴',popular_label:'Popularne:',mini_posts:'postów',mini_likes:'lajków',
+    post_not_found:'Post nie znaleziony',comment_ph:'Napisz komentarz…',attach_photo_title:'Dołącz zdjęcie',send_btn:'Wyślij',
+    guest_login_cta:'Zaloguj się lub zarejestruj',guest_login_suffix:', aby komentować.',muted_comment_msg:'Jesteś wyciszony i nie możesz komentować.',
+    report_btn:'🚩 Zgłoś',del_post_btn:'🗑 Usuń',share_btn:'🔗 Udostępnij',comments_header:'Komentarze',author_badge:'Autor',reply_btn:'↩ Odpowiedz',
+    error_prefix:'Błąd: ',del_comment_confirm:'Usunąć komentarz?',del_error:'Błąd usuwania: ',reply_ph:'Odpowiedz…',
+    cooldown_msg:(w)=>`Poczekaj jeszcze ${w} sek. — możesz publikować raz na minutę.`,
+    publishing_text:'Publikowanie…',uploading_media:(i,t)=>`Przesyłanie mediów (${i}/${t})…`,post_btn_label:'Opublikuj',
+    code_ph:'kod',quote_ph:'cytat',login_for_profile:'Zaloguj się, aby zobaczyć profil',profile_not_found:'Profil nie znaleziony',
+    my_profile_label:'Mój profil',profile_label:'Profil',verified_tip:'Zweryfikowane konto',unfollow_label:'Obserwuj mniej',follow_label:'Obserwuj',
+    friends_label:'🤝 Znajomi',edit_profile_btn:'✏️ Edytuj',nick_label:'Pseudonim',username_ph:'litery, cyfry i _',
+    bio_label:'O mnie',bio_ph:'Kilka słów o sobie…',link_label:'Link',verified_only_note:'✓ tylko dla zweryfikowanych',
+    cancel_btn:'Anuluj',save_btn:'Zapisz',following_label:'Obserwowani',followers_label:'Obserwujący',likes_label:'Lajki',
+    member_since_label:'Dołączył od',my_posts_label:'Moje posty',posts_label_profile:'Posty',active_label:'aktywnych',deleted_label:'usuniętych',
+    no_posts_profile:'Brak postów',username_err:'@username: 3–20 znaków, tylko litery łacińskie, cyfry i _',save_err:'Błąd zapisu: ',
+    followers_title:'Obserwujący',following_title:'Obserwowani',no_reports:'Brak zgłoszeń ✅',deleted_post_ref:'Usunięty post',
+    accept_btn:'Przyjmij',dismiss_btn:'Odrzuć',report_acc_toast:'✅ Zgłoszenie przyjęte',report_dis_toast:'❌ Zgłoszenie odrzucone',
+    nobody_found:'Nikogo nie znaleziono',col_nick_id:'Nick / ID',col_posts:'Posty',col_status:'Status',col_actions:'Akcje',
+    col_reports:'Zgłoszeń',col_from:'Od',col_reasons:'Powody',col_post:'Post',col_author:'Autor',
+    status_verified:'✓ Zweryfikowany',status_banned:'🚫 Zbanowany',status_muted:'🔇 Wyciszony',
+    rm_verify_btn:'Usuń ✓',verify_btn:'✓ Weryfikuj',unmute_btn:'Odcisz',mute_btn:'Wycisz',unban_btn:'Odbanuj',ban_btn:'Zbanuj',
+    mute_removed:'🔊 Wyciszenie zdjęte',mute_prompt_text:'Na ile godzin wyciszyć?\n(np. 24)',
+    muted_toast:(h)=>`🔇 Wyciszony na ${h}h`,unban_done:'✅ Odbanowanie wykonane',ban_prompt_text:'Powód bana (opcjonalnie):',banned_toast:'🚫 Użytkownik zbanowany',
+    deleted_label_admin:'USUNIĘTY',unpin_btn:'Odepnij',pin_btn:'📌 Przypnij',del_post_admin:'Usuń',no_posts_admin:'Brak postów',
+    no_announcements:'Brak ogłoszeń',hide_ann:'Ukryj',show_ann:'Pokaż',
+    stat_users:'Użytkownicy',stat_posts_admin:'Posty',stat_comments:'Komentarze',stat_posts_today:'Posty dzisiaj',stat_users_today:'Nowi użytkownicy dziś',
+    no_notifs:'Brak powiadomień 🔕',notif_just_now:'przed chwilą',
+    notif_min_ago:(m)=>`${m} min. temu`,notif_hr_ago:(h)=>`${h} godz. temu`,notif_day_ago:(d)=>`${d} d. temu`,
+    notif_someone:'Ktoś',liked_your_post:(n)=>`${n} polubił twój post`,commented_your_post:(n)=>`${n} skomentował twój post`,followed_you:(n)=>`${n} zaczął cię obserwować`,
+    notif_like_def:'Ktoś polubił twój post',notif_comment_def:'Nowy komentarz do posta',notif_reply_def:'Ktoś odpowiedział na twój komentarz',
+    notif_follow_def:'Masz nowego obserwującego',notif_mute_def:'Zostałeś wyciszony',notif_ban_def:'Konto zablokowane',
+    notif_system_def:'Powiadomienie systemowe',notif_acc_def:'Zgłoszenie przyjęte',notif_dis_def:'Zgłoszenie odrzucone',
+    notif_bug_def:'Nowy raport o błędzie',notif_generic:'Powiadomienie',
+    new_posts_banner:(n)=>`▲ +${n} nowy${n===1?'':'ch'} post${n===1?'':'ów'} — dotknij, by załadować`,
+    new_comments_ind:(n)=>`▼ ${n} nowy${n===1?'':'ch'} komentarz${n===1?'':'y'} — dotknij`,
+    bug_sending:'Wysyłanie…',bug_steps_prefix:'Kroki: ',loading_error:'Błąd ładowania',
+    nav_forum:'💬 Forum',forum_filter_all:'Wszystkie',forum_new_btn:'✏️ Post',forum_search_ph:'🔍 Szukaj postów, hashtagów…',
+    auth_sub:'Zaloguj się lub zarejestruj — forum i synchronizacja',auth_tab_login:'Zaloguj się',auth_tab_reg:'Rejestracja',
+    auth_nick_ph:'Pseudonim',auth_pass_ph:'Hasło',auth_nick_reg_ph:'Pseudonim (2–20 znaków)',
+    auth_pass_hint:'Min. 8 znaków · przynajmniej jeden znak specjalny (!@#$%^&*…)',auth_or:'lub',auth_guest_btn:'👤 Kontynuuj jako gość',
+    auth_login_btn:'Zaloguj się',auth_reg_btn:'Utwórz konto',auth_logging_in:'Logowanie…',auth_creating:'Tworzenie…',
+    auth_fill_all:'Wypełnij wszystkie pola',auth_wrong_creds:'Błędny pseudonim lub hasło',
+    auth_nick_taken:'Ten pseudonim jest zajęty',auth_too_many:'Zbyt wiele prób, poczekaj minutę',guest_badge:'Gość',
+    cp_modal_title:'✏️ Nowy post',cp_mode_label:'Tryb *',cp_title_label:'Tytuł *',cp_title_ph:'Krótki opis builda lub mechaniki…',
+    cp_content_label:'Treść *',cp_content_ph:'Opisz build, jak go używać, które węzły wybrać…',
+    cp_nodes_label:'Węzły / bloki (użyte w buildzie)',cp_hashtags_label:'Hashtagi',cp_hashtags_ph:'#obrażenia #kombo #szybkość — oddzielone spacją',
+    cp_media_label:'Media (foto/wideo, maks. 10 MB każde)',cp_media_upload:'📎 Kliknij, aby załączyć foto lub wideo',
+    cp_rules_text:'Przeczytałem regulamin społeczności i potwierdzam, że mój post nie zawiera obrażeń, spamu ani treści NSFW',
+    notif_panel_title:'🔔 Powiadomienia',notif_mark_all:'Oznacz wszystkie jako przeczytane',
+    admin_panel_title:'🔧 Panel administratora',admin_tab_reports:'🚩 Zgłoszenia',admin_tab_bugs:'🐛 Błędy',admin_tab_users:'👥 Użytkownicy',
+    admin_tab_posts:'📌 Posty',admin_tab_announce:'📣 Ogłoszenia',admin_tab_stats:'📊 Statystyki',
+    settings_title:'⚙ Ustawienia',settings_accent:'🎨 Kolor akcentu',settings_font:'🔤 Czcionka interfejsu',settings_interface:'⚡ Interfejs',
     mode_meta: {
       skill:{blocksTitle:'Baza węzłów Skill Builder', blocksDesc:'Kliknij węzeł, aby zobaczyć wszystkie pola. Kolor wskazuje kategorię.', ideasTitle:'Pomysły dla Skill Builder', ideasDesc:'Wybierz węzły, których chcesz użyć, i kręć ruletką — dostaniesz pomysł na umiejętność.', aiTitle:'Asystent AI Skill Builder', aiDesc:'Pytaj jak kogoś, kto zbudował setki własnych movesetów: o węzły, logikę Tag, błędy, koordynaty, animacje i wizuale.', chatHeader:'Asystent Skill Builder', placeholder:'Zapytaj o węzeł lub mechanikę…', navTab:'Węzły', searchPh:'Szukaj węzła…', blockCount:(s,t)=>`${s} z ${t} węzłów`, aiEmptyState:'Zadaj pytanie lub dołącz zrzut ekranu ustawień węzła.', takeIdeaBtn:'🎲 Weź pomysł z tym węzłem', ideasSearchPh:'Szukaj po nazwie węzła…', spinHintHas:'Pomysł będzie związany z przynajmniej jednym wybranym węzłem.', spinHintEmpty:'Możesz kręcić bez wyboru — dostaniesz losowy pomysł.'},
       build:{blocksTitle:'Baza bloków Builder', blocksDesc:'Konstrukcja, bloki Input/Output/Interaction i Logic Gates. Kliknij blok, aby zobaczyć pola.', ideasTitle:'Pomysły dla Builder', ideasDesc:'Wybierz bloki i bramki, których chcesz użyć, i kręć ruletką — dostaniesz pomysł na mechanikę lub pomieszczenie.', aiTitle:'Asystent AI Builder', aiDesc:'Pytaj o bloki, sygnały ID, bramki i gotowe układy logiczne.', chatHeader:'Asystent Builder', placeholder:'Zapytaj o blok, bramkę lub układ…', navTab:'Bloki', searchPh:'Szukaj bloku…', blockCount:(s,t)=>`${s} z ${t} bloków`, aiEmptyState:'Zadaj pytanie lub dołącz zrzut ekranu ustawień bloku.', takeIdeaBtn:'🎲 Weź pomysł z tym blokiem', ideasSearchPh:'Szukaj po nazwie bloku…', spinHintHas:'Pomysł będzie związany z przynajmniej jednym wybranym blokiem.', spinHintEmpty:'Możesz kręcić bez wyboru — dostaniesz losowy pomysł.'},
@@ -2416,6 +2535,58 @@ const STRINGS = {
     ai_warn_vpn_label:'Problemas de conexão',
     ai_warn_vpn:'Alguns provedores bloqueiam o Cloudflare. Se a IA não responde mas a internet funciona — ative uma VPN. <b>Cloudflare WARP</b> (app 1.1.1.1) é gratuito.',
     image_alt:'Foto anexada', media_thumb_alt:'Foto da ideia concluída',
+    forum_no_posts:'Sem publicações ainda. Seja o primeiro! ✍️',
+    post_mode_both:'⚔️🧱 Ambos',post_pinned:'📌 Fixado',show_more:'Mostrar mais ▾',collapse_text:'Recolher ▴',popular_label:'Popular:',mini_posts:'publicações',mini_likes:'gostos',
+    post_not_found:'Publicação não encontrada',comment_ph:'Escreve um comentário…',attach_photo_title:'Anexar foto',send_btn:'Enviar',
+    guest_login_cta:'Inicia sessão ou regista-te',guest_login_suffix:' para comentar.',muted_comment_msg:'Estás silenciado e não podes comentar.',
+    report_btn:'🚩 Denunciar',del_post_btn:'🗑 Eliminar',share_btn:'🔗 Partilhar',comments_header:'Comentários',author_badge:'Autor',reply_btn:'↩ Responder',
+    error_prefix:'Erro: ',del_comment_confirm:'Eliminar comentário?',del_error:'Erro ao eliminar: ',reply_ph:'Responder…',
+    cooldown_msg:(w)=>`Aguarda mais ${w} seg. — podes publicar uma vez por minuto.`,
+    publishing_text:'A publicar…',uploading_media:(i,t)=>`A enviar média (${i}/${t})…`,post_btn_label:'Publicar',
+    code_ph:'código',quote_ph:'citação',login_for_profile:'Inicia sessão para ver o perfil',profile_not_found:'Perfil não encontrado',
+    my_profile_label:'O meu perfil',profile_label:'Perfil',verified_tip:'Conta verificada',unfollow_label:'Deixar de seguir',follow_label:'Seguir',
+    friends_label:'🤝 Amigos',edit_profile_btn:'✏️ Editar',nick_label:'Apelido',username_ph:'letras, dígitos e _',
+    bio_label:'Sobre mim',bio_ph:'Algumas palavras sobre ti…',link_label:'Link',verified_only_note:'✓ só para verificados',
+    cancel_btn:'Cancelar',save_btn:'Guardar',following_label:'A seguir',followers_label:'Seguidores',likes_label:'Gostos',
+    member_since_label:'Membro desde',my_posts_label:'As minhas publicações',posts_label_profile:'Publicações',active_label:'ativas',deleted_label:'eliminadas',
+    no_posts_profile:'Sem publicações',username_err:'@username: 3–20 caracteres, só letras latinas, dígitos e _',save_err:'Erro ao guardar: ',
+    followers_title:'Seguidores',following_title:'A seguir',no_reports:'Sem denúncias ✅',deleted_post_ref:'Publicação eliminada',
+    accept_btn:'Aceitar',dismiss_btn:'Rejeitar',report_acc_toast:'✅ Denúncia aceite',report_dis_toast:'❌ Denúncia rejeitada',
+    nobody_found:'Ninguém encontrado',col_nick_id:'Nick / ID',col_posts:'Publicações',col_status:'Estado',col_actions:'Ações',
+    col_reports:'Denúncias',col_from:'De',col_reasons:'Motivos',col_post:'Publicação',col_author:'Autor',
+    status_verified:'✓ Verificado',status_banned:'🚫 Banido',status_muted:'🔇 Silenciado',
+    rm_verify_btn:'Remover ✓',verify_btn:'✓ Verificar',unmute_btn:'Ativar som',mute_btn:'Silenciar',unban_btn:'Desbanir',ban_btn:'Banir',
+    mute_removed:'🔊 Silêncio removido',mute_prompt_text:'Silenciar por quantas horas?\n(ex.: 24)',
+    muted_toast:(h)=>`🔇 Silenciado por ${h}h`,unban_done:'✅ Desbanimento concluído',ban_prompt_text:'Motivo do ban (opcional):',banned_toast:'🚫 Utilizador banido',
+    deleted_label_admin:'ELIMINADO',unpin_btn:'Desafixar',pin_btn:'📌 Fixar',del_post_admin:'Eliminar',no_posts_admin:'Sem publicações',
+    no_announcements:'Sem anúncios',hide_ann:'Ocultar',show_ann:'Mostrar',
+    stat_users:'Utilizadores',stat_posts_admin:'Publicações',stat_comments:'Comentários',stat_posts_today:'Publicações hoje',stat_users_today:'Novos utilizadores hoje',
+    no_notifs:'Sem notificações 🔕',notif_just_now:'agora mesmo',
+    notif_min_ago:(m)=>`há ${m} min.`,notif_hr_ago:(h)=>`há ${h} h`,notif_day_ago:(d)=>`há ${d} dia${d===1?'':'s'}`,
+    notif_someone:'Alguém',liked_your_post:(n)=>`${n} gostou da tua publicação`,commented_your_post:(n)=>`${n} comentou a tua publicação`,followed_you:(n)=>`${n} começou a seguir-te`,
+    notif_like_def:'Alguém gostou da tua publicação',notif_comment_def:'Novo comentário na tua publicação',notif_reply_def:'Alguém respondeu ao teu comentário',
+    notif_follow_def:'Tens um novo seguidor',notif_mute_def:'Foste silenciado',notif_ban_def:'Conta banida',
+    notif_system_def:'Notificação do sistema',notif_acc_def:'Denúncia aceite',notif_dis_def:'Denúncia rejeitada',
+    notif_bug_def:'Novo relatório de erro',notif_generic:'Notificação',
+    new_posts_banner:(n)=>`▲ +${n} nova${n===1?'':'s'} publicação${n===1?'':'ões'} — toca para atualizar`,
+    new_comments_ind:(n)=>`▼ ${n} novo${n===1?'':'s'} comentário${n===1?'':'s'} — toca`,
+    bug_sending:'A enviar…',bug_steps_prefix:'Passos: ',loading_error:'Erro ao carregar',
+    nav_forum:'💬 Fórum',forum_filter_all:'Todos',forum_new_btn:'✏️ Publicar',forum_search_ph:'🔍 Pesquisar publicações, hashtags…',
+    auth_sub:'Inicia sessão ou cria uma conta — fórum e sincronização',auth_tab_login:'Entrar',auth_tab_reg:'Registar',
+    auth_nick_ph:'Apelido',auth_pass_ph:'Palavra-passe',auth_nick_reg_ph:'Apelido (2–20 caracteres)',
+    auth_pass_hint:'Mín. 8 caracteres · pelo menos um caractere especial (!@#$%^&*…)',auth_or:'ou',auth_guest_btn:'👤 Continuar como convidado',
+    auth_login_btn:'Entrar',auth_reg_btn:'Criar conta',auth_logging_in:'A entrar…',auth_creating:'A criar…',
+    auth_fill_all:'Preenche todos os campos',auth_wrong_creds:'Apelido ou palavra-passe incorretos',
+    auth_nick_taken:'Este apelido já está em uso',auth_too_many:'Demasiadas tentativas, aguarda um minuto',guest_badge:'Convidado',
+    cp_modal_title:'✏️ Nova publicação',cp_mode_label:'Modo *',cp_title_label:'Título *',cp_title_ph:'Breve descrição do build ou mecânica…',
+    cp_content_label:'Conteúdo *',cp_content_ph:'Fala sobre o build, como usá-lo, que nodes escolher…',
+    cp_nodes_label:'Nodes / blocos (usados no build)',cp_hashtags_label:'Hashtags',cp_hashtags_ph:'#dano #combo #velocidade — separados por espaço',
+    cp_media_label:'Média (foto/vídeo, máx. 10 MB cada)',cp_media_upload:'📎 Clica para anexar foto ou vídeo',
+    cp_rules_text:'Li as regras da comunidade e confirmo que a minha publicação não contém insultos, spam ou conteúdo NSFW',
+    notif_panel_title:'🔔 Notificações',notif_mark_all:'Marcar todas como lidas',
+    admin_panel_title:'🔧 Painel de administração',admin_tab_reports:'🚩 Denúncias',admin_tab_bugs:'🐛 Erros',admin_tab_users:'👥 Utilizadores',
+    admin_tab_posts:'📌 Publicações',admin_tab_announce:'📣 Anúncios',admin_tab_stats:'📊 Estatísticas',
+    settings_title:'⚙ Definições',settings_accent:'🎨 Cor de destaque',settings_font:'🔤 Tipo de letra',settings_interface:'⚡ Interface',
     mode_meta: {
       skill:{blocksTitle:'Referência de nodes do Skill Builder', blocksDesc:'Clique em uma node para ver todos os campos. A cor indica a categoria.', ideasTitle:'Ideias para Skill Builder', ideasDesc:'Escolha as nodes que quer usar e gire a roleta para receber uma ideia de habilidade.', aiTitle:'Assistente IA do Skill Builder', aiDesc:'Pergunte como quem já montou centenas de movesets: sobre nodes, lógica de Tag, bugs, coordenadas, animações e visuais.', chatHeader:'Assistente Skill Builder', placeholder:'Pergunte sobre uma node ou mecânica…', navTab:'Nodes', searchPh:'Buscar node…', blockCount:(s,t)=>`${s} de ${t} nodes`, aiEmptyState:'Faça uma pergunta ou anexe um print das configurações da node.', takeIdeaBtn:'🎲 Pegar ideia com essa node', ideasSearchPh:'Buscar por nome da node…', spinHintHas:'A ideia vai usar pelo menos uma das nodes selecionadas.', spinHintEmpty:'Dá pra girar sem selecionar nada — vai sair uma ideia aleatória.'},
       build:{blocksTitle:'Referência de blocos do Builder', blocksDesc:'Construção, blocos Input/Output/Interaction e Logic Gates. Clique em um bloco para ver os campos.', ideasTitle:'Ideias para Builder', ideasDesc:'Escolha blocos e gates que quer usar e gire a roleta para uma ideia de mecânica ou sala.', aiTitle:'Assistente IA do Builder', aiDesc:'Pergunte sobre blocos, sinais ID, gates e circuitos prontos.', chatHeader:'Assistente Builder', placeholder:'Pergunte sobre um bloco, gate ou circuito…', navTab:'Blocos', searchPh:'Buscar bloco…', blockCount:(s,t)=>`${s} de ${t} blocos`, aiEmptyState:'Faça uma pergunta ou anexe um print das configurações do bloco.', takeIdeaBtn:'🎲 Pegar ideia com esse bloco', ideasSearchPh:'Buscar por nome do bloco…', spinHintHas:'A ideia vai usar pelo menos um dos blocos selecionados.', spinHintEmpty:'Dá pra girar sem selecionar nada — vai sair uma ideia aleatória.'},
@@ -2470,6 +2641,58 @@ const STRINGS = {
     ai_warn_vpn_label:'Masalah koneksi',
     ai_warn_vpn:'Beberapa provider memblokir Cloudflare. Kalau AI tidak merespons tapi internet normal — aktifkan VPN. <b>Cloudflare WARP</b> (app 1.1.1.1) gratis.',
     image_alt:'Foto terlampir', media_thumb_alt:'Foto ide yang selesai',
+    forum_no_posts:'Belum ada postingan. Jadilah yang pertama! ✍️',
+    post_mode_both:'⚔️🧱 Keduanya',post_pinned:'📌 Disematkan',show_more:'Tampilkan lagi ▾',collapse_text:'Ciutkan ▴',popular_label:'Populer:',mini_posts:'postingan',mini_likes:'suka',
+    post_not_found:'Postingan tidak ditemukan',comment_ph:'Tulis komentar…',attach_photo_title:'Lampirkan foto',send_btn:'Kirim',
+    guest_login_cta:'Masuk atau daftar',guest_login_suffix:' untuk berkomentar.',muted_comment_msg:'Kamu dibungkam dan tidak bisa berkomentar.',
+    report_btn:'🚩 Laporkan',del_post_btn:'🗑 Hapus',share_btn:'🔗 Bagikan',comments_header:'Komentar',author_badge:'Penulis',reply_btn:'↩ Balas',
+    error_prefix:'Error: ',del_comment_confirm:'Hapus komentar?',del_error:'Error hapus: ',reply_ph:'Balas…',
+    cooldown_msg:(w)=>`Tunggu ${w} detik lagi — bisa posting sekali per menit.`,
+    publishing_text:'Memposting…',uploading_media:(i,t)=>`Upload media (${i}/${t})…`,post_btn_label:'Posting',
+    code_ph:'kode',quote_ph:'kutipan',login_for_profile:'Masuk untuk lihat profil',profile_not_found:'Profil tidak ditemukan',
+    my_profile_label:'Profil saya',profile_label:'Profil',verified_tip:'Akun terverifikasi',unfollow_label:'Batal ikuti',follow_label:'Ikuti',
+    friends_label:'🤝 Teman',edit_profile_btn:'✏️ Edit',nick_label:'Nama pengguna',username_ph:'huruf, angka, dan _',
+    bio_label:'Tentang saya',bio_ph:'Beberapa kata tentang dirimu…',link_label:'Link',verified_only_note:'✓ hanya terverifikasi',
+    cancel_btn:'Batal',save_btn:'Simpan',following_label:'Mengikuti',followers_label:'Pengikut',likes_label:'Suka',
+    member_since_label:'Bergabung sejak',my_posts_label:'Postingan saya',posts_label_profile:'Postingan',active_label:'aktif',deleted_label:'dihapus',
+    no_posts_profile:'Belum ada postingan',username_err:'@username: 3–20 karakter, huruf latin, angka dan _',save_err:'Error simpan: ',
+    followers_title:'Pengikut',following_title:'Mengikuti',no_reports:'Tidak ada laporan ✅',deleted_post_ref:'Postingan dihapus',
+    accept_btn:'Terima',dismiss_btn:'Tolak',report_acc_toast:'✅ Laporan diterima',report_dis_toast:'❌ Laporan ditolak',
+    nobody_found:'Tidak ada yang ditemukan',col_nick_id:'Nick / ID',col_posts:'Postingan',col_status:'Status',col_actions:'Aksi',
+    col_reports:'Laporan',col_from:'Dari',col_reasons:'Alasan',col_post:'Postingan',col_author:'Penulis',
+    status_verified:'✓ Terverifikasi',status_banned:'🚫 Dibanned',status_muted:'🔇 Dibungkam',
+    rm_verify_btn:'Hapus ✓',verify_btn:'✓ Verifikasi',unmute_btn:'Aktifkan',mute_btn:'Bungkam',unban_btn:'Unban',ban_btn:'Ban',
+    mute_removed:'🔊 Bungkam dilepas',mute_prompt_text:'Bungkam berapa jam?\n(mis. 24)',
+    muted_toast:(h)=>`🔇 Dibungkam ${h}j`,unban_done:'✅ Unban selesai',ban_prompt_text:'Alasan ban (opsional):',banned_toast:'🚫 Pengguna dibanned',
+    deleted_label_admin:'DIHAPUS',unpin_btn:'Lepas sematan',pin_btn:'📌 Sematkan',del_post_admin:'Hapus',no_posts_admin:'Tidak ada postingan',
+    no_announcements:'Tidak ada pengumuman',hide_ann:'Sembunyikan',show_ann:'Tampilkan',
+    stat_users:'Pengguna',stat_posts_admin:'Postingan',stat_comments:'Komentar',stat_posts_today:'Postingan hari ini',stat_users_today:'Pengguna baru hari ini',
+    no_notifs:'Tidak ada notifikasi 🔕',notif_just_now:'baru saja',
+    notif_min_ago:(m)=>`${m} mnt lalu`,notif_hr_ago:(h)=>`${h} jam lalu`,notif_day_ago:(d)=>`${d} hari lalu`,
+    notif_someone:'Seseorang',liked_your_post:(n)=>`${n} menyukai postinganmu`,commented_your_post:(n)=>`${n} mengomentari postinganmu`,followed_you:(n)=>`${n} mulai mengikutimu`,
+    notif_like_def:'Seseorang menyukai postinganmu',notif_comment_def:'Komentar baru di postinganmu',notif_reply_def:'Seseorang membalas komentarmu',
+    notif_follow_def:'Kamu punya pengikut baru',notif_mute_def:'Kamu dibungkam',notif_ban_def:'Akun dibanned',
+    notif_system_def:'Notifikasi sistem',notif_acc_def:'Laporan diterima',notif_dis_def:'Laporan ditolak',
+    notif_bug_def:'Laporan bug baru',notif_generic:'Notifikasi',
+    new_posts_banner:(n)=>`▲ +${n} postingan baru — ketuk untuk muat ulang`,
+    new_comments_ind:(n)=>`▼ ${n} komentar baru — ketuk`,
+    bug_sending:'Mengirim…',bug_steps_prefix:'Langkah: ',loading_error:'Error memuat',
+    nav_forum:'💬 Forum',forum_filter_all:'Semua',forum_new_btn:'✏️ Post',forum_search_ph:'🔍 Cari postingan, hashtag…',
+    auth_sub:'Masuk atau daftar — forum dan sinkronisasi',auth_tab_login:'Masuk',auth_tab_reg:'Daftar',
+    auth_nick_ph:'Nama pengguna',auth_pass_ph:'Kata sandi',auth_nick_reg_ph:'Nama pengguna (2–20 karakter)',
+    auth_pass_hint:'Min. 8 karakter · min. satu karakter khusus (!@#$%^&*…)',auth_or:'atau',auth_guest_btn:'👤 Lanjut sebagai tamu',
+    auth_login_btn:'Masuk',auth_reg_btn:'Buat akun',auth_logging_in:'Masuk…',auth_creating:'Membuat…',
+    auth_fill_all:'Isi semua kolom',auth_wrong_creds:'Nama pengguna atau kata sandi salah',
+    auth_nick_taken:'Nama pengguna sudah dipakai',auth_too_many:'Terlalu banyak percobaan, tunggu sebentar',guest_badge:'Tamu',
+    cp_modal_title:'✏️ Postingan baru',cp_mode_label:'Mode *',cp_title_label:'Judul *',cp_title_ph:'Deskripsi singkat build atau mekanik…',
+    cp_content_label:'Konten *',cp_content_ph:'Ceritakan tentang build, cara pakainya, node apa yang dipilih…',
+    cp_nodes_label:'Node / blok (dipakai dalam build)',cp_hashtags_label:'Hashtag',cp_hashtags_ph:'#damage #combo #speed — pisahkan dengan spasi',
+    cp_media_label:'Media (foto/video, maks. 10 MB per file)',cp_media_upload:'📎 Klik untuk lampirkan foto atau video',
+    cp_rules_text:'Saya sudah membaca aturan komunitas dan memastikan postingan saya tidak mengandung hinaan, spam, atau konten NSFW',
+    notif_panel_title:'🔔 Notifikasi',notif_mark_all:'Tandai semua sudah dibaca',
+    admin_panel_title:'🔧 Panel admin',admin_tab_reports:'🚩 Laporan',admin_tab_bugs:'🐛 Bug',admin_tab_users:'👥 Pengguna',
+    admin_tab_posts:'📌 Postingan',admin_tab_announce:'📣 Pengumuman',admin_tab_stats:'📊 Statistik',
+    settings_title:'⚙ Pengaturan',settings_accent:'🎨 Warna aksen',settings_font:'🔤 Font antarmuka',settings_interface:'⚡ Antarmuka',
     mode_meta: {
       skill:{blocksTitle:'Referensi node Skill Builder', blocksDesc:'Klik node untuk melihat semua field. Warna menunjukkan kategori.', ideasTitle:'Ide untuk Skill Builder', ideasDesc:'Pilih node yang ingin kamu pakai dan putar roulette — dapat ide skill.', aiTitle:'Asisten AI Skill Builder', aiDesc:'Tanya seperti ke orang yang sudah bikin ratusan moveset: soal node, logika Tag, bug, koordinat, animasi, dan visual.', chatHeader:'Asisten Skill Builder', placeholder:'Tanya tentang node atau mekanik…', navTab:'Nodes', searchPh:'Cari node…', blockCount:(s,t)=>`${s} dari ${t} node`, aiEmptyState:'Ajukan pertanyaan atau lampirkan screenshot pengaturan node.', takeIdeaBtn:'🎲 Ambil ide dengan node ini', ideasSearchPh:'Cari nama node…', spinHintHas:'Ide akan menggunakan minimal satu node yang kamu pilih.', spinHintEmpty:'Bisa putar tanpa pilih apa-apa — dapat ide acak.'},
       build:{blocksTitle:'Referensi blok Builder', blocksDesc:'Konstruksi, blok Input/Output/Interaction, dan Logic Gates. Klik blok untuk melihat field-nya.', ideasTitle:'Ide untuk Builder', ideasDesc:'Pilih blok dan gate yang ingin kamu pakai dan putar roulette — dapat ide mekanik atau ruangan.', aiTitle:'Asisten AI Builder', aiDesc:'Tanya tentang blok, sinyal ID, gate, dan rangkaian logika siap pakai.', chatHeader:'Asisten Builder', placeholder:'Tanya tentang blok, gate, atau rangkaian…', navTab:'Blok', searchPh:'Cari blok…', blockCount:(s,t)=>`${s} dari ${t} blok`, aiEmptyState:'Ajukan pertanyaan atau lampirkan screenshot pengaturan blok.', takeIdeaBtn:'🎲 Ambil ide dengan blok ini', ideasSearchPh:'Cari nama blok…', spinHintHas:'Ide akan menggunakan minimal satu blok yang kamu pilih.', spinHintEmpty:'Bisa putar tanpa pilih apa-apa — dapat ide acak.'},
@@ -2524,6 +2747,57 @@ const STRINGS = {
     ai_warn_vpn_label:'Vấn đề kết nối',
     ai_warn_vpn:'Một số nhà mạng chặn Cloudflare. Nếu AI không phản hồi nhưng mạng bình thường — bật VPN. <b>Cloudflare WARP</b> (app 1.1.1.1) miễn phí.',
     image_alt:'Ảnh đính kèm', media_thumb_alt:'Ảnh ý tưởng đã hoàn thành',
+    forum_no_posts:'Chưa có bài nào. Hãy là người đầu tiên! ✍️',
+    post_mode_both:'⚔️🧱 Cả hai',post_pinned:'📌 Đã ghim',show_more:'Xem thêm ▾',collapse_text:'Thu gọn ▴',popular_label:'Phổ biến:',mini_posts:'bài',mini_likes:'lượt thích',
+    post_not_found:'Không tìm thấy bài',comment_ph:'Viết bình luận…',attach_photo_title:'Đính kèm ảnh',send_btn:'Gửi',
+    guest_login_cta:'Đăng nhập hoặc đăng ký',guest_login_suffix:' để bình luận.',muted_comment_msg:'Bạn đã bị tắt tiếng và không thể bình luận.',
+    report_btn:'🚩 Báo cáo',del_post_btn:'🗑 Xóa',share_btn:'🔗 Chia sẻ',comments_header:'Bình luận',author_badge:'Tác giả',reply_btn:'↩ Trả lời',
+    error_prefix:'Lỗi: ',del_comment_confirm:'Xóa bình luận?',del_error:'Lỗi xóa: ',reply_ph:'Trả lời…',
+    cooldown_msg:(w)=>`Chờ thêm ${w} giây — bạn chỉ có thể đăng mỗi phút một lần.`,
+    publishing_text:'Đang đăng…',uploading_media:(i,t)=>`Đang tải media (${i}/${t})…`,post_btn_label:'Đăng bài',
+    code_ph:'mã',quote_ph:'trích dẫn',login_for_profile:'Đăng nhập để xem hồ sơ',profile_not_found:'Không tìm thấy hồ sơ',
+    my_profile_label:'Hồ sơ của tôi',profile_label:'Hồ sơ',verified_tip:'Tài khoản đã xác minh',unfollow_label:'Bỏ theo dõi',follow_label:'Theo dõi',
+    friends_label:'🤝 Bạn bè',edit_profile_btn:'✏️ Chỉnh sửa',nick_label:'Biệt danh',username_ph:'chữ cái, số và _',
+    bio_label:'Giới thiệu',bio_ph:'Vài lời về bản thân…',link_label:'Liên kết',verified_only_note:'✓ chỉ dành cho đã xác minh',
+    cancel_btn:'Hủy',save_btn:'Lưu',following_label:'Đang theo dõi',followers_label:'Người theo dõi',likes_label:'Lượt thích',
+    member_since_label:'Thành viên từ',my_posts_label:'Bài của tôi',posts_label_profile:'Bài viết',active_label:'đang hoạt động',deleted_label:'đã xóa',
+    no_posts_profile:'Chưa có bài viết',username_err:'@username: 3–20 ký tự, chữ Latin, số và _',save_err:'Lỗi lưu: ',
+    followers_title:'Người theo dõi',following_title:'Đang theo dõi',no_reports:'Không có báo cáo ✅',deleted_post_ref:'Bài đã xóa',
+    accept_btn:'Chấp nhận',dismiss_btn:'Bỏ qua',report_acc_toast:'✅ Báo cáo được chấp nhận',report_dis_toast:'❌ Báo cáo bị từ chối',
+    nobody_found:'Không tìm thấy ai',col_nick_id:'Nick / ID',col_posts:'Bài',col_status:'Trạng thái',col_actions:'Hành động',
+    col_reports:'Báo cáo',col_from:'Từ',col_reasons:'Lý do',col_post:'Bài',col_author:'Tác giả',
+    status_verified:'✓ Đã xác minh',status_banned:'🚫 Bị cấm',status_muted:'🔇 Bị tắt tiếng',
+    rm_verify_btn:'Bỏ ✓',verify_btn:'✓ Xác minh',unmute_btn:'Bật tiếng',mute_btn:'Tắt tiếng',unban_btn:'Bỏ cấm',ban_btn:'Cấm',
+    mute_removed:'🔊 Đã bật lại tiếng',mute_prompt_text:'Tắt tiếng bao nhiêu giờ?\n(vd. 24)',
+    muted_toast:(h)=>`🔇 Tắt tiếng ${h}h`,unban_done:'✅ Đã bỏ cấm',ban_prompt_text:'Lý do cấm (tuỳ chọn):',banned_toast:'🚫 Người dùng bị cấm',
+    deleted_label_admin:'ĐÃ XÓA',unpin_btn:'Bỏ ghim',pin_btn:'📌 Ghim',del_post_admin:'Xóa',no_posts_admin:'Không có bài',
+    no_announcements:'Không có thông báo',hide_ann:'Ẩn',show_ann:'Hiện',
+    stat_users:'Người dùng',stat_posts_admin:'Bài',stat_comments:'Bình luận',stat_posts_today:'Bài hôm nay',stat_users_today:'Người dùng mới hôm nay',
+    no_notifs:'Không có thông báo 🔕',notif_just_now:'vừa xong',
+    notif_min_ago:(m)=>`${m} phút trước`,notif_hr_ago:(h)=>`${h} giờ trước`,notif_day_ago:(d)=>`${d} ngày trước`,
+    notif_someone:'Ai đó',liked_your_post:(n)=>`${n} đã thích bài của bạn`,commented_your_post:(n)=>`${n} đã bình luận bài của bạn`,followed_you:(n)=>`${n} đã theo dõi bạn`,
+    notif_like_def:'Ai đó đã thích bài của bạn',notif_comment_def:'Bình luận mới trên bài của bạn',notif_reply_def:'Ai đó đã trả lời bình luận của bạn',
+    notif_follow_def:'Bạn có người theo dõi mới',notif_mute_def:'Bạn đã bị tắt tiếng',notif_ban_def:'Tài khoản bị cấm',
+    notif_system_def:'Thông báo hệ thống',notif_acc_def:'Báo cáo được chấp nhận',notif_dis_def:'Báo cáo bị từ chối',
+    notif_bug_def:'Báo cáo lỗi mới',notif_generic:'Thông báo',
+    new_posts_banner:(n)=>`▲ +${n} bài mới — chạm để tải`,new_comments_ind:(n)=>`▼ ${n} bình luận mới — chạm`,
+    bug_sending:'Đang gửi…',bug_steps_prefix:'Các bước: ',loading_error:'Lỗi tải',
+    nav_forum:'💬 Diễn đàn',forum_filter_all:'Tất cả',forum_new_btn:'✏️ Bài',forum_search_ph:'🔍 Tìm bài, hashtag…',
+    auth_sub:'Đăng nhập hoặc đăng ký — diễn đàn và đồng bộ',auth_tab_login:'Đăng nhập',auth_tab_reg:'Đăng ký',
+    auth_nick_ph:'Biệt danh',auth_pass_ph:'Mật khẩu',auth_nick_reg_ph:'Biệt danh (2–20 ký tự)',
+    auth_pass_hint:'Tối thiểu 8 ký tự · ít nhất một ký tự đặc biệt (!@#$%^&*…)',auth_or:'hoặc',auth_guest_btn:'👤 Tiếp tục làm khách',
+    auth_login_btn:'Đăng nhập',auth_reg_btn:'Tạo tài khoản',auth_logging_in:'Đang đăng nhập…',auth_creating:'Đang tạo…',
+    auth_fill_all:'Điền đầy đủ thông tin',auth_wrong_creds:'Biệt danh hoặc mật khẩu sai',
+    auth_nick_taken:'Biệt danh này đã được dùng',auth_too_many:'Quá nhiều lần thử, chờ một phút',guest_badge:'Khách',
+    cp_modal_title:'✏️ Bài viết mới',cp_mode_label:'Chế độ *',cp_title_label:'Tiêu đề *',cp_title_ph:'Mô tả ngắn về build hoặc cơ chế…',
+    cp_content_label:'Nội dung *',cp_content_ph:'Kể về build, cách dùng, chọn node nào…',
+    cp_nodes_label:'Node / block (dùng trong build)',cp_hashtags_label:'Hashtag',cp_hashtags_ph:'#dame #combo #tốcđộ — cách nhau bằng dấu cách',
+    cp_media_label:'Media (ảnh/video, tối đa 10 MB mỗi cái)',cp_media_upload:'📎 Nhấn để đính kèm ảnh hoặc video',
+    cp_rules_text:'Tôi đã đọc quy tắc cộng đồng và xác nhận bài viết không chứa xúc phạm, spam hay nội dung NSFW',
+    notif_panel_title:'🔔 Thông báo',notif_mark_all:'Đánh dấu tất cả đã đọc',
+    admin_panel_title:'🔧 Bảng quản trị',admin_tab_reports:'🚩 Báo cáo',admin_tab_bugs:'🐛 Lỗi',admin_tab_users:'👥 Người dùng',
+    admin_tab_posts:'📌 Bài',admin_tab_announce:'📣 Thông báo',admin_tab_stats:'📊 Thống kê',
+    settings_title:'⚙ Cài đặt',settings_accent:'🎨 Màu nhấn',settings_font:'🔤 Font giao diện',settings_interface:'⚡ Giao diện',
     mode_meta: {
       skill:{blocksTitle:'Tham chiếu node Skill Builder', blocksDesc:'Nhấn vào node để xem tất cả các trường. Màu sắc chỉ danh mục.', ideasTitle:'Ý tưởng cho Skill Builder', ideasDesc:'Chọn các node muốn dùng và quay vòng — nhận ý tưởng kỹ năng.', aiTitle:'Trợ lý AI Skill Builder', aiDesc:'Hỏi như người đã tạo hàng trăm moveset tự chế: về node, logic Tag, lỗi, toạ độ, animation và visual.', chatHeader:'Trợ lý Skill Builder', placeholder:'Hỏi về node hay cơ chế nào đó…', navTab:'Nodes', searchPh:'Tìm node…', blockCount:(s,t)=>`${s} / ${t} node`, aiEmptyState:'Đặt câu hỏi hoặc đính kèm ảnh chụp màn hình cài đặt node.', takeIdeaBtn:'🎲 Lấy ý tưởng với node này', ideasSearchPh:'Tìm theo tên node…', spinHintHas:'Ý tưởng sẽ liên quan đến ít nhất một node đã chọn.', spinHintEmpty:'Có thể quay không cần chọn gì — sẽ ra ý tưởng ngẫu nhiên.'},
       build:{blocksTitle:'Tham chiếu block Builder', blocksDesc:'Xây dựng, block Input/Output/Interaction và Logic Gates. Nhấn vào block để xem các trường.', ideasTitle:'Ý tưởng cho Builder', ideasDesc:'Chọn block và gate muốn dùng và quay vòng — nhận ý tưởng cơ chế hoặc phòng.', aiTitle:'Trợ lý AI Builder', aiDesc:'Hỏi về block, tín hiệu ID, gate và mạch logic có sẵn.', chatHeader:'Trợ lý Builder', placeholder:'Hỏi về block, gate hoặc mạch nào đó…', navTab:'Khối', searchPh:'Tìm block…', blockCount:(s,t)=>`${s} / ${t} block`, aiEmptyState:'Đặt câu hỏi hoặc đính kèm ảnh chụp màn hình cài đặt block.', takeIdeaBtn:'🎲 Lấy ý tưởng với block này', ideasSearchPh:'Tìm theo tên block…', spinHintHas:'Ý tưởng sẽ liên quan đến ít nhất một block đã chọn.', spinHintEmpty:'Có thể quay không cần chọn gì — sẽ ra ý tưởng ngẫu nhiên.'},
@@ -2578,6 +2852,57 @@ const STRINGS = {
     ai_warn_vpn_label:'ปัญหาการเชื่อมต่อ',
     ai_warn_vpn:'บางผู้ให้บริการบล็อก Cloudflare ถ้า AI ไม่ตอบแต่อินเทอร์เน็ตปกติ — เปิด VPN <b>Cloudflare WARP</b> (แอป 1.1.1.1) ฟรี',
     image_alt:'รูปที่แนบมา', media_thumb_alt:'รูปไอเดียที่ทำเสร็จ',
+    forum_no_posts:'ยังไม่มีโพสต์ เป็นคนแรกเลย! ✍️',
+    post_mode_both:'⚔️🧱 ทั้งคู่',post_pinned:'📌 ปักหมุด',show_more:'แสดงเพิ่ม ▾',collapse_text:'ย่อ ▴',popular_label:'ยอดนิยม:',mini_posts:'โพสต์',mini_likes:'ไลก์',
+    post_not_found:'ไม่พบโพสต์',comment_ph:'เขียนความคิดเห็น…',attach_photo_title:'แนบรูป',send_btn:'ส่ง',
+    guest_login_cta:'เข้าสู่ระบบหรือสมัคร',guest_login_suffix:' เพื่อแสดงความคิดเห็น',muted_comment_msg:'คุณถูกปิดเสียงและไม่สามารถแสดงความคิดเห็นได้',
+    report_btn:'🚩 รายงาน',del_post_btn:'🗑 ลบ',share_btn:'🔗 แชร์',comments_header:'ความคิดเห็น',author_badge:'ผู้เขียน',reply_btn:'↩ ตอบกลับ',
+    error_prefix:'ข้อผิดพลาด: ',del_comment_confirm:'ลบความคิดเห็น?',del_error:'ข้อผิดพลาดในการลบ: ',reply_ph:'ตอบกลับ…',
+    cooldown_msg:(w)=>`รออีก ${w} วินาที — โพสต์ได้หนึ่งครั้งต่อนาที`,
+    publishing_text:'กำลังโพสต์…',uploading_media:(i,t)=>`กำลังอัปโหลดมีเดีย (${i}/${t})…`,post_btn_label:'โพสต์',
+    code_ph:'โค้ด',quote_ph:'อ้างอิง',login_for_profile:'เข้าสู่ระบบเพื่อดูโปรไฟล์',profile_not_found:'ไม่พบโปรไฟล์',
+    my_profile_label:'โปรไฟล์ของฉัน',profile_label:'โปรไฟล์',verified_tip:'บัญชีที่ยืนยันแล้ว',unfollow_label:'เลิกติดตาม',follow_label:'ติดตาม',
+    friends_label:'🤝 เพื่อน',edit_profile_btn:'✏️ แก้ไข',nick_label:'ชื่อเล่น',username_ph:'ตัวอักษร ตัวเลข และ _',
+    bio_label:'เกี่ยวกับฉัน',bio_ph:'สองสามคำเกี่ยวกับตัวเอง…',link_label:'ลิงก์',verified_only_note:'✓ สำหรับผู้ยืนยันแล้วเท่านั้น',
+    cancel_btn:'ยกเลิก',save_btn:'บันทึก',following_label:'กำลังติดตาม',followers_label:'ผู้ติดตาม',likes_label:'ไลก์',
+    member_since_label:'สมาชิกตั้งแต่',my_posts_label:'โพสต์ของฉัน',posts_label_profile:'โพสต์',active_label:'ใช้งาน',deleted_label:'ลบแล้ว',
+    no_posts_profile:'ยังไม่มีโพสต์',username_err:'@username: 3–20 ตัวอักษร เฉพาะตัวอักษรละติน ตัวเลข และ _',save_err:'ข้อผิดพลาดในการบันทึก: ',
+    followers_title:'ผู้ติดตาม',following_title:'กำลังติดตาม',no_reports:'ไม่มีรายงาน ✅',deleted_post_ref:'โพสต์ที่ลบแล้ว',
+    accept_btn:'ยอมรับ',dismiss_btn:'ปฏิเสธ',report_acc_toast:'✅ รายงานได้รับการยอมรับ',report_dis_toast:'❌ รายงานถูกปฏิเสธ',
+    nobody_found:'ไม่พบใคร',col_nick_id:'Nick / ID',col_posts:'โพสต์',col_status:'สถานะ',col_actions:'การดำเนินการ',
+    col_reports:'รายงาน',col_from:'จาก',col_reasons:'เหตุผล',col_post:'โพสต์',col_author:'ผู้เขียน',
+    status_verified:'✓ ยืนยันแล้ว',status_banned:'🚫 ถูกแบน',status_muted:'🔇 ถูกปิดเสียง',
+    rm_verify_btn:'ลบ ✓',verify_btn:'✓ ยืนยัน',unmute_btn:'เปิดเสียง',mute_btn:'ปิดเสียง',unban_btn:'ยกเลิกแบน',ban_btn:'แบน',
+    mute_removed:'🔊 เปิดเสียงแล้ว',mute_prompt_text:'ปิดเสียงกี่ชั่วโมง?\n(เช่น 24)',
+    muted_toast:(h)=>`🔇 ปิดเสียง ${h}ชม.`,unban_done:'✅ ยกเลิกแบนสำเร็จ',ban_prompt_text:'เหตุผลในการแบน (ไม่บังคับ):',banned_toast:'🚫 ผู้ใช้ถูกแบน',
+    deleted_label_admin:'ลบแล้ว',unpin_btn:'ถอดหมุด',pin_btn:'📌 ปักหมุด',del_post_admin:'ลบ',no_posts_admin:'ไม่มีโพสต์',
+    no_announcements:'ไม่มีประกาศ',hide_ann:'ซ่อน',show_ann:'แสดง',
+    stat_users:'ผู้ใช้',stat_posts_admin:'โพสต์',stat_comments:'ความคิดเห็น',stat_posts_today:'โพสต์วันนี้',stat_users_today:'ผู้ใช้ใหม่วันนี้',
+    no_notifs:'ไม่มีการแจ้งเตือน 🔕',notif_just_now:'เมื่อกี้นี้',
+    notif_min_ago:(m)=>`${m} นาทีที่แล้ว`,notif_hr_ago:(h)=>`${h} ชม. ที่แล้ว`,notif_day_ago:(d)=>`${d} วันที่แล้ว`,
+    notif_someone:'ใครบางคน',liked_your_post:(n)=>`${n} ชอบโพสต์ของคุณ`,commented_your_post:(n)=>`${n} แสดงความคิดเห็นในโพสต์ของคุณ`,followed_you:(n)=>`${n} ติดตามคุณแล้ว`,
+    notif_like_def:'มีคนชอบโพสต์ของคุณ',notif_comment_def:'มีความคิดเห็นใหม่',notif_reply_def:'มีคนตอบกลับความคิดเห็นของคุณ',
+    notif_follow_def:'คุณมีผู้ติดตามใหม่',notif_mute_def:'คุณถูกปิดเสียง',notif_ban_def:'บัญชีถูกแบน',
+    notif_system_def:'การแจ้งเตือนจากระบบ',notif_acc_def:'รายงานได้รับการยอมรับ',notif_dis_def:'รายงานถูกปฏิเสธ',
+    notif_bug_def:'รายงานบักใหม่',notif_generic:'การแจ้งเตือน',
+    new_posts_banner:(n)=>`▲ +${n} โพสต์ใหม่ — แตะเพื่อโหลด`,new_comments_ind:(n)=>`▼ ${n} ความคิดเห็นใหม่ — แตะ`,
+    bug_sending:'กำลังส่ง…',bug_steps_prefix:'ขั้นตอน: ',loading_error:'ข้อผิดพลาดในการโหลด',
+    nav_forum:'💬 ฟอรัม',forum_filter_all:'ทั้งหมด',forum_new_btn:'✏️ โพสต์',forum_search_ph:'🔍 ค้นหาโพสต์ แฮชแท็ก…',
+    auth_sub:'เข้าสู่ระบบหรือสมัคร — ฟอรัมและซิงค์ข้อมูล',auth_tab_login:'เข้าสู่ระบบ',auth_tab_reg:'สมัคร',
+    auth_nick_ph:'ชื่อเล่น',auth_pass_ph:'รหัสผ่าน',auth_nick_reg_ph:'ชื่อเล่น (2–20 ตัวอักษร)',
+    auth_pass_hint:'อย่างน้อย 8 ตัวอักษร · อย่างน้อยหนึ่งอักขระพิเศษ (!@#$%^&*…)',auth_or:'หรือ',auth_guest_btn:'👤 ดำเนินการในฐานะแขก',
+    auth_login_btn:'เข้าสู่ระบบ',auth_reg_btn:'สร้างบัญชี',auth_logging_in:'กำลังเข้าสู่ระบบ…',auth_creating:'กำลังสร้าง…',
+    auth_fill_all:'กรอกข้อมูลทุกช่อง',auth_wrong_creds:'ชื่อเล่นหรือรหัสผ่านไม่ถูกต้อง',
+    auth_nick_taken:'ชื่อเล่นนี้ถูกใช้แล้ว',auth_too_many:'พยายามมากเกินไป รอสักครู่',guest_badge:'แขก',
+    cp_modal_title:'✏️ โพสต์ใหม่',cp_mode_label:'โหมด *',cp_title_label:'หัวข้อ *',cp_title_ph:'คำอธิบายสั้นๆ เกี่ยวกับบิลด์หรือกลไก…',
+    cp_content_label:'เนื้อหา *',cp_content_ph:'เล่าเกี่ยวกับบิลด์ วิธีใช้ โหนดที่ควรเลือก…',
+    cp_nodes_label:'โหนด / บล็อก (ใช้ในบิลด์)',cp_hashtags_label:'แฮชแท็ก',cp_hashtags_ph:'#ดาเมจ #คอมโบ #สปีด — คั่นด้วยช่องว่าง',
+    cp_media_label:'มีเดีย (รูป/วิดีโอ สูงสุด 10 MB ต่อไฟล์)',cp_media_upload:'📎 กดเพื่อแนบรูปหรือวิดีโอ',
+    cp_rules_text:'ฉันอ่านกฎชุมชนแล้วและยืนยันว่าโพสต์ของฉันไม่มีการดูถูก สแปม หรือเนื้อหา NSFW',
+    notif_panel_title:'🔔 การแจ้งเตือน',notif_mark_all:'ทำเครื่องหมายทั้งหมดว่าอ่านแล้ว',
+    admin_panel_title:'🔧 แผงผู้ดูแลระบบ',admin_tab_reports:'🚩 รายงาน',admin_tab_bugs:'🐛 บัก',admin_tab_users:'👥 ผู้ใช้',
+    admin_tab_posts:'📌 โพสต์',admin_tab_announce:'📣 ประกาศ',admin_tab_stats:'📊 สถิติ',
+    settings_title:'⚙ การตั้งค่า',settings_accent:'🎨 สีเน้น',settings_font:'🔤 ฟอนต์อินเทอร์เฟซ',settings_interface:'⚡ อินเทอร์เฟซ',
     mode_meta: {
       skill:{blocksTitle:'คู่มือโหนด Skill Builder', blocksDesc:'คลิกที่โหนดเพื่อดูทุกฟิลด์ สีบอกหมวดหมู่', ideasTitle:'ไอเดียสำหรับ Skill Builder', ideasDesc:'เลือกโหนดที่อยากใช้แล้วหมุนรูเล็ต — ได้ไอเดียสกิล', aiTitle:'ผู้ช่วย AI Skill Builder', aiDesc:'ถามเหมือนถามคนที่สร้างมูฟเซ็ตมาเป็นร้อย: เรื่องโหนด Tag-logic บัก พิกัด แอนิเมชัน และวิชวล', chatHeader:'ผู้ช่วย Skill Builder', placeholder:'ถามเกี่ยวกับโหนดหรือกลไก…', navTab:'Nodes', searchPh:'ค้นหาโหนด…', blockCount:(s,t)=>`${s} จาก ${t} โหนด`, aiEmptyState:'ถามคำถามหรือแนบสกรีนช็อตการตั้งค่าโหนด', takeIdeaBtn:'🎲 รับไอเดียกับโหนดนี้', ideasSearchPh:'ค้นหาชื่อโหนด…', spinHintHas:'ไอเดียจะเกี่ยวกับอย่างน้อยหนึ่งโหนดที่เลือก', spinHintEmpty:'หมุนโดยไม่ต้องเลือกก็ได้ — จะออกไอเดียสุ่ม'},
       build:{blocksTitle:'คู่มือบล็อก Builder', blocksDesc:'การก่อสร้าง บล็อก Input/Output/Interaction และ Logic Gates คลิกบล็อกเพื่อดูฟิลด์', ideasTitle:'ไอเดียสำหรับ Builder', ideasDesc:'เลือกบล็อกและเกตที่อยากใช้แล้วหมุนรูเล็ต — ได้ไอเดียกลไกหรือห้อง', aiTitle:'ผู้ช่วย AI Builder', aiDesc:'ถามเรื่องบล็อก สัญญาณ ID เกต และวงจรลอจิกสำเร็จรูป', chatHeader:'ผู้ช่วย Builder', placeholder:'ถามเกี่ยวกับบล็อก เกต หรือวงจร…', navTab:'บล็อก', searchPh:'ค้นหาบล็อก…', blockCount:(s,t)=>`${s} จาก ${t} บล็อก`, aiEmptyState:'ถามคำถามหรือแนบสกรีนช็อตการตั้งค่าบล็อก', takeIdeaBtn:'🎲 รับไอเดียกับบล็อกนี้', ideasSearchPh:'ค้นหาชื่อบล็อก…', spinHintHas:'ไอเดียจะเกี่ยวกับอย่างน้อยหนึ่งบล็อกที่เลือก', spinHintEmpty:'หมุนโดยไม่ต้องเลือกก็ได้ — จะออกไอเดียสุ่ม'},
@@ -2632,6 +2957,57 @@ const STRINGS = {
     ai_warn_vpn_label:'Problema sa koneksyon',
     ai_warn_vpn:'Ang ilang providers ay nagba-block ng Cloudflare. Kung hindi sumasagot ang AI pero okay ang internet — i-on ang VPN. <b>Cloudflare WARP</b> (1.1.1.1 app) ay libre.',
     image_alt:'Naka-attach na larawan', media_thumb_alt:'Larawan ng natapos na ideya',
+    forum_no_posts:'Wala pang post. Maging una! ✍️',
+    post_mode_both:'⚔️🧱 Pareho',post_pinned:'📌 Naka-pin',show_more:'Ipakita pa ▾',collapse_text:'Itago ▴',popular_label:'Sikat:',mini_posts:'mga post',mini_likes:'mga like',
+    post_not_found:'Hindi nahanap ang post',comment_ph:'Magsulat ng komento…',attach_photo_title:'Mag-attach ng larawan',send_btn:'Ipadala',
+    guest_login_cta:'Mag-login o mag-sign up',guest_login_suffix:' para mag-komento.',muted_comment_msg:'Ikaw ay naka-mute at hindi maaaring mag-komento.',
+    report_btn:'🚩 I-report',del_post_btn:'🗑 Burahin',share_btn:'🔗 I-share',comments_header:'Mga Komento',author_badge:'May-akda',reply_btn:'↩ Sumagot',
+    error_prefix:'Error: ',del_comment_confirm:'Burahin ang komento?',del_error:'Error sa pagtanggal: ',reply_ph:'Sumagot…',
+    cooldown_msg:(w)=>`Maghintay pa ng ${w} seg. — isang post bawat minuto lang.`,
+    publishing_text:'Nipo-post…',uploading_media:(i,t)=>`Ina-upload ang media (${i}/${t})…`,post_btn_label:'I-post',
+    code_ph:'code',quote_ph:'quote',login_for_profile:'Mag-login para makita ang profile',profile_not_found:'Hindi nahanap ang profile',
+    my_profile_label:'Aking profile',profile_label:'Profile',verified_tip:'Na-verify na account',unfollow_label:'I-unfollow',follow_label:'I-follow',
+    friends_label:'🤝 Mga Kaibigan',edit_profile_btn:'✏️ I-edit',nick_label:'Palayaw',username_ph:'mga titik, numero at _',
+    bio_label:'Tungkol sa akin',bio_ph:'Ilang salita tungkol sa iyo…',link_label:'Link',verified_only_note:'✓ para sa verified lang',
+    cancel_btn:'Kanselahin',save_btn:'I-save',following_label:'Sinusundan',followers_label:'Mga Follower',likes_label:'Mga Like',
+    member_since_label:'Miyembro mula',my_posts_label:'Aking mga post',posts_label_profile:'Mga Post',active_label:'aktibo',deleted_label:'nabura',
+    no_posts_profile:'Wala pang post',username_err:'@username: 3–20 karakter, Latin na titik, numero at _',save_err:'Error sa pag-save: ',
+    followers_title:'Mga Follower',following_title:'Sinusundan',no_reports:'Walang ulat ✅',deleted_post_ref:'Naburing post',
+    accept_btn:'Tanggapin',dismiss_btn:'Itakwil',report_acc_toast:'✅ Tinanggap ang ulat',report_dis_toast:'❌ Tinatanggihan ang ulat',
+    nobody_found:'Walang nahanap',col_nick_id:'Nick / ID',col_posts:'Mga Post',col_status:'Status',col_actions:'Mga Aksyon',
+    col_reports:'Mga Ulat',col_from:'Mula sa',col_reasons:'Mga Dahilan',col_post:'Post',col_author:'May-akda',
+    status_verified:'✓ Na-verify',status_banned:'🚫 Na-ban',status_muted:'🔇 Naka-mute',
+    rm_verify_btn:'Alisin ✓',verify_btn:'✓ I-verify',unmute_btn:'I-unmute',mute_btn:'I-mute',unban_btn:'I-unban',ban_btn:'I-ban',
+    mute_removed:'🔊 Inalis ang mute',mute_prompt_text:'Ilang oras i-mute?\n(hal. 24)',
+    muted_toast:(h)=>`🔇 Na-mute ng ${h}h`,unban_done:'✅ Na-unban na',ban_prompt_text:'Dahilan ng ban (opsyonal):',banned_toast:'🚫 Na-ban ang user',
+    deleted_label_admin:'NABURA',unpin_btn:'I-unpin',pin_btn:'📌 I-pin',del_post_admin:'Burahin',no_posts_admin:'Walang post',
+    no_announcements:'Walang anunsyo',hide_ann:'Itago',show_ann:'Ipakita',
+    stat_users:'Mga User',stat_posts_admin:'Mga Post',stat_comments:'Mga Komento',stat_posts_today:'Mga post ngayon',stat_users_today:'Mga bagong user ngayon',
+    no_notifs:'Walang notification 🔕',notif_just_now:'ngayon lang',
+    notif_min_ago:(m)=>`${m} min. nakaraan`,notif_hr_ago:(h)=>`${h} oras nakaraan`,notif_day_ago:(d)=>`${d} araw nakaraan`,
+    notif_someone:'May isang tao',liked_your_post:(n)=>`Ni-like ni ${n} ang iyong post`,commented_your_post:(n)=>`Nag-komento si ${n} sa iyong post`,followed_you:(n)=>`Sinusundan ka na ni ${n}`,
+    notif_like_def:'May nag-like sa iyong post',notif_comment_def:'Bagong komento sa iyong post',notif_reply_def:'May sumagot sa iyong komento',
+    notif_follow_def:'May bagong follower ka',notif_mute_def:'Ikaw ay na-mute',notif_ban_def:'Na-ban ang account',
+    notif_system_def:'System notification',notif_acc_def:'Tinanggap ang ulat',notif_dis_def:'Tinatanggihan ang ulat',
+    notif_bug_def:'Bagong ulat ng bug',notif_generic:'Notification',
+    new_posts_banner:(n)=>`▲ +${n} bagong post — pindutin para i-refresh`,new_comments_ind:(n)=>`▼ ${n} bagong komento — pindutin`,
+    bug_sending:'Nagpapadala…',bug_steps_prefix:'Mga hakbang: ',loading_error:'Error sa paglo-load',
+    nav_forum:'💬 Forum',forum_filter_all:'Lahat',forum_new_btn:'✏️ Post',forum_search_ph:'🔍 Maghanap ng post, hashtag…',
+    auth_sub:'Mag-login o mag-sign up — forum at sync',auth_tab_login:'Mag-login',auth_tab_reg:'Mag-sign up',
+    auth_nick_ph:'Palayaw',auth_pass_ph:'Password',auth_nick_reg_ph:'Palayaw (2–20 karakter)',
+    auth_pass_hint:'Min. 8 karakter · kahit isang espesyal na karakter (!@#$%^&*…)',auth_or:'o',auth_guest_btn:'👤 Magpatuloy bilang bisita',
+    auth_login_btn:'Mag-login',auth_reg_btn:'Gumawa ng account',auth_logging_in:'Nagla-login…',auth_creating:'Gumagawa…',
+    auth_fill_all:'Punan ang lahat ng field',auth_wrong_creds:'Maling palayaw o password',
+    auth_nick_taken:'Ginagamit na ang palayaw na ito',auth_too_many:'Maraming pagsubok, maghintay ng isang minuto',guest_badge:'Bisita',
+    cp_modal_title:'✏️ Bagong post',cp_mode_label:'Mode *',cp_title_label:'Pamagat *',cp_title_ph:'Maikling paglalarawan ng build o mechanic…',
+    cp_content_label:'Nilalaman *',cp_content_ph:'Ipaliwanag ang build, kung paano gamitin, kung aling nodes ang pipiliin…',
+    cp_nodes_label:'Mga Node / block (ginamit sa build)',cp_hashtags_label:'Mga Hashtag',cp_hashtags_ph:'#damage #combo #bilis — hiwalay sa pamamagitan ng espasyo',
+    cp_media_label:'Media (larawan/video, max 10 MB bawat isa)',cp_media_upload:'📎 Pindutin para mag-attach ng larawan o video',
+    cp_rules_text:'Nabasa ko na ang mga patakaran ng komunidad at kinukumpirma ko na ang aking post ay walang insulto, spam o NSFW na nilalaman',
+    notif_panel_title:'🔔 Mga Notification',notif_mark_all:'Markahan lahat bilang nabasa',
+    admin_panel_title:'🔧 Admin Panel',admin_tab_reports:'🚩 Mga Ulat',admin_tab_bugs:'🐛 Mga Bug',admin_tab_users:'👥 Mga User',
+    admin_tab_posts:'📌 Mga Post',admin_tab_announce:'📣 Mga Anunsyo',admin_tab_stats:'📊 Estadistika',
+    settings_title:'⚙ Mga Setting',settings_accent:'🎨 Kulay ng accent',settings_font:'🔤 Font ng interface',settings_interface:'⚡ Interface',
     mode_meta: {
       skill:{blocksTitle:'Skill Builder node reference', blocksDesc:'I-click ang node para makita ang lahat ng field. Ang kulay ay nagpapakita ng kategorya.', ideasTitle:'Mga Ideya para sa Skill Builder', ideasDesc:'Pumili ng nodes na gusto mong gamitin at i-spin ang roulette para makakuha ng skill idea.', aiTitle:'Skill Builder AI Assistant', aiDesc:'Magtanong tulad ng sa taong nakapagbuo ng daan-daang custom moveset: tungkol sa nodes, Tag logic, bugs, coordinates, animations, at visuals.', chatHeader:'Skill Builder Assistant', placeholder:'Magtanong tungkol sa anumang node o mechanic…', navTab:'Mga Node', searchPh:'Maghanap ng node…', blockCount:(s,t)=>`${s} sa ${t} nodes`, aiEmptyState:'Magtanong o mag-attach ng screenshot ng node settings.', takeIdeaBtn:'🎲 Kumuha ng ideya gamit ang node na ito', ideasSearchPh:'Maghanap sa pangalan ng node…', spinHintHas:'Ang ideya ay gagamitin ng kahit isa sa mga napiling node.', spinHintEmpty:'Puwede ring mag-spin nang walang napili — makakatanggap ng random na ideya.'},
       build:{blocksTitle:'Builder block reference', blocksDesc:'Konstruksyon, Input/Output/Interaction blocks, at Logic Gates. I-click ang block para makita ang mga field nito.', ideasTitle:'Mga Ideya para sa Builder', ideasDesc:'Pumili ng blocks at gates na gusto mong gamitin at i-spin ang roulette para sa mechanic o room idea.', aiTitle:'Builder AI Assistant', aiDesc:'Magtanong tungkol sa blocks, ID signals, gates, at ready-made logic circuits.', chatHeader:'Builder Assistant', placeholder:'Magtanong tungkol sa block, gate, o circuit…', navTab:'Mga Block', searchPh:'Maghanap ng block…', blockCount:(s,t)=>`${s} sa ${t} blocks`, aiEmptyState:'Magtanong o mag-attach ng screenshot ng block settings.', takeIdeaBtn:'🎲 Kumuha ng ideya gamit ang block na ito', ideasSearchPh:'Maghanap sa pangalan ng block…', spinHintHas:'Ang ideya ay gagamitin ng kahit isa sa mga napiling block.', spinHintEmpty:'Puwede ring mag-spin nang walang napili — makakatanggap ng random na ideya.'},
@@ -2686,9 +3062,378 @@ const STRINGS = {
     ai_warn_vpn_label:'مشاكل الاتصال',
     ai_warn_vpn:'بعض المزودين بيحجبوا Cloudflare. لو AI مش بيرد والإنترنت شغال — شغّل VPN. <b>Cloudflare WARP</b> (تطبيق 1.1.1.1) مجاني.',
     image_alt:'صورة مرفقة', media_thumb_alt:'صورة الفكرة المنجزة',
+    forum_no_posts:'لا يوجد بوستات بعد. كن أول واحد! ✍️',
+    post_mode_both:'⚔️🧱 كلاهما',post_pinned:'📌 مثبّت',show_more:'عرض المزيد ▾',collapse_text:'طيّ ▴',popular_label:'الأكثر شيوعاً:',mini_posts:'بوستات',mini_likes:'إعجابات',
+    post_not_found:'البوست مش موجود',comment_ph:'اكتب تعليق…',attach_photo_title:'ارفق صورة',send_btn:'إرسال',
+    guest_login_cta:'سجّل دخول أو اشترك',guest_login_suffix:' لتعليق.',muted_comment_msg:'أنت مكتوم ولا تستطيع التعليق.',
+    report_btn:'🚩 إبلاغ',del_post_btn:'🗑 حذف',share_btn:'🔗 مشاركة',comments_header:'التعليقات',author_badge:'الكاتب',reply_btn:'↩ رد',
+    error_prefix:'خطأ: ',del_comment_confirm:'حذف التعليق؟',del_error:'خطأ في الحذف: ',reply_ph:'ردّ…',
+    cooldown_msg:(w)=>`انتظر ${w} ثانية — يمكنك النشر مرة في الدقيقة.`,
+    publishing_text:'جاري النشر…',uploading_media:(i,t)=>`رفع الوسائط (${i}/${t})…`,post_btn_label:'نشر',
+    code_ph:'كود',quote_ph:'اقتباس',login_for_profile:'سجّل دخول لعرض الملف الشخصي',profile_not_found:'الملف الشخصي غير موجود',
+    my_profile_label:'ملفي الشخصي',profile_label:'الملف الشخصي',verified_tip:'حساب موثّق',unfollow_label:'إلغاء المتابعة',follow_label:'متابعة',
+    friends_label:'🤝 أصدقاء',edit_profile_btn:'✏️ تعديل',nick_label:'الاسم المستعار',username_ph:'حروف وأرقام و _',
+    bio_label:'عني',bio_ph:'كلمات قليلة عن نفسك…',link_label:'رابط',verified_only_note:'✓ للموثّقين فقط',
+    cancel_btn:'إلغاء',save_btn:'حفظ',following_label:'المتابَعون',followers_label:'المتابعون',likes_label:'إعجابات',
+    member_since_label:'عضو منذ',my_posts_label:'بوستاتي',posts_label_profile:'البوستات',active_label:'نشط',deleted_label:'محذوف',
+    no_posts_profile:'لا يوجد بوستات',username_err:'@username: 3–20 حرف، حروف لاتينية وأرقام و _',save_err:'خطأ في الحفظ: ',
+    followers_title:'المتابعون',following_title:'المتابَعون',no_reports:'لا يوجد إبلاغات ✅',deleted_post_ref:'بوست محذوف',
+    accept_btn:'قبول',dismiss_btn:'رفض',report_acc_toast:'✅ تم قبول الإبلاغ',report_dis_toast:'❌ تم رفض الإبلاغ',
+    nobody_found:'لم يُعثر على أحد',col_nick_id:'Nick / ID',col_posts:'البوستات',col_status:'الحالة',col_actions:'الإجراءات',
+    col_reports:'الإبلاغات',col_from:'من',col_reasons:'الأسباب',col_post:'البوست',col_author:'الكاتب',
+    status_verified:'✓ موثّق',status_banned:'🚫 محظور',status_muted:'🔇 مكتوم',
+    rm_verify_btn:'إزالة ✓',verify_btn:'✓ توثيق',unmute_btn:'رفع الكتم',mute_btn:'كتم',unban_btn:'رفع الحظر',ban_btn:'حظر',
+    mute_removed:'🔊 تم رفع الكتم',mute_prompt_text:'لكم ساعة تكتمه؟\n(مثلاً 24)',
+    muted_toast:(h)=>`🔇 مكتوم لـ ${h}س`,unban_done:'✅ تم رفع الحظر',ban_prompt_text:'سبب الحظر (اختياري):',banned_toast:'🚫 تم حظر المستخدم',
+    deleted_label_admin:'محذوف',unpin_btn:'إلغاء التثبيت',pin_btn:'📌 تثبيت',del_post_admin:'حذف',no_posts_admin:'لا يوجد بوستات',
+    no_announcements:'لا يوجد إعلانات',hide_ann:'إخفاء',show_ann:'عرض',
+    stat_users:'المستخدمون',stat_posts_admin:'البوستات',stat_comments:'التعليقات',stat_posts_today:'بوستات اليوم',stat_users_today:'مستخدمون جدد اليوم',
+    no_notifs:'لا يوجد إشعارات 🔕',notif_just_now:'الآن',
+    notif_min_ago:(m)=>`منذ ${m} د`,notif_hr_ago:(h)=>`منذ ${h} س`,notif_day_ago:(d)=>`منذ ${d} يوم`,
+    notif_someone:'أحدهم',liked_your_post:(n)=>`${n} أعجبه بوستك`,commented_your_post:(n)=>`${n} علّق على بوستك`,followed_you:(n)=>`${n} بدأ متابعتك`,
+    notif_like_def:'أحدهم أعجبه بوستك',notif_comment_def:'تعليق جديد على بوستك',notif_reply_def:'أحدهم ردّ على تعليقك',
+    notif_follow_def:'لديك متابع جديد',notif_mute_def:'تم كتمك',notif_ban_def:'الحساب محظور',
+    notif_system_def:'إشعار النظام',notif_acc_def:'تم قبول الإبلاغ',notif_dis_def:'تم رفض الإبلاغ',
+    notif_bug_def:'تقرير خلل جديد',notif_generic:'إشعار',
+    new_posts_banner:(n)=>`▲ +${n} بوست جديد — اضغط للتحديث`,new_comments_ind:(n)=>`▼ ${n} تعليق جديد — اضغط`,
+    bug_sending:'جاري الإرسال…',bug_steps_prefix:'الخطوات: ',loading_error:'خطأ في التحميل',
+    nav_forum:'💬 المنتدى',forum_filter_all:'الكل',forum_new_btn:'✏️ بوست',forum_search_ph:'🔍 ابحث في البوستات والهاشتاقات…',
+    auth_sub:'سجّل دخول أو أنشئ حساباً — المنتدى والمزامنة',auth_tab_login:'دخول',auth_tab_reg:'تسجيل',
+    auth_nick_ph:'الاسم المستعار',auth_pass_ph:'كلمة المرور',auth_nick_reg_ph:'الاسم المستعار (2–20 حرف)',
+    auth_pass_hint:'8 حروف على الأقل · رمز خاص واحد على الأقل (!@#$%^&*…)',auth_or:'أو',auth_guest_btn:'👤 متابعة كضيف',
+    auth_login_btn:'دخول',auth_reg_btn:'إنشاء حساب',auth_logging_in:'جاري الدخول…',auth_creating:'جاري الإنشاء…',
+    auth_fill_all:'امل جميع الحقول',auth_wrong_creds:'اسم مستعار أو كلمة مرور خاطئة',
+    auth_nick_taken:'هذا الاسم المستعار مستخدم',auth_too_many:'محاولات كثيرة، انتظر دقيقة',guest_badge:'ضيف',
+    cp_modal_title:'✏️ بوست جديد',cp_mode_label:'الوضع *',cp_title_label:'العنوان *',cp_title_ph:'وصف مختصر للبيلد أو الميكانيكا…',
+    cp_content_label:'المحتوى *',cp_content_ph:'اشرح البيلد وكيف تستخدمه وأي nodes تختار…',
+    cp_nodes_label:'الـ Nodes / البلوكات (المستخدمة في البيلد)',cp_hashtags_label:'الهاشتاقات',cp_hashtags_ph:'#ضرر #كومبو #سرعة — افصل بمسافة',
+    cp_media_label:'وسائط (صور/فيديو، حتى 10 MB لكل ملف)',cp_media_upload:'📎 اضغط لإرفاق صورة أو فيديو',
+    cp_rules_text:'قرأت قواعد المجتمع وأؤكد أن بوستي لا يحتوي على إهانات أو سبام أو محتوى NSFW',
+    notif_panel_title:'🔔 الإشعارات',notif_mark_all:'تعليم الكل كمقروء',
+    admin_panel_title:'🔧 لوحة الإدارة',admin_tab_reports:'🚩 الإبلاغات',admin_tab_bugs:'🐛 الأخطاء',admin_tab_users:'👥 المستخدمون',
+    admin_tab_posts:'📌 البوستات',admin_tab_announce:'📣 الإعلانات',admin_tab_stats:'📊 الإحصائيات',
+    settings_title:'⚙ الإعدادات',settings_accent:'🎨 لون التمييز',settings_font:'🔤 خط الواجهة',settings_interface:'⚡ الواجهة',
     mode_meta: {
       skill:{blocksTitle:'مرجع nodes الـ Skill Builder', blocksDesc:'اضغط على node لترى كل الحقول. اللون بيبيّن الفئة.', ideasTitle:'أفكار لـ Skill Builder', ideasDesc:'اختار nodes اللي عايز تستخدمها ودوّر العجلة — هتطلع فكرة مهارة.', aiTitle:'مساعد AI لـ Skill Builder', aiDesc:'اسأل زي ما تسأل حد بنى مية moveset مخصصة: عن nodes، منطق Tag، bugs، الإحداثيات، الأنيميشن والبصريات.', chatHeader:'مساعد Skill Builder', placeholder:'اسأل عن أي node أو ميكانيكا…', navTab:'Nodes', searchPh:'ابحث عن node…', blockCount:(s,t)=>`${s} من ${t} node`, aiEmptyState:'اطرح سؤالاً أو ارفق screenshot لإعدادات الـ node.', takeIdeaBtn:'🎲 فكرة مع هذا الـ node', ideasSearchPh:'ابحث باسم الـ node…', spinHintHas:'الفكرة هتتعلق بأقل node واحد من اللي اخترتهم.', spinHintEmpty:'ممكن تدوّر من غير اختيار — هتطلع فكرة عشوائية.'},
       build:{blocksTitle:'مرجع بلوكات Builder', blocksDesc:'البناء، بلوكات Input/Output/Interaction وLogic Gates. اضغط على بلوك لترى حقوله.', ideasTitle:'أفكار لـ Builder', ideasDesc:'اختار بلوكات وgates اللي عايز تستخدمها ودوّر العجلة — هتطلع فكرة ميكانيكا أو غرفة.', aiTitle:'مساعد AI لـ Builder', aiDesc:'اسأل عن البلوكات، إشارات ID، gates والدوائر المنطقية الجاهزة.', chatHeader:'مساعد Builder', placeholder:'اسأل عن بلوك، gate، أو دايرة…', navTab:'البلوكات', searchPh:'ابحث عن بلوك…', blockCount:(s,t)=>`${s} من ${t} بلوك`, aiEmptyState:'اطرح سؤالاً أو ارفق screenshot لإعدادات البلوك.', takeIdeaBtn:'🎲 فكرة مع هذا البلوك', ideasSearchPh:'ابحث باسم البلوك…', spinHintHas:'الفكرة هتتعلق بأقل بلوك واحد من اللي اخترتهم.', spinHintEmpty:'ممكن تدوّر من غير اختيار — هتطلع فكرة عشوائية.'},
+    },
+  },
+  es: {
+    nav_home:'Inicio', nav_blocks:'Bloques', nav_ai:'Asistente IA', nav_ideas:'Ideas',
+    hero_h1:'Crea habilidades y mecánicas,<br>sin adivinar <span>parámetros</span>',
+    hero_lead:'Dos modos en un solo lugar: <b>Skill Builder</b> para habilidades personalizadas y <b>Builder normal</b> — desde el bloque básico hasta Input/Output/Interaction y Logic Gates. Cambia de modo en el menú superior.',
+    hero_sub:'Completamente gratis, sin registro — todo el sitio funciona en el navegador.',
+    beta_notice:'La app está en <b>beta</b> — las funciones, el diseño y el contenido pueden cambiar. Si algo falla, es normal — lo arreglaremos.',
+    feature1_title:'Referencia de bloques', feature1_desc:'En Skill Builder: ANIM, HITBOX, VISUAL, TAG y más. En Builder: Part, Moveset Block, AND/NOT/XOR Gate y todo el motor de señales ID.',
+    feature2_title:'Asistente IA', feature2_desc:'Un asistente dedicado para cada modo — pregunta sobre nodos de habilidades o logic gates y circuitos listos.',
+    feature3_title:'Ideas y Ruleta', feature3_desc:'Elige los bloques que quieres usar, gira la ruleta y obtén una idea de habilidad o mecánica lista — luego pregunta a la IA cómo construirla.',
+    stat_blocks:'bloques en la referencia', stat_ideas:'ideas para la ruleta', stat_modes:'modos en un lugar', stat_cost:'costo de uso',
+    hero_panel_label:'Vista previa de la cadena', hero_panel_cta:'Abrir referencia →',
+    blocks_search_ph:'Buscar bloque…',
+    blockcount:(shown,total)=>`Mostrando ${shown} de ${total} bloques`,
+    legend_mode_label:'Modo de referencia',
+    ai_clear_btn:'Limpiar chat', ai_empty_state:'Haz una pregunta o adjunta una captura de la configuración del bloque.', ai_send_btn:'Enviar',
+    ai_attach_title:'Adjuntar foto', ai_remove_photo_title:'Quitar foto',
+    take_idea_btn:'🎲 Obtener idea con este bloque',
+    ideas_search_ph:'Buscar por nombre de bloque…',
+    no_blocks_found:'Nada encontrado',
+    picker_hint:(n,max)=>`Seleccionado: ${n} / ${max}`,
+    spin_btn:'🎲 Girar la ruleta',
+    spin_hint_has:'La idea usará al menos uno de los bloques seleccionados.',
+    spin_hint_empty:'También puedes girar sin seleccionar nada — saldrá una idea aleatoria.',
+    ask_ai_btn:'💬 Preguntar a la IA', fav_btn_add:'☆ Añadir a favoritos', fav_btn_added:'★ En favoritos', complete_btn:'✅ ¡Hecho!', complete_btn_done:'✅ Completado',
+    fav_section_title:'Favoritos', done_section_title:'Completados',
+    sort_asc:'Dificultad ↑', sort_desc:'Dificultad ↓',
+    fav_empty:'Nada guardado aún — gira la ruleta y marca las ideas que te gusten.',
+    done_empty:'Nada completado aún — marca ideas con el botón "¡Hecho!".',
+    fav_toggle_done:'✅ Marcar como completado', fav_remove:'Quitar de favoritos',
+    done_edit:'📎 Cambiar foto/video', done_remove:'Quitar de completados',
+    modal_attach_btn:'📎 Adjuntar foto/video', modal_confirm_btn:'✅ ¡Hecho!',
+    footer_text:'Nodecraft — guía de fans no oficial de Jujutsu Shenanigans Build Mode.<br>No afiliado con el desarrollador del juego.',
+    key_missing:'IA temporalmente no disponible.',
+    no_answer:'No se pudo obtener respuesta. Intenta reformular la pregunta.',
+    cors_error:'No se pudo conectar con la IA. Si tu internet funciona — activa una VPN: Cloudflare WARP (app 1.1.1.1) es gratuito.',
+    export_btn:'💾 Guardar progreso',
+    import_btn:'📂 Restaurar progreso',
+    groq_error:(m)=>`Error IA: ${m}`,
+    rate_limit_error:'⏳ Límite de solicitudes alcanzado. Intenta de nuevo en unos minutos.',
+    chat_rate_note:'⚡ IA gratuita · pueden aplicar límites temporales',
+    copyright:'© F1cus — prohibida la copia y uso de materiales sin permiso',
+    ai_warn_title:'Sobre el Asistente IA',
+    ai_warn_unstable_label:'Límite diario',
+    ai_warn_unstable:'1.500 solicitudes por día, 15 por minuto. Si la IA dejó de responder — el límite se agotó, espera hasta el día siguiente.',
+    ai_warn_limits_label:'Precisión',
+    ai_warn_limits:'La IA conoce bien las mecánicas del juego, pero puede equivocarse en valores específicos de campos. Verifica los detalles importantes en la referencia de bloques.',
+    ai_warn_vpn_label:'Problemas de conexión',
+    ai_warn_vpn:'Algunos proveedores bloquean Cloudflare. Si la IA no responde pero tu internet funciona — activa una VPN. <b>Cloudflare WARP</b> (app 1.1.1.1) es gratuito.',
+    image_alt:'Foto adjunta', media_thumb_alt:'Foto de la idea completada',
+    forum_no_posts:'Aún no hay publicaciones. ¡Sé el primero! ✍️',
+    post_mode_both:'⚔️🧱 Ambos',post_pinned:'📌 Fijado',show_more:'Mostrar más ▾',collapse_text:'Contraer ▴',popular_label:'Popular:',mini_posts:'publicaciones',mini_likes:'me gusta',
+    post_not_found:'Publicación no encontrada',comment_ph:'Escribe un comentario…',attach_photo_title:'Adjuntar foto',send_btn:'Enviar',
+    guest_login_cta:'Inicia sesión o regístrate',guest_login_suffix:' para comentar.',muted_comment_msg:'Estás silenciado y no puedes comentar.',
+    report_btn:'🚩 Reportar',del_post_btn:'🗑 Eliminar',share_btn:'🔗 Compartir',comments_header:'Comentarios',author_badge:'Autor',reply_btn:'↩ Responder',
+    error_prefix:'Error: ',del_comment_confirm:'¿Eliminar comentario?',del_error:'Error al eliminar: ',reply_ph:'Responder…',
+    cooldown_msg:(w)=>`Espera ${w} seg. más — puedes publicar una vez por minuto.`,
+    publishing_text:'Publicando…',uploading_media:(i,t)=>`Subiendo media (${i}/${t})…`,post_btn_label:'Publicar',
+    code_ph:'código',quote_ph:'cita',login_for_profile:'Inicia sesión para ver el perfil',profile_not_found:'Perfil no encontrado',
+    my_profile_label:'Mi perfil',profile_label:'Perfil',verified_tip:'Cuenta verificada',unfollow_label:'Dejar de seguir',follow_label:'Seguir',
+    friends_label:'🤝 Amigos',edit_profile_btn:'✏️ Editar',nick_label:'Apodo',username_ph:'letras, números y _',
+    bio_label:'Sobre mí',bio_ph:'Unas palabras sobre ti…',link_label:'Enlace',verified_only_note:'✓ solo para verificados',
+    cancel_btn:'Cancelar',save_btn:'Guardar',following_label:'Siguiendo',followers_label:'Seguidores',likes_label:'Me gusta',
+    member_since_label:'Miembro desde',my_posts_label:'Mis publicaciones',posts_label_profile:'Publicaciones',active_label:'activas',deleted_label:'eliminadas',
+    no_posts_profile:'Aún no hay publicaciones',username_err:'@username: 3–20 caracteres, solo letras latinas, números y _',save_err:'Error al guardar: ',
+    followers_title:'Seguidores',following_title:'Siguiendo',no_reports:'Sin reportes ✅',deleted_post_ref:'Publicación eliminada',
+    accept_btn:'Aceptar',dismiss_btn:'Rechazar',report_acc_toast:'✅ Reporte aceptado',report_dis_toast:'❌ Reporte rechazado',
+    nobody_found:'Nadie encontrado',col_nick_id:'Nick / ID',col_posts:'Publicaciones',col_status:'Estado',col_actions:'Acciones',
+    col_reports:'Reportes',col_from:'De',col_reasons:'Motivos',col_post:'Publicación',col_author:'Autor',
+    status_verified:'✓ Verificado',status_banned:'🚫 Baneado',status_muted:'🔇 Silenciado',
+    rm_verify_btn:'Quitar ✓',verify_btn:'✓ Verificar',unmute_btn:'Activar',mute_btn:'Silenciar',unban_btn:'Desbanear',ban_btn:'Banear',
+    mute_removed:'🔊 Silencio eliminado',mute_prompt_text:'¿Cuántas horas silenciar?\n(ej. 24)',
+    muted_toast:(h)=>`🔇 Silenciado por ${h}h`,unban_done:'✅ Desbaneo completado',ban_prompt_text:'Motivo del ban (opcional):',banned_toast:'🚫 Usuario baneado',
+    deleted_label_admin:'ELIMINADO',unpin_btn:'Desfijar',pin_btn:'📌 Fijar',del_post_admin:'Eliminar',no_posts_admin:'Sin publicaciones',
+    no_announcements:'Sin anuncios',hide_ann:'Ocultar',show_ann:'Mostrar',
+    stat_users:'Usuarios',stat_posts_admin:'Publicaciones',stat_comments:'Comentarios',stat_posts_today:'Publicaciones hoy',stat_users_today:'Nuevos usuarios hoy',
+    no_notifs:'Sin notificaciones 🔕',notif_just_now:'ahora mismo',
+    notif_min_ago:(m)=>`hace ${m} min.`,notif_hr_ago:(h)=>`hace ${h} h`,notif_day_ago:(d)=>`hace ${d} día${d===1?'':'s'}`,
+    notif_someone:'Alguien',liked_your_post:(n)=>`A ${n} le gustó tu publicación`,commented_your_post:(n)=>`${n} comentó tu publicación`,followed_you:(n)=>`${n} te empezó a seguir`,
+    notif_like_def:'A alguien le gustó tu publicación',notif_comment_def:'Nuevo comentario en tu publicación',notif_reply_def:'Alguien respondió a tu comentario',
+    notif_follow_def:'Tienes un nuevo seguidor',notif_mute_def:'Has sido silenciado',notif_ban_def:'Cuenta baneada',
+    notif_system_def:'Notificación del sistema',notif_acc_def:'Reporte aceptado',notif_dis_def:'Reporte rechazado',
+    notif_bug_def:'Nuevo informe de error',notif_generic:'Notificación',
+    new_posts_banner:(n)=>`▲ +${n} publicación${n===1?'':'es'} nueva${n===1?'':'s'} — toca para cargar`,
+    new_comments_ind:(n)=>`▼ ${n} comentario${n===1?'':'s'} nuevo${n===1?'':'s'} — toca`,
+    bug_sending:'Enviando…',bug_steps_prefix:'Pasos: ',loading_error:'Error al cargar',
+    nav_forum:'💬 Foro',forum_filter_all:'Todos',forum_new_btn:'✏️ Publicar',forum_search_ph:'🔍 Buscar publicaciones, hashtags…',
+    auth_sub:'Inicia sesión o crea una cuenta — foro y sincronización',auth_tab_login:'Iniciar sesión',auth_tab_reg:'Registrarse',
+    auth_nick_ph:'Apodo',auth_pass_ph:'Contraseña',auth_nick_reg_ph:'Apodo (2–20 caracteres)',
+    auth_pass_hint:'Mín. 8 caracteres · al menos un carácter especial (!@#$%^&*…)',auth_or:'o',auth_guest_btn:'👤 Continuar como invitado',
+    auth_login_btn:'Iniciar sesión',auth_reg_btn:'Crear cuenta',auth_logging_in:'Iniciando sesión…',auth_creating:'Creando cuenta…',
+    auth_fill_all:'Rellena todos los campos',auth_wrong_creds:'Apodo o contraseña incorrectos',
+    auth_nick_taken:'Este apodo ya está en uso',auth_too_many:'Demasiados intentos, espera un minuto',guest_badge:'Invitado',
+    cp_modal_title:'✏️ Nueva publicación',cp_mode_label:'Modo *',cp_title_label:'Título *',cp_title_ph:'Breve descripción del build o mecánica…',
+    cp_content_label:'Contenido *',cp_content_ph:'Cuéntanos sobre el build, cómo usarlo, qué nodos elegir…',
+    cp_nodes_label:'Nodos / bloques (usados en el build)',cp_hashtags_label:'Hashtags',cp_hashtags_ph:'#daño #combo #velocidad — separados por espacio',
+    cp_media_label:'Media (foto/video, máx. 10 MB cada uno)',cp_media_upload:'📎 Haz clic para adjuntar foto o video',
+    cp_rules_text:'He leído las reglas de la comunidad y confirmo que mi publicación no contiene insultos, spam, contenido NSFW ni infracciones de las normas de JJS Nodecraft',
+    notif_panel_title:'🔔 Notificaciones',notif_mark_all:'Marcar todas como leídas',
+    admin_panel_title:'🔧 Panel de administración',admin_tab_reports:'🚩 Reportes',admin_tab_bugs:'🐛 Errores',admin_tab_users:'👥 Usuarios',
+    admin_tab_posts:'📌 Publicaciones',admin_tab_announce:'📣 Anuncios',admin_tab_stats:'📊 Estadísticas',
+    settings_title:'⚙ Configuración',settings_accent:'🎨 Color de acento',settings_font:'🔤 Fuente de interfaz',settings_interface:'⚡ Interfaz',
+    mode_meta: {
+      skill:{blocksTitle:'Referencia de nodos Skill Builder', blocksDesc:'Toca un nodo para ver todos sus campos. El color indica la categoría.', ideasTitle:'Ideas para Skill Builder', ideasDesc:'Elige los nodos que quieres usar y gira la ruleta para obtener una idea de habilidad.', aiTitle:'Asistente IA Skill Builder', aiDesc:'Pregunta como a alguien que ha creado cientos de movesets: sobre nodos, lógica Tag, bugs, coordenadas, animaciones y visuales.', chatHeader:'Asistente Skill Builder', placeholder:'Pregunta sobre cualquier nodo o mecánica…', navTab:'Nodos', searchPh:'Buscar nodo…', blockCount:(s,t)=>`Mostrando ${s} de ${t} nodos`, aiEmptyState:'Haz una pregunta o adjunta una captura de la configuración del nodo.', takeIdeaBtn:'🎲 Obtener idea con este nodo', ideasSearchPh:'Buscar por nombre de nodo…', spinHintHas:'La idea usará al menos uno de los nodos seleccionados.', spinHintEmpty:'También puedes girar sin seleccionar nada — saldrá una idea aleatoria.'},
+      build:{blocksTitle:'Referencia de bloques Builder', blocksDesc:'Construcción, bloques Input/Output/Interaction y Logic Gates. Toca un bloque para ver sus campos.', ideasTitle:'Ideas para Builder', ideasDesc:'Elige los bloques y gates que quieres usar y gira la ruleta para obtener una idea de mecánica o sala.', aiTitle:'Asistente IA Builder', aiDesc:'Pregunta sobre bloques, señales ID, gates y circuitos lógicos listos.', chatHeader:'Asistente Builder', placeholder:'Pregunta sobre un bloque, gate o circuito…', navTab:'Bloques', searchPh:'Buscar bloque…', blockCount:(s,t)=>`Mostrando ${s} de ${t} bloques`, aiEmptyState:'Haz una pregunta o adjunta una captura de la configuración del bloque.', takeIdeaBtn:'🎲 Obtener idea con este bloque', ideasSearchPh:'Buscar por nombre de bloque…', spinHintHas:'La idea usará al menos uno de los bloques seleccionados.', spinHintEmpty:'También puedes girar sin seleccionar nada — saldrá una idea aleatoria.'},
+    },
+  },
+  fr: {
+    nav_home:'Accueil', nav_blocks:'Blocs', nav_ai:'Assistant IA', nav_ideas:'Idées',
+    hero_h1:'Crée des compétences et des mécaniques,<br>sans deviner les <span>paramètres</span>',
+    hero_lead:'Deux modes en un seul endroit : <b>Skill Builder</b> pour les compétences personnalisées et le <b>Builder standard</b> — du bloc simple aux blocs Input/Output/Interaction et Logic Gates. Change de mode dans le menu supérieur.',
+    hero_sub:'Entièrement gratuit, sans inscription — tout le site fonctionne dans le navigateur.',
+    beta_notice:'L\'app est en <b>bêta</b> — les fonctionnalités, le design et le contenu peuvent changer. Si quelque chose ne fonctionne pas, c\'est normal — on va réparer.',
+    feature1_title:'Référence des blocs', feature1_desc:'En Skill Builder : ANIM, HITBOX, VISUAL, TAG et plus. En Builder : Part, Moveset Block, AND/NOT/XOR Gate et tout le moteur de signaux ID.',
+    feature2_title:'Assistant IA', feature2_desc:'Un assistant dédié pour chaque mode — pose des questions sur les nœuds de compétences ou les logic gates et les circuits prêts à l\'emploi.',
+    feature3_title:'Idées et Roulette', feature3_desc:'Choisis les blocs que tu veux utiliser, fais tourner la roulette et obtiens une idée de compétence ou de mécanique — puis demande à l\'IA comment la construire.',
+    stat_blocks:'blocs dans la référence', stat_ideas:'idées pour la roulette', stat_modes:'modes en un endroit', stat_cost:'coût d\'utilisation',
+    hero_panel_label:'Aperçu de la chaîne', hero_panel_cta:'Ouvrir la référence →',
+    blocks_search_ph:'Rechercher un bloc…',
+    blockcount:(shown,total)=>`Affichage de ${shown} sur ${total} blocs`,
+    legend_mode_label:'Mode de référence',
+    ai_clear_btn:'Effacer le chat', ai_empty_state:'Pose une question ou joins une capture d\'écran des paramètres du bloc.', ai_send_btn:'Envoyer',
+    ai_attach_title:'Joindre une photo', ai_remove_photo_title:'Supprimer la photo',
+    take_idea_btn:'🎲 Obtenir une idée avec ce bloc',
+    ideas_search_ph:'Rechercher par nom de bloc…',
+    no_blocks_found:'Rien trouvé',
+    picker_hint:(n,max)=>`Sélectionné : ${n} / ${max}`,
+    spin_btn:'🎲 Faire tourner la roulette',
+    spin_hint_has:'L\'idée utilisera au moins un des blocs sélectionnés.',
+    spin_hint_empty:'Tu peux aussi tourner sans sélection — tu obtiendras une idée aléatoire.',
+    ask_ai_btn:'💬 Demander à l\'IA', fav_btn_add:'☆ Ajouter aux favoris', fav_btn_added:'★ Dans les favoris', complete_btn:'✅ Fait !', complete_btn_done:'✅ Terminé',
+    fav_section_title:'Favoris', done_section_title:'Terminés',
+    sort_asc:'Difficulté ↑', sort_desc:'Difficulté ↓',
+    fav_empty:'Rien de sauvegardé — fais tourner la roulette et mets une étoile aux idées que tu aimes.',
+    done_empty:'Rien de terminé — marque les idées avec le bouton "Fait !".',
+    fav_toggle_done:'✅ Marquer comme terminé', fav_remove:'Retirer des favoris',
+    done_edit:'📎 Changer photo/vidéo', done_remove:'Retirer des terminés',
+    modal_attach_btn:'📎 Joindre photo/vidéo', modal_confirm_btn:'✅ Fait !',
+    footer_text:'Nodecraft — guide fan non officiel de Jujutsu Shenanigans Build Mode.<br>Non affilié au développeur du jeu.',
+    key_missing:'IA temporairement indisponible.',
+    no_answer:'Impossible d\'obtenir une réponse. Essaie de reformuler la question.',
+    cors_error:'Impossible de se connecter à l\'IA. Si internet fonctionne — active un VPN : Cloudflare WARP (app 1.1.1.1) est gratuit.',
+    export_btn:'💾 Sauvegarder la progression',
+    import_btn:'📂 Restaurer la progression',
+    groq_error:(m)=>`Erreur IA : ${m}`,
+    rate_limit_error:'⏳ Limite de requêtes atteinte. Réessaie dans quelques minutes.',
+    chat_rate_note:'⚡ IA gratuite · des limites temporaires peuvent s\'appliquer',
+    copyright:'© F1cus — copie et utilisation des contenus sans permission interdites',
+    ai_warn_title:'À propos de l\'Assistant IA',
+    ai_warn_unstable_label:'Limite quotidienne',
+    ai_warn_unstable:'1 500 requêtes par jour, 15 par minute. Si l\'IA ne répond plus — la limite est épuisée, attends le lendemain.',
+    ai_warn_limits_label:'Précision',
+    ai_warn_limits:'L\'IA connaît bien les mécaniques du jeu, mais peut se tromper sur des valeurs spécifiques. Vérifie les détails importants dans la référence des blocs.',
+    ai_warn_vpn_label:'Problèmes de connexion',
+    ai_warn_vpn:'Certains fournisseurs bloquent Cloudflare. Si l\'IA ne répond pas mais internet fonctionne — active un VPN. <b>Cloudflare WARP</b> (app 1.1.1.1) est gratuit.',
+    image_alt:'Photo jointe', media_thumb_alt:'Photo de l\'idée terminée',
+    forum_no_posts:'Aucune publication pour l\'instant. Sois le premier ! ✍️',
+    post_mode_both:'⚔️🧱 Les deux',post_pinned:'📌 Épinglé',show_more:'Voir plus ▾',collapse_text:'Réduire ▴',popular_label:'Populaire :',mini_posts:'publications',mini_likes:'j\'aime',
+    post_not_found:'Publication introuvable',comment_ph:'Écris un commentaire…',attach_photo_title:'Joindre une photo',send_btn:'Envoyer',
+    guest_login_cta:'Connecte-toi ou inscris-toi',guest_login_suffix:' pour commenter.',muted_comment_msg:'Tu es mis en sourdine et ne peux pas commenter.',
+    report_btn:'🚩 Signaler',del_post_btn:'🗑 Supprimer',share_btn:'🔗 Partager',comments_header:'Commentaires',author_badge:'Auteur',reply_btn:'↩ Répondre',
+    error_prefix:'Erreur : ',del_comment_confirm:'Supprimer le commentaire ?',del_error:'Erreur de suppression : ',reply_ph:'Répondre…',
+    cooldown_msg:(w)=>`Attends encore ${w} sec. — tu peux publier une fois par minute.`,
+    publishing_text:'Publication en cours…',uploading_media:(i,t)=>`Envoi des médias (${i}/${t})…`,post_btn_label:'Publier',
+    code_ph:'code',quote_ph:'citation',login_for_profile:'Connecte-toi pour voir le profil',profile_not_found:'Profil introuvable',
+    my_profile_label:'Mon profil',profile_label:'Profil',verified_tip:'Compte vérifié',unfollow_label:'Ne plus suivre',follow_label:'Suivre',
+    friends_label:'🤝 Amis',edit_profile_btn:'✏️ Modifier',nick_label:'Pseudo',username_ph:'lettres, chiffres et _',
+    bio_label:'À propos',bio_ph:'Quelques mots sur toi…',link_label:'Lien',verified_only_note:'✓ vérifié uniquement',
+    cancel_btn:'Annuler',save_btn:'Enregistrer',following_label:'Abonnements',followers_label:'Abonnés',likes_label:'J\'aime',
+    member_since_label:'Membre depuis',my_posts_label:'Mes publications',posts_label_profile:'Publications',active_label:'actives',deleted_label:'supprimées',
+    no_posts_profile:'Aucune publication',username_err:'@username : 3–20 caractères, lettres latines, chiffres et _',save_err:'Erreur d\'enregistrement : ',
+    followers_title:'Abonnés',following_title:'Abonnements',no_reports:'Aucun signalement ✅',deleted_post_ref:'Publication supprimée',
+    accept_btn:'Accepter',dismiss_btn:'Rejeter',report_acc_toast:'✅ Signalement accepté',report_dis_toast:'❌ Signalement rejeté',
+    nobody_found:'Personne trouvé',col_nick_id:'Pseudo / ID',col_posts:'Publications',col_status:'Statut',col_actions:'Actions',
+    col_reports:'Signalements',col_from:'De',col_reasons:'Raisons',col_post:'Publication',col_author:'Auteur',
+    status_verified:'✓ Vérifié',status_banned:'🚫 Banni',status_muted:'🔇 En sourdine',
+    rm_verify_btn:'Retirer ✓',verify_btn:'✓ Vérifier',unmute_btn:'Réactiver',mute_btn:'Mettre en sourdine',unban_btn:'Débannir',ban_btn:'Bannir',
+    mute_removed:'🔊 Sourdine levée',mute_prompt_text:'Mettre en sourdine combien d\'heures ?\n(ex. 24)',
+    muted_toast:(h)=>`🔇 En sourdine pour ${h}h`,unban_done:'✅ Débannissement effectué',ban_prompt_text:'Raison du ban (optionnel) :',banned_toast:'🚫 Utilisateur banni',
+    deleted_label_admin:'SUPPRIMÉ',unpin_btn:'Désépingler',pin_btn:'📌 Épingler',del_post_admin:'Supprimer',no_posts_admin:'Aucune publication',
+    no_announcements:'Aucune annonce',hide_ann:'Masquer',show_ann:'Afficher',
+    stat_users:'Utilisateurs',stat_posts_admin:'Publications',stat_comments:'Commentaires',stat_posts_today:'Publications aujourd\'hui',stat_users_today:'Nouveaux utilisateurs aujourd\'hui',
+    no_notifs:'Aucune notification 🔕',notif_just_now:'à l\'instant',
+    notif_min_ago:(m)=>`il y a ${m} min.`,notif_hr_ago:(h)=>`il y a ${h} h`,notif_day_ago:(d)=>`il y a ${d} jour${d===1?'':'s'}`,
+    notif_someone:'Quelqu\'un',liked_your_post:(n)=>`${n} a aimé ta publication`,commented_your_post:(n)=>`${n} a commenté ta publication`,followed_you:(n)=>`${n} te suit maintenant`,
+    notif_like_def:'Quelqu\'un a aimé ta publication',notif_comment_def:'Nouveau commentaire sur ta publication',notif_reply_def:'Quelqu\'un a répondu à ton commentaire',
+    notif_follow_def:'Tu as un nouvel abonné',notif_mute_def:'Tu as été mis en sourdine',notif_ban_def:'Compte banni',
+    notif_system_def:'Notification système',notif_acc_def:'Signalement accepté',notif_dis_def:'Signalement rejeté',
+    notif_bug_def:'Nouveau rapport de bug',notif_generic:'Notification',
+    new_posts_banner:(n)=>`▲ +${n} nouvelle${n===1?'':'s'} publication${n===1?'':'s'} — appuie pour charger`,
+    new_comments_ind:(n)=>`▼ ${n} nouveau${n===1?'':'x'} commentaire${n===1?'':'s'} — appuie`,
+    bug_sending:'Envoi en cours…',bug_steps_prefix:'Étapes : ',loading_error:'Erreur de chargement',
+    nav_forum:'💬 Forum',forum_filter_all:'Tous',forum_new_btn:'✏️ Publier',forum_search_ph:'🔍 Rechercher publications, hashtags…',
+    auth_sub:'Connecte-toi ou crée un compte — forum et synchronisation',auth_tab_login:'Se connecter',auth_tab_reg:'S\'inscrire',
+    auth_nick_ph:'Pseudo',auth_pass_ph:'Mot de passe',auth_nick_reg_ph:'Pseudo (2–20 caractères)',
+    auth_pass_hint:'Min. 8 caractères · au moins un caractère spécial (!@#$%^&*…)',auth_or:'ou',auth_guest_btn:'👤 Continuer en tant qu\'invité',
+    auth_login_btn:'Se connecter',auth_reg_btn:'Créer un compte',auth_logging_in:'Connexion…',auth_creating:'Création…',
+    auth_fill_all:'Remplis tous les champs',auth_wrong_creds:'Pseudo ou mot de passe incorrect',
+    auth_nick_taken:'Ce pseudo est déjà pris',auth_too_many:'Trop de tentatives, attends une minute',guest_badge:'Invité',
+    cp_modal_title:'✏️ Nouvelle publication',cp_mode_label:'Mode *',cp_title_label:'Titre *',cp_title_ph:'Brève description du build ou de la mécanique…',
+    cp_content_label:'Contenu *',cp_content_ph:'Parle du build, comment l\'utiliser, quels nœuds choisir…',
+    cp_nodes_label:'Nœuds / blocs (utilisés dans le build)',cp_hashtags_label:'Hashtags',cp_hashtags_ph:'#dégâts #combo #vitesse — séparés par des espaces',
+    cp_media_label:'Médias (photo/vidéo, max. 10 Mo chacun)',cp_media_upload:'📎 Clique pour joindre une photo ou vidéo',
+    cp_rules_text:'J\'ai lu les règles de la communauté et confirme que ma publication ne contient pas d\'insultes, de spam, de contenu NSFW ou de violations des règles de JJS Nodecraft',
+    notif_panel_title:'🔔 Notifications',notif_mark_all:'Marquer tout comme lu',
+    admin_panel_title:'🔧 Panneau d\'administration',admin_tab_reports:'🚩 Signalements',admin_tab_bugs:'🐛 Bugs',admin_tab_users:'👥 Utilisateurs',
+    admin_tab_posts:'📌 Publications',admin_tab_announce:'📣 Annonces',admin_tab_stats:'📊 Statistiques',
+    settings_title:'⚙ Paramètres',settings_accent:'🎨 Couleur d\'accentuation',settings_font:'🔤 Police d\'interface',settings_interface:'⚡ Interface',
+    mode_meta: {
+      skill:{blocksTitle:'Référence des nœuds Skill Builder', blocksDesc:'Clique sur un nœud pour voir tous ses champs. La couleur indique la catégorie.', ideasTitle:'Idées pour Skill Builder', ideasDesc:'Choisis les nœuds que tu veux utiliser et fais tourner la roulette pour obtenir une idée de compétence.', aiTitle:'Assistant IA Skill Builder', aiDesc:'Pose des questions comme à quelqu\'un qui a créé des centaines de movesets : sur les nœuds, la logique Tag, les bugs, les coordonnées, les animations et les visuels.', chatHeader:'Assistant Skill Builder', placeholder:'Pose une question sur un nœud ou une mécanique…', navTab:'Nœuds', searchPh:'Rechercher un nœud…', blockCount:(s,t)=>`Affichage de ${s} sur ${t} nœuds`, aiEmptyState:'Pose une question ou joins une capture d\'écran des paramètres du nœud.', takeIdeaBtn:'🎲 Obtenir une idée avec ce nœud', ideasSearchPh:'Rechercher par nom de nœud…', spinHintHas:'L\'idée utilisera au moins un des nœuds sélectionnés.', spinHintEmpty:'Tu peux aussi tourner sans sélection — tu obtiendras une idée aléatoire.'},
+      build:{blocksTitle:'Référence des blocs Builder', blocksDesc:'Construction, blocs Input/Output/Interaction et Logic Gates. Clique sur un bloc pour voir ses champs.', ideasTitle:'Idées pour Builder', ideasDesc:'Choisis les blocs et gates que tu veux utiliser et fais tourner la roulette pour une idée de mécanique ou de salle.', aiTitle:'Assistant IA Builder', aiDesc:'Pose des questions sur les blocs, signaux ID, gates et circuits logiques prêts à l\'emploi.', chatHeader:'Assistant Builder', placeholder:'Pose une question sur un bloc, gate ou circuit…', navTab:'Blocs', searchPh:'Rechercher un bloc…', blockCount:(s,t)=>`Affichage de ${s} sur ${t} blocs`, aiEmptyState:'Pose une question ou joins une capture d\'écran des paramètres du bloc.', takeIdeaBtn:'🎲 Obtenir une idée avec ce bloc', ideasSearchPh:'Rechercher par nom de bloc…', spinHintHas:'L\'idée utilisera au moins un des blocs sélectionnés.', spinHintEmpty:'Tu peux aussi tourner sans sélection — tu obtiendras une idée aléatoire.'},
+    },
+  },
+  tr: {
+    nav_home:'Ana Sayfa', nav_blocks:'Bloklar', nav_ai:'Yapay Zeka', nav_ideas:'Fikirler',
+    hero_h1:'Parametreleri tahmin etmeden<br>beceri ve mekanik <span>oluştur</span>',
+    hero_lead:'Tek bir yerde iki mod: <b>Skill Builder</b> özel beceriler için ve <b>normal Builder</b> — basit bloktan Input/Output/Interaction ve Logic Gates\'e kadar. Modu üst menüden değiştir.',
+    hero_sub:'Tamamen ücretsiz, kayıt gerekmez — sitenin tamamı tarayıcıda çalışır.',
+    beta_notice:'Uygulama <b>beta</b>\'da — özellikler, tasarım ve içerik değişebilir. Bir şeyler kırıksa normaldir — düzelteceğiz.',
+    feature1_title:'Blok Referansı', feature1_desc:'Skill Builder\'da: ANIM, HITBOX, VISUAL, TAG ve daha fazlası. Builder\'da: Part, Moveset Block, AND/NOT/XOR Gate ve tüm ID sinyal motoru.',
+    feature2_title:'Yapay Zeka Asistanı', feature2_desc:'Her mod için ayrı bir asistan — beceri nodları veya logic gates ve hazır devreler hakkında sor.',
+    feature3_title:'Fikirler ve Rulet', feature3_desc:'Kullanmak istediğin blokları seç, ruleti çevir ve hazır bir beceri veya mekanik fikri al — sonra yapay zekaya nasıl oluşturacağını sor.',
+    stat_blocks:'referanstaki blok sayısı', stat_ideas:'rulet için fikir sayısı', stat_modes:'tek yerde mod sayısı', stat_cost:'kullanım ücreti',
+    hero_panel_label:'Zincir önizlemesi', hero_panel_cta:'Referansı aç →',
+    blocks_search_ph:'Blok ara…',
+    blockcount:(shown,total)=>`${total} bloktan ${shown} gösteriliyor`,
+    legend_mode_label:'Referans modu',
+    ai_clear_btn:'Sohbeti temizle', ai_empty_state:'Bir soru sor veya blok ayarlarının ekran görüntüsünü ekle.', ai_send_btn:'Gönder',
+    ai_attach_title:'Fotoğraf ekle', ai_remove_photo_title:'Fotoğrafı kaldır',
+    take_idea_btn:'🎲 Bu blokla fikir al',
+    ideas_search_ph:'Blok adına göre ara…',
+    no_blocks_found:'Hiçbir şey bulunamadı',
+    picker_hint:(n,max)=>`Seçilen: ${n} / ${max}`,
+    spin_btn:'🎲 Ruleti çevir',
+    spin_hint_has:'Fikir, seçilen bloklardan en az birini içerecek.',
+    spin_hint_empty:'Seçim yapmadan da çevirebilirsin — rastgele bir fikir çıkar.',
+    ask_ai_btn:'💬 Yapay Zekaya Sor', fav_btn_add:'☆ Favorilere ekle', fav_btn_added:'★ Favorilerde', complete_btn:'✅ Tamamladım!', complete_btn_done:'✅ Tamamlandı',
+    fav_section_title:'Favoriler', done_section_title:'Tamamlananlar',
+    sort_asc:'Zorluk ↑', sort_desc:'Zorluk ↓',
+    fav_empty:'Henüz kaydedilmiş bir şey yok — ruleti çevir ve beğendiğin fikirleri yıldızla.',
+    done_empty:'Henüz tamamlanan bir şey yok — fikirleri "Tamamladım!" butonuyla işaretle.',
+    fav_toggle_done:'✅ Tamamlandı olarak işaretle', fav_remove:'Favorilerden kaldır',
+    done_edit:'📎 Fotoğraf/video değiştir', done_remove:'Tamamlananlardan kaldır',
+    modal_attach_btn:'📎 Fotoğraf/video ekle', modal_confirm_btn:'✅ Tamamladım!',
+    footer_text:'Nodecraft — Jujutsu Shenanigans Build Mode için resmi olmayan bir fan rehberi.<br>Oyun geliştiricisiyle bağlantısı yoktur.',
+    key_missing:'Yapay zeka geçici olarak kullanılamıyor.',
+    no_answer:'Yanıt alınamadı. Soruyu yeniden ifade etmeyi dene.',
+    cors_error:'Yapay zekaya bağlanılamadı. İnternet çalışıyorsa — VPN aç: Cloudflare WARP (1.1.1.1 uygulaması) ücretsiz.',
+    export_btn:'💾 İlerlemeyi kaydet',
+    import_btn:'📂 İlerlemeyi geri yükle',
+    groq_error:(m)=>`YZ Hatası: ${m}`,
+    rate_limit_error:'⏳ İstek sınırına ulaşıldı. Birkaç dakika sonra tekrar dene.',
+    chat_rate_note:'⚡ Ücretsiz YZ · geçici sınırlar olabilir',
+    copyright:'© F1cus — izinsiz içerik kopyalanması ve kullanılması yasaktır',
+    ai_warn_title:'Yapay Zeka Asistanı Hakkında',
+    ai_warn_unstable_label:'Günlük limit',
+    ai_warn_unstable:'Günlük 1.500 istek, dakikada 15. YZ yanıt vermeyi bıraktıysa — limit dolmuştur, ertesi güne kadar bekle.',
+    ai_warn_limits_label:'Doğruluk',
+    ai_warn_limits:'YZ oyun mekaniğini iyi bilir, ancak belirli alan değerlerinde hata yapabilir. Blok referansında önemli detayları kontrol et.',
+    ai_warn_vpn_label:'Bağlantı sorunları',
+    ai_warn_vpn:'Bazı sağlayıcılar Cloudflare\'ı engeller. İnternet normalken YZ yanıt vermiyorsa — VPN aç. <b>Cloudflare WARP</b> (1.1.1.1 uygulaması) ücretsiz.',
+    image_alt:'Ekli fotoğraf', media_thumb_alt:'Tamamlanan fikrin fotoğrafı',
+    forum_no_posts:'Henüz gönderi yok. İlk sen ol! ✍️',
+    post_mode_both:'⚔️🧱 Her ikisi',post_pinned:'📌 Sabitlendi',show_more:'Daha fazla göster ▾',collapse_text:'Daralt ▴',popular_label:'Popüler:',mini_posts:'gönderi',mini_likes:'beğeni',
+    post_not_found:'Gönderi bulunamadı',comment_ph:'Yorum yaz…',attach_photo_title:'Fotoğraf ekle',send_btn:'Gönder',
+    guest_login_cta:'Giriş yap veya kayıt ol',guest_login_suffix:' yorum yapmak için.',muted_comment_msg:'Susturuldun ve yorum yapamazsın.',
+    report_btn:'🚩 Şikayet',del_post_btn:'🗑 Sil',share_btn:'🔗 Paylaş',comments_header:'Yorumlar',author_badge:'Yazar',reply_btn:'↩ Yanıtla',
+    error_prefix:'Hata: ',del_comment_confirm:'Yorum silinsin mi?',del_error:'Silme hatası: ',reply_ph:'Yanıtla…',
+    cooldown_msg:(w)=>`${w} saniye daha bekle — dakikada bir gönderi paylaşabilirsin.`,
+    publishing_text:'Yayınlanıyor…',uploading_media:(i,t)=>`Medya yükleniyor (${i}/${t})…`,post_btn_label:'Yayınla',
+    code_ph:'kod',quote_ph:'alıntı',login_for_profile:'Profili görmek için giriş yap',profile_not_found:'Profil bulunamadı',
+    my_profile_label:'Profilim',profile_label:'Profil',verified_tip:'Doğrulanmış hesap',unfollow_label:'Takibi bırak',follow_label:'Takip et',
+    friends_label:'🤝 Arkadaşlar',edit_profile_btn:'✏️ Düzenle',nick_label:'Takma ad',username_ph:'harf, rakam ve _',
+    bio_label:'Hakkımda',bio_ph:'Kendin hakkında birkaç kelime…',link_label:'Bağlantı',verified_only_note:'✓ yalnızca doğrulanmış',
+    cancel_btn:'İptal',save_btn:'Kaydet',following_label:'Takip edilenler',followers_label:'Takipçiler',likes_label:'Beğeniler',
+    member_since_label:'Üyelik tarihi',my_posts_label:'Gönderilerim',posts_label_profile:'Gönderiler',active_label:'aktif',deleted_label:'silindi',
+    no_posts_profile:'Henüz gönderi yok',username_err:'@username: 3–20 karakter, yalnızca latin harf, rakam ve _',save_err:'Kaydetme hatası: ',
+    followers_title:'Takipçiler',following_title:'Takip edilenler',no_reports:'Şikayet yok ✅',deleted_post_ref:'Silinen gönderi',
+    accept_btn:'Kabul et',dismiss_btn:'Reddet',report_acc_toast:'✅ Şikayet kabul edildi',report_dis_toast:'❌ Şikayet reddedildi',
+    nobody_found:'Kimse bulunamadı',col_nick_id:'Nick / ID',col_posts:'Gönderiler',col_status:'Durum',col_actions:'İşlemler',
+    col_reports:'Şikayetler',col_from:'Kimden',col_reasons:'Sebepler',col_post:'Gönderi',col_author:'Yazar',
+    status_verified:'✓ Doğrulandı',status_banned:'🚫 Banlandı',status_muted:'🔇 Susturuldu',
+    rm_verify_btn:'✓ Kaldır',verify_btn:'✓ Doğrula',unmute_btn:'Susturmayı kaldır',mute_btn:'Sustur',unban_btn:'Banı kaldır',ban_btn:'Banla',
+    mute_removed:'🔊 Susturma kaldırıldı',mute_prompt_text:'Kaç saat susturulsun?\n(örn. 24)',
+    muted_toast:(h)=>`🔇 ${h}s susturuldu`,unban_done:'✅ Ban kaldırıldı',ban_prompt_text:'Ban sebebi (isteğe bağlı):',banned_toast:'🚫 Kullanıcı banlandı',
+    deleted_label_admin:'SİLİNDİ',unpin_btn:'Sabitlemeyi kaldır',pin_btn:'📌 Sabitle',del_post_admin:'Sil',no_posts_admin:'Gönderi yok',
+    no_announcements:'Duyuru yok',hide_ann:'Gizle',show_ann:'Göster',
+    stat_users:'Kullanıcılar',stat_posts_admin:'Gönderiler',stat_comments:'Yorumlar',stat_posts_today:'Bugünkü gönderiler',stat_users_today:'Bugünkü yeni kullanıcılar',
+    no_notifs:'Bildirim yok 🔕',notif_just_now:'şu an',
+    notif_min_ago:(m)=>`${m} dk. önce`,notif_hr_ago:(h)=>`${h} sa. önce`,notif_day_ago:(d)=>`${d} gün önce`,
+    notif_someone:'Biri',liked_your_post:(n)=>`${n} gönderini beğendi`,commented_your_post:(n)=>`${n} gönderine yorum yaptı`,followed_you:(n)=>`${n} seni takip etmeye başladı`,
+    notif_like_def:'Biri gönderini beğendi',notif_comment_def:'Gönderine yeni yorum',notif_reply_def:'Biri yorumuna yanıtladı',
+    notif_follow_def:'Yeni bir takipçin var',notif_mute_def:'Susturuldun',notif_ban_def:'Hesap banlandı',
+    notif_system_def:'Sistem bildirimi',notif_acc_def:'Şikayet kabul edildi',notif_dis_def:'Şikayet reddedildi',
+    notif_bug_def:'Yeni hata raporu',notif_generic:'Bildirim',
+    new_posts_banner:(n)=>`▲ +${n} yeni gönderi — yüklemek için dokun`,
+    new_comments_ind:(n)=>`▼ ${n} yeni yorum — dokun`,
+    bug_sending:'Gönderiliyor…',bug_steps_prefix:'Adımlar: ',loading_error:'Yükleme hatası',
+    nav_forum:'💬 Forum',forum_filter_all:'Tümü',forum_new_btn:'✏️ Gönderi',forum_search_ph:'🔍 Gönderi ve hashtag ara…',
+    auth_sub:'Giriş yap veya kayıt ol — forum ve senkronizasyon',auth_tab_login:'Giriş yap',auth_tab_reg:'Kayıt ol',
+    auth_nick_ph:'Takma ad',auth_pass_ph:'Şifre',auth_nick_reg_ph:'Takma ad (2–20 karakter)',
+    auth_pass_hint:'Min. 8 karakter · en az bir özel karakter (!@#$%^&*…)',auth_or:'veya',auth_guest_btn:'👤 Misafir olarak devam et',
+    auth_login_btn:'Giriş yap',auth_reg_btn:'Hesap oluştur',auth_logging_in:'Giriş yapılıyor…',auth_creating:'Oluşturuluyor…',
+    auth_fill_all:'Tüm alanları doldur',auth_wrong_creds:'Yanlış takma ad veya şifre',
+    auth_nick_taken:'Bu takma ad zaten kullanımda',auth_too_many:'Çok fazla deneme, bir dakika bekle',guest_badge:'Misafir',
+    cp_modal_title:'✏️ Yeni gönderi',cp_mode_label:'Mod *',cp_title_label:'Başlık *',cp_title_ph:'Build veya mekanik hakkında kısa açıklama…',
+    cp_content_label:'İçerik *',cp_content_ph:'Build\'i anlat, nasıl kullanılır, hangi nodlar seçilir…',
+    cp_nodes_label:'Nodlar / bloklar (build\'de kullanılan)',cp_hashtags_label:'Hashtagler',cp_hashtags_ph:'#hasar #kombo #hız — boşlukla ayır',
+    cp_media_label:'Medya (fotoğraf/video, her biri maks. 10 MB)',cp_media_upload:'📎 Fotoğraf veya video eklemek için tıkla',
+    cp_rules_text:'Topluluk kurallarını okudum ve gönderimin hakaret, spam, NSFW içeriği veya JJS Nodecraft kurallarına aykırılık içermediğini onaylıyorum',
+    notif_panel_title:'🔔 Bildirimler',notif_mark_all:'Tümünü okundu işaretle',
+    admin_panel_title:'🔧 Yönetici Paneli',admin_tab_reports:'🚩 Şikayetler',admin_tab_bugs:'🐛 Hatalar',admin_tab_users:'👥 Kullanıcılar',
+    admin_tab_posts:'📌 Gönderiler',admin_tab_announce:'📣 Duyurular',admin_tab_stats:'📊 İstatistikler',
+    settings_title:'⚙ Ayarlar',settings_accent:'🎨 Vurgu rengi',settings_font:'🔤 Arayüz yazı tipi',settings_interface:'⚡ Arayüz',
+    mode_meta: {
+      skill:{blocksTitle:'Skill Builder nod referansı', blocksDesc:'Tüm alanları görmek için bir noda tıkla. Renk kategoriyi gösterir.', ideasTitle:'Skill Builder için fikirler', ideasDesc:'Kullanmak istediğin nodları seç ve bir beceri fikri almak için ruleti çevir.', aiTitle:'Skill Builder YZ Asistanı', aiDesc:'Yüzlerce özel moveset oluşturmuş birine sorar gibi sor: nodlar, Tag mantığı, buglar, koordinatlar, animasyonlar ve görseller hakkında.', chatHeader:'Skill Builder Asistanı', placeholder:'Herhangi bir nod veya mekanik hakkında sor…', navTab:'Nodlar', searchPh:'Nod ara…', blockCount:(s,t)=>`${t} noddan ${s} gösteriliyor`, aiEmptyState:'Bir soru sor veya nod ayarlarının ekran görüntüsünü ekle.', takeIdeaBtn:'🎲 Bu nodla fikir al', ideasSearchPh:'Nod adına göre ara…', spinHintHas:'Fikir, seçilen nodlardan en az birini içerecek.', spinHintEmpty:'Seçim yapmadan da çevirebilirsin — rastgele bir fikir çıkar.'},
+      build:{blocksTitle:'Builder blok referansı', blocksDesc:'İnşaat, Input/Output/Interaction blokları ve Logic Gates. Alanları görmek için bloka tıkla.', ideasTitle:'Builder için fikirler', ideasDesc:'Kullanmak istediğin blokları ve gateleri seç ve bir mekanik veya oda fikri için ruleti çevir.', aiTitle:'Builder YZ Asistanı', aiDesc:'Bloklar, ID sinyalleri, gateler ve hazır mantık devreleri hakkında sor.', chatHeader:'Builder Asistanı', placeholder:'Bir blok, gate veya devre hakkında sor…', navTab:'Bloklar', searchPh:'Blok ara…', blockCount:(s,t)=>`${t} bloktan ${s} gösteriliyor`, aiEmptyState:'Bir soru sor veya blok ayarlarının ekran görüntüsünü ekle.', takeIdeaBtn:'🎲 Bu blokla fikir al', ideasSearchPh:'Blok adına göre ara…', spinHintHas:'Fikir, seçilen bloklardan en az birini içerecek.', spinHintEmpty:'Seçim yapmadan da çevirebilirsin — rastgele bir fikir çıkar.'},
     },
   },
 };
@@ -4561,7 +5306,7 @@ async function sendMessage(rawText){
   chatBox.appendChild(typing);
   chatBox.scrollTop = chatBox.scrollHeight;
 
-  const _langNames = {en:'English',de:'German',pl:'Polish',pt:'Brazilian Portuguese',id:'Indonesian',vi:'Vietnamese',th:'Thai',fil:'Filipino/Tagalog',ar:'Arabic'};
+  const _langNames = {en:'English',de:'German',pl:'Polish',pt:'Portuguese',es:'Spanish',fr:'French',tr:'Turkish',id:'Indonesian',vi:'Vietnamese',th:'Thai',fil:'Filipino/Tagalog',ar:'Arabic'};
   const langDirective = currentLang === 'ru'
     ? '\n\n=== ЯЗЫК ОТВЕТА ===\nИнтерфейс сайта переключён на русский. Отвечай ТОЛЬКО на русском языке, даже если где-то в этом промпте или истории встречается другой язык.'
     : `\n\n=== LANGUAGE OVERRIDE ===\nThe user has set the site language to ${_langNames[currentLang]||'English'}. Respond ONLY in ${_langNames[currentLang]||'English'} from now on, regardless of what language the system prompt or history is written in.`;
@@ -5038,6 +5783,7 @@ async function loadForum(){
 
   if(!_forumPosts.length&&!profileCardHtml){list.innerHTML=`<div class="forum-empty">${t('forum_no_posts')}</div>`;return;}
   list.innerHTML=profileCardHtml+_forumPosts.map(p=>renderPostCard(p,likedSet)).join('');
+  injectMovesetCopyButtons(list);
 }
 
 function avatarHtml(av,px=40){
@@ -5050,7 +5796,7 @@ function sanitizePostHtml(html){
   if(!html) return '';
   const tmp=document.createElement('div');
   tmp.innerHTML=html;
-  const safe=['B','I','EM','STRONG','S','BLOCKQUOTE','CODE','BR','SPAN','P','UL','OL','LI'];
+  const safe=['B','I','EM','STRONG','S','BLOCKQUOTE','CODE','BR','SPAN','P','UL','OL','LI','PRE'];
   const walk=(node)=>{
     Array.from(node.childNodes).forEach(ch=>{
       if(ch.nodeType===1){
@@ -5311,6 +6057,7 @@ async function openPostDetail(postId){
       <div class="comment-list" id="commentList">${cmsHtml}</div>
       ${cmInput}
     </div>`;
+  injectMovesetCopyButtons(body);
 }
 
 function renderComment(c, postAuthorId, likedCommentIds){
@@ -5562,6 +6309,29 @@ async function submitPost(){
 function rteCmd(cmd){ document.getElementById('rteContent').focus(); document.execCommand(cmd,false,null); }
 function rteInsertCode(){ document.getElementById('rteContent').focus(); document.execCommand('insertHTML',false,`<code>${t('code_ph')}</code>`); }
 function rteInsertQuote(){ document.getElementById('rteContent').focus(); document.execCommand('insertHTML',false,`<blockquote>${t('quote_ph')}</blockquote>`); }
+function rteInsertMoveset(){ document.getElementById('rteContent').focus(); document.execCommand('insertHTML',false,`<pre class="moveset-code">${t('moveset_ph')}</pre>`); }
+
+function injectMovesetCopyButtons(container){
+  container.querySelectorAll('pre.moveset-code').forEach(pre=>{
+    if(pre.parentElement&&pre.parentElement.classList.contains('moveset-code-wrap')) return;
+    const wrap=document.createElement('div');
+    wrap.className='moveset-code-wrap';
+    pre.parentNode.insertBefore(wrap,pre);
+    wrap.appendChild(pre);
+    const btn=document.createElement('button');
+    btn.className='moveset-copy-btn';
+    btn.textContent=t('copy_code_btn');
+    btn.onclick=()=>copyMovesetCode(btn,pre);
+    wrap.appendChild(btn);
+  });
+}
+function copyMovesetCode(btn,pre){
+  const text=pre.textContent||'';
+  const orig=btn.textContent;
+  const done=()=>{btn.textContent=t('copied_code_btn');setTimeout(()=>{btn.textContent=orig;},1600);};
+  if(navigator.clipboard){navigator.clipboard.writeText(text).then(done).catch(done);}
+  else{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
+}
 
 /* ─── @MENTION SYSTEM ─── */
 let _mentionActive=false,_mentionQuery='';
@@ -5915,24 +6685,51 @@ async function adminReviewReports(ids,status){
   showAdminToast(accepted?t('report_acc_toast'):t('report_dis_toast'));
 }
 
+function formatRegDate(iso){
+  if(!iso) return '—';
+  const d=new Date(iso);
+  const locale=currentLang==='ru'?'ru-RU':currentLang==='ar'?'ar-EG':'en-US';
+  return d.toLocaleDateString(locale,{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString(locale,{hour:'2-digit',minute:'2-digit'});
+}
 async function loadAdminUsers(q=''){
   const el=document.getElementById('adminUsersList');
+  el.innerHTML='<div class="forum-loading">Loading…</div>';
   let qb=_supa.from('profiles').select('*').order('created_at',{ascending:false}).limit(100);
   if(q) qb=qb.or(`nickname.ilike.%${q}%,pid.ilike.%${q}%`);
   const{data}=await qb;
   if(!data?.length){el.innerHTML=`<div class="forum-empty">${t('nobody_found')}</div>`;return;}
-  el.innerHTML=`<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>${t('col_nick_id')}</th><th>${t('col_posts')}</th><th>${t('col_status')}</th><th>${t('col_actions')}</th></tr></thead><tbody>
-    ${data.map(u=>`<tr>
-      <td><b>${escHtml(u.nickname)}</b><br><span style="color:var(--text-faint);font-size:10px">#${u.pid||'?'}</span></td>
-      <td>${u.posts_count||0}</td>
-      <td style="font-size:11px">${u.is_verified?`<span style="color:#4db3ff">${t('status_verified')}</span><br>`:''}${u.is_banned?`<span style="color:var(--coral)">${t('status_banned')}</span><br>`:''}${u.is_muted?`<span style="color:var(--amber)">${t('status_muted')}</span>`:'—'}</td>
-      <td><div style="display:flex;gap:4px;flex-wrap:wrap">
-        <button class="admin-action-btn gold" onclick="adminToggleVerify('${u.user_id}',${u.is_verified})">${u.is_verified?t('rm_verify_btn'):t('verify_btn')}</button>
-        <button class="admin-action-btn ${u.is_muted?'success':'danger'}" onclick="adminToggleMute('${u.user_id}',${u.is_muted})">${u.is_muted?t('unmute_btn'):t('mute_btn')}</button>
-        <button class="admin-action-btn ${u.is_banned?'success':'danger'}" onclick="adminToggleBan('${u.user_id}',${u.is_banned})">${u.is_banned?t('unban_btn'):t('ban_btn')}</button>
-      </div></td>
-    </tr>`).join('')}
-  </tbody></table></div>`;
+  el.innerHTML=data.map(u=>{
+    const verified=u.is_verified?`<span class="verified-badge" style="transform:scale(.85)"></span>`:'';
+    const uname=u.username?`<span style="color:var(--purple);font-size:12px">@${escHtml(u.username)}</span>`:'';
+    const statusBadges=[
+      u.is_verified?`<span style="font-size:10px;background:rgba(77,179,255,.12);border:1px solid rgba(77,179,255,.3);border-radius:5px;padding:1px 7px;color:#4db3ff">${t('status_verified')}</span>`:'',
+      u.is_banned?`<span style="font-size:10px;background:rgba(255,100,100,.12);border:1px solid rgba(255,100,100,.3);border-radius:5px;padding:1px 7px;color:var(--coral)">${t('status_banned')}</span>`:'',
+      u.is_muted?`<span style="font-size:10px;background:rgba(255,165,58,.12);border:1px solid rgba(255,165,58,.3);border-radius:5px;padding:1px 7px;color:var(--amber)">${t('status_muted')}</span>`:'',
+    ].filter(Boolean).join('');
+    return `<div class="post-card" style="margin-bottom:10px;cursor:pointer" onclick="openProfileModal('${u.user_id}')">
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">${avatarHtml(u.avatar,52)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px">
+            <span style="font-family:var(--font-display);font-weight:700;font-size:15px">${escHtml(u.nickname||'?')}</span>
+            ${verified}${uname}
+          </div>
+          <div style="font-size:11px;color:var(--text-faint);margin-bottom:4px">#${u.pid||'?'} · ${t('member_since_label')} ${formatRegDate(u.created_at)}</div>
+          ${u.bio?`<div style="font-size:12px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px">${escHtml(u.bio)}</div>`:''}
+          ${statusBadges?`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">${statusBadges}</div>`:''}
+          <div style="display:flex;gap:6px;flex-wrap:wrap" onclick="event.stopPropagation()">
+            <button class="admin-action-btn gold" onclick="adminToggleVerify('${u.user_id}',${u.is_verified})">${u.is_verified?t('rm_verify_btn'):t('verify_btn')}</button>
+            <button class="admin-action-btn ${u.is_muted?'success':'danger'}" onclick="adminToggleMute('${u.user_id}',${u.is_muted})">${u.is_muted?t('unmute_btn'):t('mute_btn')}</button>
+            <button class="admin-action-btn ${u.is_banned?'success':'danger'}" onclick="adminToggleBan('${u.user_id}',${u.is_banned})">${u.is_banned?t('unban_btn'):t('ban_btn')}</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;flex-shrink:0;min-width:52px">
+          <div style="text-align:center"><div style="font-weight:700;font-size:17px">${u.posts_count||0}</div><div style="font-size:10px;color:var(--text-faint)">${t('mini_posts')}</div></div>
+          <div style="text-align:center"><div style="font-weight:700;font-size:17px">${u.likes_received||0}</div><div style="font-size:10px;color:var(--text-faint)">${t('mini_likes')}</div></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 function adminSearchUsers(q){ clearTimeout(_searchDebounce); _searchDebounce=setTimeout(()=>loadAdminUsers(q),300); }
 async function adminToggleVerify(uid,cur){ await _supa.from('profiles').update({is_verified:!cur}).eq('user_id',uid); loadAdminUsers(); }
@@ -6438,12 +7235,12 @@ function closeSettings(){document.getElementById('settingsPanel').classList.remo
 
 /* ─── CHANGELOG ─── */
 function showChangelog(force){
-  if(!force&&safeStorage.get('nodecraft_seen_v11')==='1') return;
+  if(!force&&safeStorage.get('nodecraft_seen_v111')==='1') return;
   document.getElementById('changelogOv').classList.add('on');
 }
 function closeChangelog(markSeen){
   document.getElementById('changelogOv').classList.remove('on');
-  if(markSeen) safeStorage.set('nodecraft_seen_v11','1');
+  if(markSeen) safeStorage.set('nodecraft_seen_v111','1');
 }
 
 /* ─── BUG REPORT ─── */
@@ -6534,7 +7331,7 @@ async function adminReplyBug(userId,nick){
 }
 
 const savedLang = safeStorage.get('nodecraft_lang');
-const _allLangs = ['ru','en','de','pl','pt','id','vi','th','fil','ar'];
+const _allLangs = ['ru','en','de','pl','pt','es','fr','tr','id','vi','th','fil','ar'];
 if(savedLang && _allLangs.includes(savedLang)){
   setLanguageContent(savedLang);
   document.getElementById('langModal').style.display = 'none';
@@ -6550,48 +7347,81 @@ if(savedLang && _allLangs.includes(savedLang)){
 <div class="changelog-ov" id="changelogOv" onclick="if(event.target===this)closeChangelog()">
   <div class="changelog-box">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
-      <span class="changelog-v">v1.1</span>
-      <span class="changelog-badge">MAJOR UPDATE</span>
+      <span class="changelog-v">v1.1.1</span>
+      <span class="changelog-badge">LANGUAGE UPDATE</span>
     </div>
-    <div class="changelog-subtitle">🎉 Forum Update — JJS Nodecraft just got bigger!</div>
+    <div class="changelog-subtitle">🌍 Full multilingual support — the forum now speaks your language</div>
 
     <div class="changelog-sec">
-      <div class="changelog-sec-title">💬 Community Forum</div>
-      <div class="changelog-item"><span class="changelog-ico">📝</span><span>Post your builds and skills directly on the site — choose Skill Builder or Builder mode</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🖊</span><span>Rich text editor: bold, italic, quote, code, lists — just like a notes app</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🖼</span><span>Attach photos and videos to your posts</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🔍</span><span>Search posts by text and hashtags</span></div>
-      <div class="changelog-item"><span class="changelog-ico">❤️</span><span>Likes on posts and comments</span></div>
-      <div class="changelog-item"><span class="changelog-ico">💬</span><span>Comments with replies and likes</span></div>
+      <div class="changelog-sec-title">🌐 New Languages</div>
+      <div class="changelog-item"><span class="changelog-ico">🇪🇸</span><span>Spanish — full translation, all sections</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🇫🇷</span><span>French — full translation, all sections</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🇹🇷</span><span>Turkish — full translation, all sections</span></div>
     </div>
 
     <div class="changelog-sec">
-      <div class="changelog-sec-title">👤 User Profiles</div>
-      <div class="changelog-item"><span class="changelog-ico">🆔</span><span>Every user gets a unique PID — never repeats</span></div>
-      <div class="changelog-item"><span class="changelog-ico">📸</span><span>Upload an avatar, fill in your bio, add a username and link (verified accounts only)</span></div>
-      <div class="changelog-item"><span class="changelog-ico">✓</span><span>Verification system for trusted accounts</span></div>
+      <div class="changelog-sec-title">💬 Forum & Profile i18n</div>
+      <div class="changelog-item"><span class="changelog-ico">✅</span><span>All forum, profile, auth and admin strings now work in every language — no more English mixed into other languages</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🔔</span><span>Notifications, time labels and banners translated for all 13 languages</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🛡</span><span>Admin panel fully translated — reports, user management, announcements and stats</span></div>
     </div>
 
     <div class="changelog-sec">
-      <div class="changelog-sec-title">👥 Follows & Notifications</div>
-      <div class="changelog-item"><span class="changelog-ico">➕</span><span>Follow other players, keep up with their posts</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🔔</span><span>Notifications for likes, comments and new followers</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🚩</span><span>Post reports reviewed by administrators</span></div>
-    </div>
-
-    <div class="changelog-sec">
-      <div class="changelog-sec-title">🛡 Privacy & Safety</div>
-      <div class="changelog-item"><span class="changelog-ico">⏱</span><span>1-minute cooldown between posts — anti-spam protection</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🔒</span><span>Privacy settings: who can see your follows and followers</span></div>
-      <div class="changelog-item"><span class="changelog-ico">📋</span><span>Rules agreement required when publishing a post</span></div>
+      <div class="changelog-sec-title">🐛 Bug Fixes</div>
+      <div class="changelog-item"><span class="changelog-ico">⌨️</span><span>Hashtag field now allows spaces — you can add multiple hashtags without the field breaking</span></div>
+      <div class="changelog-item"><span class="changelog-ico">👁</span><span>"Show more" now expands inline on the forum page — no longer opens the post modal accidentally</span></div>
+      <div class="changelog-item"><span class="changelog-ico">☑️</span><span>Publish button is now locked until you confirm the community rules — no more accidental posts</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🇵🇹</span><span>Portuguese flag fixed (was showing Brazil flag)</span></div>
     </div>
 
     <div class="changelog-footer">
-      <span style="font-size:12px;color:var(--text-faint)">JJS Nodecraft · August 14, 2026</span>
+      <span style="font-size:12px;color:var(--text-faint)">JJS Nodecraft · August 15, 2026</span>
       <div style="display:flex;gap:8px">
         <button onclick="closeChangelog()" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim);font-family:var(--font-display);font-size:13px;font-weight:600;padding:8px 16px;border-radius:8px;cursor:pointer">Close</button>
         <button onclick="closeChangelog(true)" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;padding:8px 20px;border-radius:8px;cursor:pointer">Got it! ✓</button>
       </div>
+    </div>
+
+    <!-- ── Previous update ── -->
+    <div style="border-top:1px solid var(--border-soft);margin-top:20px;padding-top:20px;opacity:.65">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+        <span class="changelog-v" style="font-size:22px">v1.1</span>
+        <span class="changelog-badge">MAJOR UPDATE</span>
+      </div>
+      <div class="changelog-subtitle">🎉 Forum Update — JJS Nodecraft just got bigger!</div>
+
+      <div class="changelog-sec">
+        <div class="changelog-sec-title">💬 Community Forum</div>
+        <div class="changelog-item"><span class="changelog-ico">📝</span><span>Post your builds and skills directly on the site — choose Skill Builder or Builder mode</span></div>
+        <div class="changelog-item"><span class="changelog-ico">🖊</span><span>Rich text editor: bold, italic, quote, code, lists — just like a notes app</span></div>
+        <div class="changelog-item"><span class="changelog-ico">🖼</span><span>Attach photos and videos to your posts</span></div>
+        <div class="changelog-item"><span class="changelog-ico">🔍</span><span>Search posts by text and hashtags</span></div>
+        <div class="changelog-item"><span class="changelog-ico">❤️</span><span>Likes on posts and comments</span></div>
+        <div class="changelog-item"><span class="changelog-ico">💬</span><span>Comments with replies and likes</span></div>
+      </div>
+
+      <div class="changelog-sec">
+        <div class="changelog-sec-title">👤 User Profiles</div>
+        <div class="changelog-item"><span class="changelog-ico">🆔</span><span>Every user gets a unique PID — never repeats</span></div>
+        <div class="changelog-item"><span class="changelog-ico">📸</span><span>Upload an avatar, fill in your bio, add a username and link (verified accounts only)</span></div>
+        <div class="changelog-item"><span class="changelog-ico">✓</span><span>Verification system for trusted accounts</span></div>
+      </div>
+
+      <div class="changelog-sec">
+        <div class="changelog-sec-title">👥 Follows & Notifications</div>
+        <div class="changelog-item"><span class="changelog-ico">➕</span><span>Follow other players, keep up with their posts</span></div>
+        <div class="changelog-item"><span class="changelog-ico">🔔</span><span>Notifications for likes, comments and new followers</span></div>
+        <div class="changelog-item"><span class="changelog-ico">🚩</span><span>Post reports reviewed by administrators</span></div>
+      </div>
+
+      <div class="changelog-sec">
+        <div class="changelog-sec-title">🛡 Privacy & Safety</div>
+        <div class="changelog-item"><span class="changelog-ico">⏱</span><span>1-minute cooldown between posts — anti-spam protection</span></div>
+        <div class="changelog-item"><span class="changelog-ico">🔒</span><span>Privacy settings: who can see your follows and followers</span></div>
+        <div class="changelog-item"><span class="changelog-ico">📋</span><span>Rules agreement required when publishing a post</span></div>
+      </div>
+
+      <div style="font-size:12px;color:var(--text-faint);margin-top:8px">JJS Nodecraft · August 14, 2026</div>
     </div>
   </div>
 </div>
