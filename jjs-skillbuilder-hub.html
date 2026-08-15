@@ -1172,6 +1172,7 @@
       <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
       <button class="lang-btn" data-lang="pl">🇵🇱 Polski</button>
       <button class="lang-btn" data-lang="pt">🇵🇹 Português</button>
+      <button class="lang-btn" data-lang="pt-br">🇧🇷 Português BR</button>
       <button class="lang-btn" data-lang="es">🇪🇸 Español</button>
       <button class="lang-btn" data-lang="fr">🇫🇷 Français</button>
       <button class="lang-btn" data-lang="tr">🇹🇷 Türkçe</button>
@@ -1456,7 +1457,18 @@
             <p>Share builds, discuss mechanics, follow players — all in one place.</p>
           </button>
         </div>
-        <button onclick="showChangelog(true)" style="margin-top:12px;background:none;border:1px solid rgba(176,122,255,.2);color:var(--text-dim);font-size:12px;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:var(--font-display);font-weight:600;transition:all .2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">📋 v1.1.1 — what's new?</button>
+        <div id="suggestCard" style="display:none;margin-top:14px;background:linear-gradient(135deg,rgba(176,122,255,.07),rgba(88,180,255,.04));border:1px solid rgba(176,122,255,.18);border-radius:12px;padding:14px 16px;max-width:420px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="font-size:18px">💡</span>
+            <span id="suggestTitle" style="font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--accent)"></span>
+          </div>
+          <textarea id="suggestText" rows="3" style="width:100%;background:rgba(0,0,0,.18);border:1px solid rgba(176,122,255,.15);border-radius:8px;padding:9px 12px;color:var(--text);font-family:var(--font-body);font-size:13px;resize:none;box-sizing:border-box;outline:none;line-height:1.55"></textarea>
+          <div style="margin-top:8px">
+            <button onclick="submitSuggestion()" id="suggestSendBtn" style="width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-display);font-size:12px;font-weight:700;padding:7px 10px;border-radius:7px;cursor:pointer"></button>
+          </div>
+        </div>
+        <button onclick="showChangelog(true)" style="margin-top:10px;background:none;border:1px solid rgba(176,122,255,.2);color:var(--text-dim);font-size:12px;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:var(--font-display);font-weight:600;transition:all .2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">📋 v1.1.1 — what's new?</button>
+        <button id="suggestSkipBtn" onclick="closeSuggestBox()" style="display:none;background:none;border:none;color:var(--text-faint);font-size:11px;padding:3px 0;cursor:pointer;font-family:var(--font-display);margin-top:4px"></button>
       </div>
 
       <div class="hero-right">
@@ -1688,6 +1700,8 @@
       </div>
       <div class="create-post-label" data-i18n="cp_hashtags_label">Хэштеги</div>
       <input class="create-post-input" id="cpHashtags" type="text" data-i18n-placeholder="cp_hashtags_ph" placeholder="#урон #комбо #скорость — через пробел" onblur="normalizeHashtags(this)" onkeyup="if(event.key==='Enter')normalizeHashtags(this)">
+      <div class="create-post-label">Moveset-код <span style="color:var(--text-faint);font-weight:400;font-size:11px">(опционально)</span></div>
+      <textarea id="cpMovesetCode" class="create-post-input" rows="2" style="resize:vertical;font-family:monospace;font-size:11px;line-height:1.4;width:100%;box-sizing:border-box" placeholder="Вставьте длинный moveset-код сюда…"></textarea>
       <div class="create-post-label" data-i18n="cp_media_label">Медиа (фото/видео, до 10 МБ каждое)</div>
       <div class="media-upload-area" onclick="document.getElementById('cpMediaInput').click()">
         <span data-i18n="cp_media_upload">📎 Нажми чтобы прикрепить фото или видео</span>
@@ -1730,6 +1744,7 @@
       <button class="admin-tab-btn" data-admin-tab="users" data-i18n="admin_tab_users" onclick="switchAdminTab('users',this)">👥 Юзеры</button>
       <button class="admin-tab-btn" data-admin-tab="posts" data-i18n="admin_tab_posts" onclick="switchAdminTab('posts',this)">📌 Посты</button>
       <button class="admin-tab-btn" data-admin-tab="announce" data-i18n="admin_tab_announce" onclick="switchAdminTab('announce',this)">📣 Объявления</button>
+      <button class="admin-tab-btn" data-admin-tab="wishes" onclick="switchAdminTab('wishes',this)">💡 Пожелания</button>
       <button class="admin-tab-btn" data-admin-tab="stats" data-i18n="admin_tab_stats" onclick="switchAdminTab('stats',this)">📊 Статистика</button>
     </div>
     <div class="admin-body">
@@ -1740,7 +1755,8 @@
         <div id="adminBugsList"><div class="forum-loading">Loading…</div></div>
       </div>
       <div class="admin-section" id="adminSec-users">
-        <input class="admin-search-input" id="adminUserSearch" type="text" placeholder="Search by nickname or PID…" oninput="adminSearchUsers(this.value)">
+        <div id="adminUsersTotal" style="font-size:12px;color:var(--text-faint);margin-bottom:8px"></div>
+        <input class="admin-search-input" id="adminUserSearch" type="text" placeholder="Поиск по нику или PID…" oninput="adminSearchUsers(this.value)">
         <div id="adminUsersList"><div class="forum-loading">Loading…</div></div>
       </div>
       <div class="admin-section" id="adminSec-posts">
@@ -1752,6 +1768,9 @@
         <button class="admin-send-announce-btn" onclick="sendAnnouncement()">📣 Publish announcement</button>
         <div style="margin-top:18px;font-family:var(--font-display);font-weight:700;font-size:14px;margin-bottom:10px">Active announcements</div>
         <div id="adminAnnounceList"></div>
+      </div>
+      <div class="admin-section" id="adminSec-wishes">
+        <div id="adminWishesList"><div class="forum-loading">Loading…</div></div>
       </div>
       <div class="admin-section" id="adminSec-stats">
         <div class="admin-stat-grid" id="adminStatGrid"><div class="forum-loading">Loading…</div></div>
@@ -2034,6 +2053,13 @@ const STRINGS = {
     copy_code_btn:'📋 Скопировать',
     copied_code_btn:'✓ Скопировано!',
     moveset_ph:'Вставь код мувсета',
+    suggest_title:'💡 Что хочешь увидеть дальше?',
+    suggest_subtitle:'Напиши свою идею — я читаю каждое пожелание и учитываю их в следующих обновлениях.',
+    suggest_ph:'Твои идеи и пожелания для следующего обновления…',
+    suggest_send_btn:'📤 Отправить',
+    suggest_skip_btn:'Пропустить',
+    suggest_thanks:'Спасибо за идею! 🙏 Я учту её.',
+    edited_label:'Изменено',
     mode_meta: {
       skill:{blocksTitle:'Справочник нод Skill Builder', blocksDesc:'Нажми на ноду, чтобы развернуть все поля. Цвет показывает категорию — действие, контакт, визуал/звук или логика.', ideasTitle:'Идеи для Skill Builder', ideasDesc:'Выбери ноды, которые хочешь задействовать, и крути рулетку — получишь идею способности на их основе.', aiTitle:'ИИ-ассистент по Skill Builder', aiDesc:'Спрашивай как у человека, который собрал сотню кастомных мувсетов: про ноды, Tag-логику, баги, координаты, анимации и визуалы.', chatHeader:'Ассистент Skill Builder', placeholder:'Спроси про любую ноду или механику…', navTab:'Ноды', searchPh:'Поиск ноды…', blockCount:(s,t)=>`Показано ${s} из ${t} нод`, aiEmptyState:'Задай вопрос или прикрепи скриншот настроек ноды.', takeIdeaBtn:'🎲 Взять идею с этой нодой', ideasSearchPh:'Поиск по названию ноды…', spinHintHas:'Идея будет связана хотя бы с одной из выбранных нод.', spinHintEmpty:'Можно крутить и без выбора нод — выпадет случайная идея.'},
       build:{blocksTitle:'Справочник блоков обычного строительства', blocksDesc:'Конструкция, Input/Output/Interaction блоки и Logic Gates. Нажми на блок, чтобы развернуть поля.', ideasTitle:'Идеи для строительства', ideasDesc:'Выбери блоки и гейты, которые хочешь задействовать, и крути рулетку — получишь идею механики или комнаты на их основе.', aiTitle:'ИИ-ассистент по строительству', aiDesc:'Спрашивай про блоки, ID-сигналы, гейты и готовые логические схемы.', chatHeader:'Ассистент по строительству', placeholder:'Спроси про блок, гейт или схему…', navTab:'Блоки', searchPh:'Поиск блока…', blockCount:(s,t)=>`Показано ${s} из ${t} блоков`, aiEmptyState:'Задай вопрос или прикрепи скриншот настроек блока.', takeIdeaBtn:'🎲 Взять идею с этим блоком', ideasSearchPh:'Поиск по названию блока…', spinHintHas:'Идея будет связана хотя бы с одним из выбранных блоков.', spinHintEmpty:'Можно крутить и без выбора блоков — выпадет случайная идея.'},
@@ -2269,6 +2295,13 @@ const STRINGS = {
     copy_code_btn:'📋 Copy code',
     copied_code_btn:'✓ Copied!',
     moveset_ph:'Paste moveset code',
+    suggest_title:'💡 What do you want to see next?',
+    suggest_subtitle:'Share your idea — I read every suggestion and consider them for upcoming updates.',
+    suggest_ph:'Your ideas and wishes for the next update…',
+    suggest_send_btn:'📤 Send',
+    suggest_skip_btn:'Skip',
+    suggest_thanks:'Thanks for your idea! 🙏 I\'ll consider it.',
+    edited_label:'Edited',
     mode_meta: {
       skill:{blocksTitle:'Skill Builder node reference', blocksDesc:'Tap a node to expand all its fields. Color shows the category — action, contact, visual/audio, or logic.', ideasTitle:'Ideas for Skill Builder', ideasDesc:'Pick the nodes you want to use, then spin the roulette to get an ability idea built around them.', aiTitle:'Skill Builder AI assistant', aiDesc:'Ask like you would a person who has built a hundred custom movesets: about nodes, Tag logic, bugs, coordinates, animations, and visuals.', chatHeader:'Skill Builder Assistant', placeholder:'Ask about any node or mechanic…', navTab:'Nodes', searchPh:'Search a node…', blockCount:(s,t)=>`Showing ${s} of ${t} nodes`, aiEmptyState:"Ask a question or attach a screenshot of a node's settings.", takeIdeaBtn:'🎲 Get an idea with this node', ideasSearchPh:'Search by node name…', spinHintHas:'The idea will involve at least one of your selected nodes.', spinHintEmpty:"You can spin with no nodes selected too — you'll get a random idea."},
       build:{blocksTitle:'Regular building block reference', blocksDesc:'Construction, Input/Output/Interaction blocks, and Logic Gates. Tap a block to expand its fields.', ideasTitle:'Ideas for building', ideasDesc:'Pick the blocks and gates you want to use, then spin the roulette to get a mechanic or room idea built around them.', aiTitle:'Building AI assistant', aiDesc:'Ask about blocks, ID signals, gates, and ready-made logic circuits.', chatHeader:'Building Assistant', placeholder:'Ask about a block, gate, or circuit…', navTab:'Blocks', searchPh:'Search a block…', blockCount:(s,t)=>`Showing ${s} of ${t} blocks`, aiEmptyState:"Ask a question or attach a screenshot of a block's settings.", takeIdeaBtn:'🎲 Get an idea with this block', ideasSearchPh:'Search by block name…', spinHintHas:'The idea will involve at least one of your selected blocks.', spinHintEmpty:"You can spin with no blocks selected too — you'll get a random idea."},
@@ -2375,6 +2408,7 @@ const STRINGS = {
     admin_panel_title:'🔧 Adminbereich',admin_tab_reports:'🚩 Meldungen',admin_tab_bugs:'🐛 Bugs',admin_tab_users:'👥 Nutzer',
     admin_tab_posts:'📌 Beiträge',admin_tab_announce:'📣 Ankündigungen',admin_tab_stats:'📊 Statistik',
     settings_title:'⚙ Einstellungen',settings_accent:'🎨 Akzentfarbe',settings_font:'🔤 Schriftart',settings_interface:'⚡ Interface',
+    suggest_title:'💡 Was möchtest du als Nächstes sehen?',suggest_subtitle:'Teile deine Idee — ich lese jeden Vorschlag und berücksichtige ihn in den nächsten Updates.',suggest_ph:'Deine Ideen und Wünsche für das nächste Update…',suggest_send_btn:'📤 Senden',suggest_skip_btn:'Überspringen',suggest_thanks:'Danke für deine Idee! 🙏 Ich berücksichtige sie.',
     mode_meta: {
       skill:{blocksTitle:'Skill Builder Node-Referenz', blocksDesc:'Klicke auf eine Node, um alle Felder zu sehen. Farbe zeigt die Kategorie.', ideasTitle:'Ideen für Skill Builder', ideasDesc:'Wähle die Nodes, die du verwenden möchtest, drehe das Roulette und erhalte eine Fähigkeitsidee.', aiTitle:'Skill Builder KI-Assistent', aiDesc:'Frag wie jemanden, der hundert eigene Movesets gebaut hat: über Nodes, Tag-Logik, Bugs, Koordinaten, Animationen und Visuals.', chatHeader:'Skill Builder Assistent', placeholder:'Frag über eine Node oder Mechanik…', navTab:'Nodes', searchPh:'Node suchen…', blockCount:(s,t)=>`${s} von ${t} Nodes`, aiEmptyState:'Stell eine Frage oder hänge einen Screenshot der Node-Einstellungen an.', takeIdeaBtn:'🎲 Idee mit dieser Node', ideasSearchPh:'Nach Node-Name suchen…', spinHintHas:'Die Idee enthält mindestens eine deiner gewählten Nodes.', spinHintEmpty:'Du kannst auch ohne Auswahl drehen — dann kommt eine Zufallsidee.'},
       build:{blocksTitle:'Builder-Blöcke Referenz', blocksDesc:'Konstruktion, Input/Output/Interaction-Blöcke und Logic Gates. Klicke auf einen Block, um die Felder zu sehen.', ideasTitle:'Ideen für Builder', ideasDesc:'Wähle Blöcke und Gates, drehe das Roulette und erhalte eine Mechanik- oder Raumidee.', aiTitle:'Builder KI-Assistent', aiDesc:'Frag über Blöcke, ID-Signale, Gates und fertige Schaltungen.', chatHeader:'Builder Assistent', placeholder:'Frag über einen Block, Gate oder Schaltung…', navTab:'Blöcke', searchPh:'Block suchen…', blockCount:(s,t)=>`${s} von ${t} Blöcken`, aiEmptyState:'Stell eine Frage oder hänge einen Screenshot der Block-Einstellungen an.', takeIdeaBtn:'🎲 Idee mit diesem Block', ideasSearchPh:'Nach Block-Name suchen…', spinHintHas:'Die Idee enthält mindestens einen deiner gewählten Blöcke.', spinHintEmpty:'Du kannst auch ohne Auswahl drehen — dann kommt eine Zufallsidee.'},
@@ -2481,6 +2515,7 @@ const STRINGS = {
     admin_panel_title:'🔧 Panel administratora',admin_tab_reports:'🚩 Zgłoszenia',admin_tab_bugs:'🐛 Błędy',admin_tab_users:'👥 Użytkownicy',
     admin_tab_posts:'📌 Posty',admin_tab_announce:'📣 Ogłoszenia',admin_tab_stats:'📊 Statystyki',
     settings_title:'⚙ Ustawienia',settings_accent:'🎨 Kolor akcentu',settings_font:'🔤 Czcionka interfejsu',settings_interface:'⚡ Interfejs',
+    suggest_title:'💡 Co chcesz zobaczyć dalej?',suggest_subtitle:'Podziel się pomysłem — czytam każdą sugestię i uwzględniam je w kolejnych aktualizacjach.',suggest_ph:'Twoje pomysły i życzenia na następną aktualizację…',suggest_send_btn:'📤 Wyślij',suggest_skip_btn:'Pomiń',suggest_thanks:'Dzięki za pomysł! 🙏 Uwzględnię go.',
     mode_meta: {
       skill:{blocksTitle:'Baza węzłów Skill Builder', blocksDesc:'Kliknij węzeł, aby zobaczyć wszystkie pola. Kolor wskazuje kategorię.', ideasTitle:'Pomysły dla Skill Builder', ideasDesc:'Wybierz węzły, których chcesz użyć, i kręć ruletką — dostaniesz pomysł na umiejętność.', aiTitle:'Asystent AI Skill Builder', aiDesc:'Pytaj jak kogoś, kto zbudował setki własnych movesetów: o węzły, logikę Tag, błędy, koordynaty, animacje i wizuale.', chatHeader:'Asystent Skill Builder', placeholder:'Zapytaj o węzeł lub mechanikę…', navTab:'Węzły', searchPh:'Szukaj węzła…', blockCount:(s,t)=>`${s} z ${t} węzłów`, aiEmptyState:'Zadaj pytanie lub dołącz zrzut ekranu ustawień węzła.', takeIdeaBtn:'🎲 Weź pomysł z tym węzłem', ideasSearchPh:'Szukaj po nazwie węzła…', spinHintHas:'Pomysł będzie związany z przynajmniej jednym wybranym węzłem.', spinHintEmpty:'Możesz kręcić bez wyboru — dostaniesz losowy pomysł.'},
       build:{blocksTitle:'Baza bloków Builder', blocksDesc:'Konstrukcja, bloki Input/Output/Interaction i Logic Gates. Kliknij blok, aby zobaczyć pola.', ideasTitle:'Pomysły dla Builder', ideasDesc:'Wybierz bloki i bramki, których chcesz użyć, i kręć ruletką — dostaniesz pomysł na mechanikę lub pomieszczenie.', aiTitle:'Asystent AI Builder', aiDesc:'Pytaj o bloki, sygnały ID, bramki i gotowe układy logiczne.', chatHeader:'Asystent Builder', placeholder:'Zapytaj o blok, bramkę lub układ…', navTab:'Bloki', searchPh:'Szukaj bloku…', blockCount:(s,t)=>`${s} z ${t} bloków`, aiEmptyState:'Zadaj pytanie lub dołącz zrzut ekranu ustawień bloku.', takeIdeaBtn:'🎲 Weź pomysł z tym blokiem', ideasSearchPh:'Szukaj po nazwie bloku…', spinHintHas:'Pomysł będzie związany z przynajmniej jednym wybranym blokiem.', spinHintEmpty:'Możesz kręcić bez wyboru — dostaniesz losowy pomysł.'},
@@ -2587,8 +2622,118 @@ const STRINGS = {
     admin_panel_title:'🔧 Painel de administração',admin_tab_reports:'🚩 Denúncias',admin_tab_bugs:'🐛 Erros',admin_tab_users:'👥 Utilizadores',
     admin_tab_posts:'📌 Publicações',admin_tab_announce:'📣 Anúncios',admin_tab_stats:'📊 Estatísticas',
     settings_title:'⚙ Definições',settings_accent:'🎨 Cor de destaque',settings_font:'🔤 Tipo de letra',settings_interface:'⚡ Interface',
+    suggest_title:'💡 O que queres ver a seguir?',suggest_subtitle:'Partilha a tua ideia — leio cada sugestão e considero-as nas próximas atualizações.',suggest_ph:'As tuas ideias e desejos para a próxima atualização…',suggest_send_btn:'📤 Enviar',suggest_skip_btn:'Ignorar',suggest_thanks:'Obrigado pela ideia! 🙏 Vou considerá-la.',
     mode_meta: {
       skill:{blocksTitle:'Referência de nodes do Skill Builder', blocksDesc:'Clique em uma node para ver todos os campos. A cor indica a categoria.', ideasTitle:'Ideias para Skill Builder', ideasDesc:'Escolha as nodes que quer usar e gire a roleta para receber uma ideia de habilidade.', aiTitle:'Assistente IA do Skill Builder', aiDesc:'Pergunte como quem já montou centenas de movesets: sobre nodes, lógica de Tag, bugs, coordenadas, animações e visuais.', chatHeader:'Assistente Skill Builder', placeholder:'Pergunte sobre uma node ou mecânica…', navTab:'Nodes', searchPh:'Buscar node…', blockCount:(s,t)=>`${s} de ${t} nodes`, aiEmptyState:'Faça uma pergunta ou anexe um print das configurações da node.', takeIdeaBtn:'🎲 Pegar ideia com essa node', ideasSearchPh:'Buscar por nome da node…', spinHintHas:'A ideia vai usar pelo menos uma das nodes selecionadas.', spinHintEmpty:'Dá pra girar sem selecionar nada — vai sair uma ideia aleatória.'},
+      build:{blocksTitle:'Referência de blocos do Builder', blocksDesc:'Construção, blocos Input/Output/Interaction e Logic Gates. Clique em um bloco para ver os campos.', ideasTitle:'Ideias para Builder', ideasDesc:'Escolha blocos e gates que quer usar e gire a roleta para uma ideia de mecânica ou sala.', aiTitle:'Assistente IA do Builder', aiDesc:'Pergunte sobre blocos, sinais ID, gates e circuitos prontos.', chatHeader:'Assistente Builder', placeholder:'Pergunte sobre um bloco, gate ou circuito…', navTab:'Blocos', searchPh:'Buscar bloco…', blockCount:(s,t)=>`${s} de ${t} blocos`, aiEmptyState:'Faça uma pergunta ou anexe um print das configurações do bloco.', takeIdeaBtn:'🎲 Pegar ideia com esse bloco', ideasSearchPh:'Buscar por nome do bloco…', spinHintHas:'A ideia vai usar pelo menos um dos blocos selecionados.', spinHintEmpty:'Dá pra girar sem selecionar nada — vai sair uma ideia aleatória.'},
+    },
+  },
+  'pt-br': {
+    nav_home:'Início', nav_blocks:'Blocos', nav_ai:'Assistente IA', nav_ideas:'Ideias',
+    hero_h1:'Construa habilidades e mecânicas,<br>sem adivinhar <span>parâmetros</span>',
+    hero_lead:'Dois modos em um só lugar: <b>Skill Builder</b> para habilidades personalizadas e <b>Builder normal</b> — do bloco simples a Input/Output/Interaction e Logic Gates. Mude de modo no menu superior.',
+    hero_sub:'Totalmente gratuito, sem cadastro — o site todo funciona no navegador.',
+    beta_notice:'O app está em <b>beta</b> — recursos, visual e conteúdo podem mudar. Se algo der erro — é normal, vamos corrigir.',
+    feature1_title:'Referência de blocos', feature1_desc:'No Skill Builder: ANIM, HITBOX, VISUAL, TAG e outros. No Builder: Part, Moveset Block, AND/NOT/XOR Gate e o sistema de sinais ID.',
+    feature2_title:'Assistente IA', feature2_desc:'Assistente dedicado para cada modo — tire dúvidas sobre nodes de skill ou logic gates e circuitos prontos.',
+    feature3_title:'Ideias & Roleta', feature3_desc:'Escolha os blocos que quer usar, gire a roleta e receba uma ideia de habilidade ou mecânica — depois pergunte à IA como criar.',
+    stat_blocks:'nodes na referência', stat_ideas:'ideias para a roleta', stat_modes:'modos em um só lugar', stat_cost:'custo de uso',
+    hero_panel_label:'Prévia da cadeia', hero_panel_cta:'Abrir referência →',
+    blocks_search_ph:'Buscar node…',
+    blockcount:(shown,total)=>`Mostrando ${shown} de ${total} nodes`,
+    legend_mode_label:'Modo de referência',
+    ai_clear_btn:'Limpar chat', ai_empty_state:'Faça uma pergunta ou anexe um print das configurações do node.', ai_send_btn:'Enviar',
+    ai_attach_title:'Anexar foto', ai_remove_photo_title:'Remover foto',
+    take_idea_btn:'🎲 Pegar ideia com esse bloco',
+    ideas_search_ph:'Buscar nome do bloco…',
+    no_blocks_found:'Não encontrado',
+    picker_hint:(n,max)=>`Selecionado: ${n} / ${max}`,
+    spin_btn:'🎲 Girar roleta',
+    spin_hint_has:'A ideia vai usar pelo menos um dos blocos selecionados.',
+    spin_hint_empty:'Dá pra girar sem selecionar nada — vai sair uma ideia aleatória.',
+    ask_ai_btn:'💬 Perguntar à IA', fav_btn_add:'☆ Salvar favorito', fav_btn_added:'★ Nos favoritos', complete_btn:'✅ Concluído!', complete_btn_done:'✅ Já concluído',
+    fav_section_title:'Favoritos', done_section_title:'Concluídos',
+    sort_asc:'Dificuldade ↑', sort_desc:'Dificuldade ↓',
+    fav_empty:'Ainda sem salvos — gire a roleta e marque as ideias que gostar.',
+    done_empty:'Nada concluído ainda — marque ideias com o botão "Concluído!".',
+    fav_toggle_done:'✅ Marcar como concluído', fav_remove:'Remover dos favoritos',
+    done_edit:'📎 Trocar foto/vídeo', done_remove:'Remover dos concluídos',
+    modal_attach_btn:'📎 Anexar foto/vídeo', modal_confirm_btn:'✅ Concluído!',
+    footer_text:'Nodecraft — guia de fã não oficial para o Jujutsu Shenanigans Build Mode.<br>Não afiliado com os desenvolvedores do jogo.',
+    key_missing:'IA temporariamente indisponível.',
+    no_answer:'Não foi possível obter resposta. Tente reformular a pergunta.',
+    cors_error:'Não conseguiu conectar à IA. Se a internet estiver ok — tente uma VPN: Cloudflare WARP (app 1.1.1.1) é gratuito.',
+    export_btn:'💾 Salvar progresso',
+    import_btn:'📂 Restaurar progresso',
+    groq_error:(m)=>`Erro da IA: ${m}`,
+    rate_limit_error:'⏳ Limite de requisições atingido. Tente novamente em alguns minutos.',
+    chat_rate_note:'⚡ IA gratuita · pode ter limite',
+    copyright:'© F1cus — proibido copiar ou usar materiais sem permissão',
+    ai_warn_title:'Sobre o Assistente IA',
+    ai_warn_unstable_label:'Limite diário',
+    ai_warn_unstable:'1.500 requisições por dia, 15 por minuto. Se a IA parar de responder — limite atingido, aguarde até o próximo dia.',
+    ai_warn_limits_label:'Precisão',
+    ai_warn_limits:'A IA entende as mecânicas do jogo, mas pode errar em valores específicos de campo. Verifique detalhes importantes na referência de blocos.',
+    ai_warn_vpn_label:'Problema de conexão',
+    ai_warn_vpn:'Alguns provedores bloqueiam o Cloudflare. Se a IA não responde mas a internet está ok — ative uma VPN. <b>Cloudflare WARP</b> (app 1.1.1.1) é gratuito.',
+    image_alt:'Foto anexada', media_thumb_alt:'Foto da ideia concluída',
+    forum_no_posts:'Sem posts ainda. Seja o primeiro! ✍️',
+    post_mode_both:'⚔️🧱 Ambos',post_pinned:'📌 Fixado',show_more:'Ver mais ▾',collapse_text:'Recolher ▴',popular_label:'Popular:',mini_posts:'posts',mini_likes:'curtidas',
+    post_not_found:'Post não encontrado',comment_ph:'Escreva um comentário…',attach_photo_title:'Anexar foto',send_btn:'Enviar',
+    guest_login_cta:'Entre ou cadastre-se',guest_login_suffix:' para comentar.',muted_comment_msg:'Você foi silenciado e não pode comentar.',
+    report_btn:'🚩 Reportar',del_post_btn:'🗑 Excluir',share_btn:'🔗 Compartilhar',comments_header:'Comentários',author_badge:'Autor',reply_btn:'↩ Responder',
+    error_prefix:'Erro: ',del_comment_confirm:'Excluir comentário?',del_error:'Erro ao excluir: ',reply_ph:'Responder…',
+    cooldown_msg:(s)=>`⏳ Aguarde ${s}s antes de postar novamente`,
+    publishing_text:'Publicando…',uploading_media:'Enviando mídia…',post_btn_label:'✏️ Publicar',
+    code_ph:'Código aqui',quote_ph:'Citação aqui',moveset_ph:'Cole o código do moveset',copy_code_btn:'📋 Copiar',copied_code_btn:'✓ Copiado!',
+    login_for_profile:'Faça login para ver seu perfil',profile_not_found:'Perfil não encontrado',
+    my_profile_label:'Meu perfil',profile_label:'Perfil',verified_tip:'Conta verificada',
+    unfollow_label:'Deixar de seguir',follow_label:'Seguir',friends_label:'Amigos',
+    edit_profile_btn:'✏️ Editar perfil',nick_label:'Nome',username_ph:'nome_usuario',bio_label:'Bio',bio_ph:'Conte algo sobre você…',
+    link_label:'Link',verified_only_note:'Apenas contas verificadas podem adicionar link externo',cancel_btn:'Cancelar',save_btn:'Salvar',
+    following_label:'Seguindo',followers_label:'Seguidores',likes_label:'Curtidas',
+    member_since_label:'Membro desde',my_posts_label:'Meus posts',posts_label_profile:'Posts',active_label:'ativos',deleted_label:'excluídos',
+    no_posts_profile:'Sem posts',username_err:'@username: 3–20 caracteres, só letras latinas, dígitos e _',save_err:'Erro ao salvar: ',
+    followers_title:'Seguidores',following_title:'Seguindo',no_reports:'Sem denúncias ✅',deleted_post_ref:'Post excluído',
+    accept_btn:'Aceitar',dismiss_btn:'Rejeitar',report_acc_toast:'✅ Denúncia aceita',report_dis_toast:'❌ Denúncia rejeitada',
+    nobody_found:'Ninguém encontrado',col_nick_id:'Nick / ID',col_posts:'Posts',col_status:'Status',col_actions:'Ações',
+    col_reports:'Denúncias',col_from:'De',col_reasons:'Motivos',col_post:'Post',col_author:'Autor',
+    status_verified:'✓ Verificado',status_banned:'🚫 Banido',status_muted:'🔇 Silenciado',
+    rm_verify_btn:'Remover ✓',verify_btn:'✓ Verificar',unmute_btn:'Reativar',mute_btn:'Silenciar',unban_btn:'Desbanir',ban_btn:'Banir',
+    mute_removed:'🔊 Silêncio removido',mute_prompt_text:'Silenciar por quantas horas?\n(ex.: 24)',
+    muted_toast:(h)=>`🔇 Silenciado por ${h}h`,unban_done:'✅ Desbanimento concluído',ban_prompt_text:'Motivo do ban (opcional):',banned_toast:'🚫 Usuário banido',
+    deleted_label_admin:'EXCLUÍDO',unpin_btn:'Desafixar',pin_btn:'📌 Fixar',del_post_admin:'Excluir',no_posts_admin:'Sem posts',
+    no_announcements:'Sem anúncios',hide_ann:'Ocultar',show_ann:'Mostrar',
+    stat_users:'Usuários',stat_posts_admin:'Posts',stat_comments:'Comentários',stat_posts_today:'Posts hoje',stat_users_today:'Novos usuários hoje',
+    no_notifs:'Sem notificações 🔕',notif_just_now:'agora mesmo',
+    notif_min_ago:(m)=>`há ${m} min`,notif_hr_ago:(h)=>`há ${h}h`,notif_day_ago:(d)=>`há ${d} dia${d===1?'':'s'}`,
+    notif_someone:'Alguém',liked_your_post:(n)=>`${n} curtiu seu post`,commented_your_post:(n)=>`${n} comentou no seu post`,followed_you:(n)=>`${n} começou a te seguir`,
+    notif_like_def:'Alguém curtiu seu post',notif_comment_def:'Novo comentário no seu post',notif_reply_def:'Alguém respondeu ao seu comentário',
+    notif_follow_def:'Você tem um novo seguidor',notif_mute_def:'Você foi silenciado',notif_ban_def:'Conta banida',
+    notif_system_def:'Notificação do sistema',notif_acc_def:'Denúncia aceita',notif_dis_def:'Denúncia rejeitada',
+    notif_bug_def:'Novo relatório de bug',notif_generic:'Notificação',
+    new_posts_banner:(n)=>`▲ +${n} novo${n===1?'':'s'} post${n===1?'':'s'} — toque para atualizar`,
+    new_comments_ind:(n)=>`▼ ${n} novo${n===1?'':'s'} comentário${n===1?'':'s'} — toque`,
+    bug_sending:'Enviando…',bug_steps_prefix:'Passos: ',loading_error:'Erro ao carregar',
+    nav_forum:'💬 Fórum',forum_filter_all:'Todos',forum_new_btn:'✏️ Publicar',forum_search_ph:'🔍 Buscar posts, hashtags…',
+    auth_sub:'Faça login ou crie uma conta — fórum e sincronização',auth_tab_login:'Entrar',auth_tab_reg:'Cadastrar',
+    auth_nick_ph:'Apelido',auth_pass_ph:'Senha',auth_nick_reg_ph:'Apelido (2–20 caracteres)',
+    auth_pass_hint:'Mín. 8 caracteres · pelo menos um caractere especial (!@#$%^&*…)',auth_or:'ou',auth_guest_btn:'👤 Continuar como visitante',
+    auth_login_btn:'Entrar',auth_reg_btn:'Criar conta',auth_logging_in:'Entrando…',auth_creating:'Criando…',
+    auth_fill_all:'Preencha todos os campos',auth_wrong_creds:'Apelido ou senha incorretos',
+    auth_nick_taken:'Esse apelido já está em uso',auth_too_many:'Muitas tentativas, aguarde um minuto',guest_badge:'Visitante',
+    cp_modal_title:'✏️ Nova publicação',cp_mode_label:'Modo *',cp_title_label:'Título *',cp_title_ph:'Breve descrição do build ou mecânica…',
+    cp_content_label:'Conteúdo *',cp_content_ph:'Fale sobre o build, como usá-lo, quais nodes escolher…',
+    cp_nodes_label:'Nodes / blocos (usados no build)',cp_hashtags_label:'Hashtags',cp_hashtags_ph:'#dano #combo #velocidade — separados por espaço',
+    cp_media_label:'Mídia (foto/vídeo, máx. 10 MB cada)',cp_media_upload:'📎 Clique para anexar foto ou vídeo',
+    cp_rules_text:'Li as regras da comunidade e confirmo que meu post não contém insultos, spam ou conteúdo NSFW',
+    notif_panel_title:'🔔 Notificações',notif_mark_all:'Marcar todas como lidas',
+    admin_panel_title:'🔧 Painel de administração',admin_tab_reports:'🚩 Denúncias',admin_tab_bugs:'🐛 Erros',admin_tab_users:'👥 Usuários',
+    admin_tab_posts:'📌 Posts',admin_tab_announce:'📣 Anúncios',admin_tab_stats:'📊 Estatísticas',
+    settings_title:'⚙ Configurações',settings_accent:'🎨 Cor de destaque',settings_font:'🔤 Fonte da interface',settings_interface:'⚡ Interface',
+    suggest_title:'💡 O que você quer ver a seguir?',suggest_subtitle:'Compartilhe sua ideia — leio cada sugestão e levo em conta nas próximas atualizações.',suggest_ph:'Suas ideias e desejos para a próxima atualização…',suggest_send_btn:'📤 Enviar',suggest_skip_btn:'Pular',suggest_thanks:'Obrigado pela ideia! 🙏 Vou levar em conta.',
+    mode_meta: {
+      skill:{blocksTitle:'Referência de nodes do Skill Builder', blocksDesc:'Clique em um node para ver todos os campos. A cor indica a categoria.', ideasTitle:'Ideias para Skill Builder', ideasDesc:'Escolha os nodes que quer usar e gire a roleta para receber uma ideia de habilidade.', aiTitle:'Assistente IA do Skill Builder', aiDesc:'Pergunte como quem já montou centenas de movesets: sobre nodes, lógica de Tag, bugs, coordenadas, animações e visuais.', chatHeader:'Assistente Skill Builder', placeholder:'Pergunte sobre um node ou mecânica…', navTab:'Nodes', searchPh:'Buscar node…', blockCount:(s,t)=>`${s} de ${t} nodes`, aiEmptyState:'Faça uma pergunta ou anexe um print das configurações do node.', takeIdeaBtn:'🎲 Pegar ideia com esse node', ideasSearchPh:'Buscar por nome do node…', spinHintHas:'A ideia vai usar pelo menos um dos nodes selecionados.', spinHintEmpty:'Dá pra girar sem selecionar nada — vai sair uma ideia aleatória.'},
       build:{blocksTitle:'Referência de blocos do Builder', blocksDesc:'Construção, blocos Input/Output/Interaction e Logic Gates. Clique em um bloco para ver os campos.', ideasTitle:'Ideias para Builder', ideasDesc:'Escolha blocos e gates que quer usar e gire a roleta para uma ideia de mecânica ou sala.', aiTitle:'Assistente IA do Builder', aiDesc:'Pergunte sobre blocos, sinais ID, gates e circuitos prontos.', chatHeader:'Assistente Builder', placeholder:'Pergunte sobre um bloco, gate ou circuito…', navTab:'Blocos', searchPh:'Buscar bloco…', blockCount:(s,t)=>`${s} de ${t} blocos`, aiEmptyState:'Faça uma pergunta ou anexe um print das configurações do bloco.', takeIdeaBtn:'🎲 Pegar ideia com esse bloco', ideasSearchPh:'Buscar por nome do bloco…', spinHintHas:'A ideia vai usar pelo menos um dos blocos selecionados.', spinHintEmpty:'Dá pra girar sem selecionar nada — vai sair uma ideia aleatória.'},
     },
   },
@@ -2693,6 +2838,7 @@ const STRINGS = {
     admin_panel_title:'🔧 Panel admin',admin_tab_reports:'🚩 Laporan',admin_tab_bugs:'🐛 Bug',admin_tab_users:'👥 Pengguna',
     admin_tab_posts:'📌 Postingan',admin_tab_announce:'📣 Pengumuman',admin_tab_stats:'📊 Statistik',
     settings_title:'⚙ Pengaturan',settings_accent:'🎨 Warna aksen',settings_font:'🔤 Font antarmuka',settings_interface:'⚡ Antarmuka',
+    suggest_title:'💡 Apa yang ingin kamu lihat selanjutnya?',suggest_subtitle:'Bagikan idemu — aku membaca setiap saran dan mempertimbangkannya untuk pembaruan berikutnya.',suggest_ph:'Ide dan harapanmu untuk pembaruan selanjutnya…',suggest_send_btn:'📤 Kirim',suggest_skip_btn:'Lewati',suggest_thanks:'Terima kasih atas idenya! 🙏 Akan aku pertimbangkan.',
     mode_meta: {
       skill:{blocksTitle:'Referensi node Skill Builder', blocksDesc:'Klik node untuk melihat semua field. Warna menunjukkan kategori.', ideasTitle:'Ide untuk Skill Builder', ideasDesc:'Pilih node yang ingin kamu pakai dan putar roulette — dapat ide skill.', aiTitle:'Asisten AI Skill Builder', aiDesc:'Tanya seperti ke orang yang sudah bikin ratusan moveset: soal node, logika Tag, bug, koordinat, animasi, dan visual.', chatHeader:'Asisten Skill Builder', placeholder:'Tanya tentang node atau mekanik…', navTab:'Nodes', searchPh:'Cari node…', blockCount:(s,t)=>`${s} dari ${t} node`, aiEmptyState:'Ajukan pertanyaan atau lampirkan screenshot pengaturan node.', takeIdeaBtn:'🎲 Ambil ide dengan node ini', ideasSearchPh:'Cari nama node…', spinHintHas:'Ide akan menggunakan minimal satu node yang kamu pilih.', spinHintEmpty:'Bisa putar tanpa pilih apa-apa — dapat ide acak.'},
       build:{blocksTitle:'Referensi blok Builder', blocksDesc:'Konstruksi, blok Input/Output/Interaction, dan Logic Gates. Klik blok untuk melihat field-nya.', ideasTitle:'Ide untuk Builder', ideasDesc:'Pilih blok dan gate yang ingin kamu pakai dan putar roulette — dapat ide mekanik atau ruangan.', aiTitle:'Asisten AI Builder', aiDesc:'Tanya tentang blok, sinyal ID, gate, dan rangkaian logika siap pakai.', chatHeader:'Asisten Builder', placeholder:'Tanya tentang blok, gate, atau rangkaian…', navTab:'Blok', searchPh:'Cari blok…', blockCount:(s,t)=>`${s} dari ${t} blok`, aiEmptyState:'Ajukan pertanyaan atau lampirkan screenshot pengaturan blok.', takeIdeaBtn:'🎲 Ambil ide dengan blok ini', ideasSearchPh:'Cari nama blok…', spinHintHas:'Ide akan menggunakan minimal satu blok yang kamu pilih.', spinHintEmpty:'Bisa putar tanpa pilih apa-apa — dapat ide acak.'},
@@ -2798,6 +2944,7 @@ const STRINGS = {
     admin_panel_title:'🔧 Bảng quản trị',admin_tab_reports:'🚩 Báo cáo',admin_tab_bugs:'🐛 Lỗi',admin_tab_users:'👥 Người dùng',
     admin_tab_posts:'📌 Bài',admin_tab_announce:'📣 Thông báo',admin_tab_stats:'📊 Thống kê',
     settings_title:'⚙ Cài đặt',settings_accent:'🎨 Màu nhấn',settings_font:'🔤 Font giao diện',settings_interface:'⚡ Giao diện',
+    suggest_title:'💡 Bạn muốn thấy gì tiếp theo?',suggest_subtitle:'Chia sẻ ý tưởng của bạn — tôi đọc mọi đề xuất và cân nhắc cho các bản cập nhật.',suggest_ph:'Ý tưởng và mong muốn của bạn cho bản cập nhật tiếp theo…',suggest_send_btn:'📤 Gửi',suggest_skip_btn:'Bỏ qua',suggest_thanks:'Cảm ơn vì ý tưởng! 🙏 Tôi sẽ xem xét.',
     mode_meta: {
       skill:{blocksTitle:'Tham chiếu node Skill Builder', blocksDesc:'Nhấn vào node để xem tất cả các trường. Màu sắc chỉ danh mục.', ideasTitle:'Ý tưởng cho Skill Builder', ideasDesc:'Chọn các node muốn dùng và quay vòng — nhận ý tưởng kỹ năng.', aiTitle:'Trợ lý AI Skill Builder', aiDesc:'Hỏi như người đã tạo hàng trăm moveset tự chế: về node, logic Tag, lỗi, toạ độ, animation và visual.', chatHeader:'Trợ lý Skill Builder', placeholder:'Hỏi về node hay cơ chế nào đó…', navTab:'Nodes', searchPh:'Tìm node…', blockCount:(s,t)=>`${s} / ${t} node`, aiEmptyState:'Đặt câu hỏi hoặc đính kèm ảnh chụp màn hình cài đặt node.', takeIdeaBtn:'🎲 Lấy ý tưởng với node này', ideasSearchPh:'Tìm theo tên node…', spinHintHas:'Ý tưởng sẽ liên quan đến ít nhất một node đã chọn.', spinHintEmpty:'Có thể quay không cần chọn gì — sẽ ra ý tưởng ngẫu nhiên.'},
       build:{blocksTitle:'Tham chiếu block Builder', blocksDesc:'Xây dựng, block Input/Output/Interaction và Logic Gates. Nhấn vào block để xem các trường.', ideasTitle:'Ý tưởng cho Builder', ideasDesc:'Chọn block và gate muốn dùng và quay vòng — nhận ý tưởng cơ chế hoặc phòng.', aiTitle:'Trợ lý AI Builder', aiDesc:'Hỏi về block, tín hiệu ID, gate và mạch logic có sẵn.', chatHeader:'Trợ lý Builder', placeholder:'Hỏi về block, gate hoặc mạch nào đó…', navTab:'Khối', searchPh:'Tìm block…', blockCount:(s,t)=>`${s} / ${t} block`, aiEmptyState:'Đặt câu hỏi hoặc đính kèm ảnh chụp màn hình cài đặt block.', takeIdeaBtn:'🎲 Lấy ý tưởng với block này', ideasSearchPh:'Tìm theo tên block…', spinHintHas:'Ý tưởng sẽ liên quan đến ít nhất một block đã chọn.', spinHintEmpty:'Có thể quay không cần chọn gì — sẽ ra ý tưởng ngẫu nhiên.'},
@@ -2903,6 +3050,7 @@ const STRINGS = {
     admin_panel_title:'🔧 แผงผู้ดูแลระบบ',admin_tab_reports:'🚩 รายงาน',admin_tab_bugs:'🐛 บัก',admin_tab_users:'👥 ผู้ใช้',
     admin_tab_posts:'📌 โพสต์',admin_tab_announce:'📣 ประกาศ',admin_tab_stats:'📊 สถิติ',
     settings_title:'⚙ การตั้งค่า',settings_accent:'🎨 สีเน้น',settings_font:'🔤 ฟอนต์อินเทอร์เฟซ',settings_interface:'⚡ อินเทอร์เฟซ',
+    suggest_title:'💡 คุณอยากเห็นอะไรต่อไป?',suggest_subtitle:'แชร์ไอเดียของคุณ — ฉันอ่านทุกข้อเสนอแนะและนำมาพิจารณาในอัปเดตถัดไป',suggest_ph:'ไอเดียและความปรารถนาของคุณสำหรับอัปเดตถัดไป…',suggest_send_btn:'📤 ส่ง',suggest_skip_btn:'ข้าม',suggest_thanks:'ขอบคุณสำหรับไอเดีย! 🙏 ฉันจะนำไปพิจารณา',
     mode_meta: {
       skill:{blocksTitle:'คู่มือโหนด Skill Builder', blocksDesc:'คลิกที่โหนดเพื่อดูทุกฟิลด์ สีบอกหมวดหมู่', ideasTitle:'ไอเดียสำหรับ Skill Builder', ideasDesc:'เลือกโหนดที่อยากใช้แล้วหมุนรูเล็ต — ได้ไอเดียสกิล', aiTitle:'ผู้ช่วย AI Skill Builder', aiDesc:'ถามเหมือนถามคนที่สร้างมูฟเซ็ตมาเป็นร้อย: เรื่องโหนด Tag-logic บัก พิกัด แอนิเมชัน และวิชวล', chatHeader:'ผู้ช่วย Skill Builder', placeholder:'ถามเกี่ยวกับโหนดหรือกลไก…', navTab:'Nodes', searchPh:'ค้นหาโหนด…', blockCount:(s,t)=>`${s} จาก ${t} โหนด`, aiEmptyState:'ถามคำถามหรือแนบสกรีนช็อตการตั้งค่าโหนด', takeIdeaBtn:'🎲 รับไอเดียกับโหนดนี้', ideasSearchPh:'ค้นหาชื่อโหนด…', spinHintHas:'ไอเดียจะเกี่ยวกับอย่างน้อยหนึ่งโหนดที่เลือก', spinHintEmpty:'หมุนโดยไม่ต้องเลือกก็ได้ — จะออกไอเดียสุ่ม'},
       build:{blocksTitle:'คู่มือบล็อก Builder', blocksDesc:'การก่อสร้าง บล็อก Input/Output/Interaction และ Logic Gates คลิกบล็อกเพื่อดูฟิลด์', ideasTitle:'ไอเดียสำหรับ Builder', ideasDesc:'เลือกบล็อกและเกตที่อยากใช้แล้วหมุนรูเล็ต — ได้ไอเดียกลไกหรือห้อง', aiTitle:'ผู้ช่วย AI Builder', aiDesc:'ถามเรื่องบล็อก สัญญาณ ID เกต และวงจรลอจิกสำเร็จรูป', chatHeader:'ผู้ช่วย Builder', placeholder:'ถามเกี่ยวกับบล็อก เกต หรือวงจร…', navTab:'บล็อก', searchPh:'ค้นหาบล็อก…', blockCount:(s,t)=>`${s} จาก ${t} บล็อก`, aiEmptyState:'ถามคำถามหรือแนบสกรีนช็อตการตั้งค่าบล็อก', takeIdeaBtn:'🎲 รับไอเดียกับบล็อกนี้', ideasSearchPh:'ค้นหาชื่อบล็อก…', spinHintHas:'ไอเดียจะเกี่ยวกับอย่างน้อยหนึ่งบล็อกที่เลือก', spinHintEmpty:'หมุนโดยไม่ต้องเลือกก็ได้ — จะออกไอเดียสุ่ม'},
@@ -3008,6 +3156,7 @@ const STRINGS = {
     admin_panel_title:'🔧 Admin Panel',admin_tab_reports:'🚩 Mga Ulat',admin_tab_bugs:'🐛 Mga Bug',admin_tab_users:'👥 Mga User',
     admin_tab_posts:'📌 Mga Post',admin_tab_announce:'📣 Mga Anunsyo',admin_tab_stats:'📊 Estadistika',
     settings_title:'⚙ Mga Setting',settings_accent:'🎨 Kulay ng accent',settings_font:'🔤 Font ng interface',settings_interface:'⚡ Interface',
+    suggest_title:'💡 Ano ang gusto mong makita susunod?',suggest_subtitle:'Ibahagi ang iyong ideya — binabasa ko ang bawat mungkahi at isinasaalang-alang sa mga susunod na update.',suggest_ph:'Ang iyong mga ideya at mithiin para sa susunod na update…',suggest_send_btn:'📤 Ipadala',suggest_skip_btn:'Laktawan',suggest_thanks:'Salamat sa iyong ideya! 🙏 Isasaalang-alang ko ito.',
     mode_meta: {
       skill:{blocksTitle:'Skill Builder node reference', blocksDesc:'I-click ang node para makita ang lahat ng field. Ang kulay ay nagpapakita ng kategorya.', ideasTitle:'Mga Ideya para sa Skill Builder', ideasDesc:'Pumili ng nodes na gusto mong gamitin at i-spin ang roulette para makakuha ng skill idea.', aiTitle:'Skill Builder AI Assistant', aiDesc:'Magtanong tulad ng sa taong nakapagbuo ng daan-daang custom moveset: tungkol sa nodes, Tag logic, bugs, coordinates, animations, at visuals.', chatHeader:'Skill Builder Assistant', placeholder:'Magtanong tungkol sa anumang node o mechanic…', navTab:'Mga Node', searchPh:'Maghanap ng node…', blockCount:(s,t)=>`${s} sa ${t} nodes`, aiEmptyState:'Magtanong o mag-attach ng screenshot ng node settings.', takeIdeaBtn:'🎲 Kumuha ng ideya gamit ang node na ito', ideasSearchPh:'Maghanap sa pangalan ng node…', spinHintHas:'Ang ideya ay gagamitin ng kahit isa sa mga napiling node.', spinHintEmpty:'Puwede ring mag-spin nang walang napili — makakatanggap ng random na ideya.'},
       build:{blocksTitle:'Builder block reference', blocksDesc:'Konstruksyon, Input/Output/Interaction blocks, at Logic Gates. I-click ang block para makita ang mga field nito.', ideasTitle:'Mga Ideya para sa Builder', ideasDesc:'Pumili ng blocks at gates na gusto mong gamitin at i-spin ang roulette para sa mechanic o room idea.', aiTitle:'Builder AI Assistant', aiDesc:'Magtanong tungkol sa blocks, ID signals, gates, at ready-made logic circuits.', chatHeader:'Builder Assistant', placeholder:'Magtanong tungkol sa block, gate, o circuit…', navTab:'Mga Block', searchPh:'Maghanap ng block…', blockCount:(s,t)=>`${s} sa ${t} blocks`, aiEmptyState:'Magtanong o mag-attach ng screenshot ng block settings.', takeIdeaBtn:'🎲 Kumuha ng ideya gamit ang block na ito', ideasSearchPh:'Maghanap sa pangalan ng block…', spinHintHas:'Ang ideya ay gagamitin ng kahit isa sa mga napiling block.', spinHintEmpty:'Puwede ring mag-spin nang walang napili — makakatanggap ng random na ideya.'},
@@ -3113,6 +3262,7 @@ const STRINGS = {
     admin_panel_title:'🔧 لوحة الإدارة',admin_tab_reports:'🚩 الإبلاغات',admin_tab_bugs:'🐛 الأخطاء',admin_tab_users:'👥 المستخدمون',
     admin_tab_posts:'📌 البوستات',admin_tab_announce:'📣 الإعلانات',admin_tab_stats:'📊 الإحصائيات',
     settings_title:'⚙ الإعدادات',settings_accent:'🎨 لون التمييز',settings_font:'🔤 خط الواجهة',settings_interface:'⚡ الواجهة',
+    suggest_title:'💡 ما الذي تريد رؤيته لاحقاً؟',suggest_subtitle:'شارك فكرتك — أقرأ كل اقتراح وأضعه في الاعتبار للتحديثات القادمة.',suggest_ph:'أفكارك وتمنياتك للتحديث القادم…',suggest_send_btn:'📤 إرسال',suggest_skip_btn:'تخطي',suggest_thanks:'شكراً على الفكرة! 🙏 سأضعها في الاعتبار.',
     mode_meta: {
       skill:{blocksTitle:'مرجع nodes الـ Skill Builder', blocksDesc:'اضغط على node لترى كل الحقول. اللون بيبيّن الفئة.', ideasTitle:'أفكار لـ Skill Builder', ideasDesc:'اختار nodes اللي عايز تستخدمها ودوّر العجلة — هتطلع فكرة مهارة.', aiTitle:'مساعد AI لـ Skill Builder', aiDesc:'اسأل زي ما تسأل حد بنى مية moveset مخصصة: عن nodes، منطق Tag، bugs، الإحداثيات، الأنيميشن والبصريات.', chatHeader:'مساعد Skill Builder', placeholder:'اسأل عن أي node أو ميكانيكا…', navTab:'Nodes', searchPh:'ابحث عن node…', blockCount:(s,t)=>`${s} من ${t} node`, aiEmptyState:'اطرح سؤالاً أو ارفق screenshot لإعدادات الـ node.', takeIdeaBtn:'🎲 فكرة مع هذا الـ node', ideasSearchPh:'ابحث باسم الـ node…', spinHintHas:'الفكرة هتتعلق بأقل node واحد من اللي اخترتهم.', spinHintEmpty:'ممكن تدوّر من غير اختيار — هتطلع فكرة عشوائية.'},
       build:{blocksTitle:'مرجع بلوكات Builder', blocksDesc:'البناء، بلوكات Input/Output/Interaction وLogic Gates. اضغط على بلوك لترى حقوله.', ideasTitle:'أفكار لـ Builder', ideasDesc:'اختار بلوكات وgates اللي عايز تستخدمها ودوّر العجلة — هتطلع فكرة ميكانيكا أو غرفة.', aiTitle:'مساعد AI لـ Builder', aiDesc:'اسأل عن البلوكات، إشارات ID، gates والدوائر المنطقية الجاهزة.', chatHeader:'مساعد Builder', placeholder:'اسأل عن بلوك، gate، أو دايرة…', navTab:'البلوكات', searchPh:'ابحث عن بلوك…', blockCount:(s,t)=>`${s} من ${t} بلوك`, aiEmptyState:'اطرح سؤالاً أو ارفق screenshot لإعدادات البلوك.', takeIdeaBtn:'🎲 فكرة مع هذا البلوك', ideasSearchPh:'ابحث باسم البلوك…', spinHintHas:'الفكرة هتتعلق بأقل بلوك واحد من اللي اخترتهم.', spinHintEmpty:'ممكن تدوّر من غير اختيار — هتطلع فكرة عشوائية.'},
@@ -3219,6 +3369,7 @@ const STRINGS = {
     admin_panel_title:'🔧 Panel de administración',admin_tab_reports:'🚩 Reportes',admin_tab_bugs:'🐛 Errores',admin_tab_users:'👥 Usuarios',
     admin_tab_posts:'📌 Publicaciones',admin_tab_announce:'📣 Anuncios',admin_tab_stats:'📊 Estadísticas',
     settings_title:'⚙ Configuración',settings_accent:'🎨 Color de acento',settings_font:'🔤 Fuente de interfaz',settings_interface:'⚡ Interfaz',
+    suggest_title:'💡 ¿Qué quieres ver a continuación?',suggest_subtitle:'Comparte tu idea — leo cada sugerencia y las tengo en cuenta en las próximas actualizaciones.',suggest_ph:'Tus ideas y deseos para la próxima actualización…',suggest_send_btn:'📤 Enviar',suggest_skip_btn:'Omitir',suggest_thanks:'¡Gracias por tu idea! 🙏 La tendré en cuenta.',
     mode_meta: {
       skill:{blocksTitle:'Referencia de nodos Skill Builder', blocksDesc:'Toca un nodo para ver todos sus campos. El color indica la categoría.', ideasTitle:'Ideas para Skill Builder', ideasDesc:'Elige los nodos que quieres usar y gira la ruleta para obtener una idea de habilidad.', aiTitle:'Asistente IA Skill Builder', aiDesc:'Pregunta como a alguien que ha creado cientos de movesets: sobre nodos, lógica Tag, bugs, coordenadas, animaciones y visuales.', chatHeader:'Asistente Skill Builder', placeholder:'Pregunta sobre cualquier nodo o mecánica…', navTab:'Nodos', searchPh:'Buscar nodo…', blockCount:(s,t)=>`Mostrando ${s} de ${t} nodos`, aiEmptyState:'Haz una pregunta o adjunta una captura de la configuración del nodo.', takeIdeaBtn:'🎲 Obtener idea con este nodo', ideasSearchPh:'Buscar por nombre de nodo…', spinHintHas:'La idea usará al menos uno de los nodos seleccionados.', spinHintEmpty:'También puedes girar sin seleccionar nada — saldrá una idea aleatoria.'},
       build:{blocksTitle:'Referencia de bloques Builder', blocksDesc:'Construcción, bloques Input/Output/Interaction y Logic Gates. Toca un bloque para ver sus campos.', ideasTitle:'Ideas para Builder', ideasDesc:'Elige los bloques y gates que quieres usar y gira la ruleta para obtener una idea de mecánica o sala.', aiTitle:'Asistente IA Builder', aiDesc:'Pregunta sobre bloques, señales ID, gates y circuitos lógicos listos.', chatHeader:'Asistente Builder', placeholder:'Pregunta sobre un bloque, gate o circuito…', navTab:'Bloques', searchPh:'Buscar bloque…', blockCount:(s,t)=>`Mostrando ${s} de ${t} bloques`, aiEmptyState:'Haz una pregunta o adjunta una captura de la configuración del bloque.', takeIdeaBtn:'🎲 Obtener idea con este bloque', ideasSearchPh:'Buscar por nombre de bloque…', spinHintHas:'La idea usará al menos uno de los bloques seleccionados.', spinHintEmpty:'También puedes girar sin seleccionar nada — saldrá una idea aleatoria.'},
@@ -3325,6 +3476,7 @@ const STRINGS = {
     admin_panel_title:'🔧 Panneau d\'administration',admin_tab_reports:'🚩 Signalements',admin_tab_bugs:'🐛 Bugs',admin_tab_users:'👥 Utilisateurs',
     admin_tab_posts:'📌 Publications',admin_tab_announce:'📣 Annonces',admin_tab_stats:'📊 Statistiques',
     settings_title:'⚙ Paramètres',settings_accent:'🎨 Couleur d\'accentuation',settings_font:'🔤 Police d\'interface',settings_interface:'⚡ Interface',
+    suggest_title:'💡 Que veux-tu voir ensuite ?',suggest_subtitle:'Partage ton idée — je lis chaque suggestion et les prends en compte pour les prochaines mises à jour.',suggest_ph:'Tes idées et souhaits pour la prochaine mise à jour…',suggest_send_btn:'📤 Envoyer',suggest_skip_btn:'Ignorer',suggest_thanks:'Merci pour ton idée ! 🙏 Je vais la prendre en compte.',
     mode_meta: {
       skill:{blocksTitle:'Référence des nœuds Skill Builder', blocksDesc:'Clique sur un nœud pour voir tous ses champs. La couleur indique la catégorie.', ideasTitle:'Idées pour Skill Builder', ideasDesc:'Choisis les nœuds que tu veux utiliser et fais tourner la roulette pour obtenir une idée de compétence.', aiTitle:'Assistant IA Skill Builder', aiDesc:'Pose des questions comme à quelqu\'un qui a créé des centaines de movesets : sur les nœuds, la logique Tag, les bugs, les coordonnées, les animations et les visuels.', chatHeader:'Assistant Skill Builder', placeholder:'Pose une question sur un nœud ou une mécanique…', navTab:'Nœuds', searchPh:'Rechercher un nœud…', blockCount:(s,t)=>`Affichage de ${s} sur ${t} nœuds`, aiEmptyState:'Pose une question ou joins une capture d\'écran des paramètres du nœud.', takeIdeaBtn:'🎲 Obtenir une idée avec ce nœud', ideasSearchPh:'Rechercher par nom de nœud…', spinHintHas:'L\'idée utilisera au moins un des nœuds sélectionnés.', spinHintEmpty:'Tu peux aussi tourner sans sélection — tu obtiendras une idée aléatoire.'},
       build:{blocksTitle:'Référence des blocs Builder', blocksDesc:'Construction, blocs Input/Output/Interaction et Logic Gates. Clique sur un bloc pour voir ses champs.', ideasTitle:'Idées pour Builder', ideasDesc:'Choisis les blocs et gates que tu veux utiliser et fais tourner la roulette pour une idée de mécanique ou de salle.', aiTitle:'Assistant IA Builder', aiDesc:'Pose des questions sur les blocs, signaux ID, gates et circuits logiques prêts à l\'emploi.', chatHeader:'Assistant Builder', placeholder:'Pose une question sur un bloc, gate ou circuit…', navTab:'Blocs', searchPh:'Rechercher un bloc…', blockCount:(s,t)=>`Affichage de ${s} sur ${t} blocs`, aiEmptyState:'Pose une question ou joins une capture d\'écran des paramètres du bloc.', takeIdeaBtn:'🎲 Obtenir une idée avec ce bloc', ideasSearchPh:'Rechercher par nom de bloc…', spinHintHas:'L\'idée utilisera au moins un des blocs sélectionnés.', spinHintEmpty:'Tu peux aussi tourner sans sélection — tu obtiendras une idée aléatoire.'},
@@ -3431,6 +3583,7 @@ const STRINGS = {
     admin_panel_title:'🔧 Yönetici Paneli',admin_tab_reports:'🚩 Şikayetler',admin_tab_bugs:'🐛 Hatalar',admin_tab_users:'👥 Kullanıcılar',
     admin_tab_posts:'📌 Gönderiler',admin_tab_announce:'📣 Duyurular',admin_tab_stats:'📊 İstatistikler',
     settings_title:'⚙ Ayarlar',settings_accent:'🎨 Vurgu rengi',settings_font:'🔤 Arayüz yazı tipi',settings_interface:'⚡ Arayüz',
+    suggest_title:'💡 Bundan sonra ne görmek istersin?',suggest_subtitle:'Fikrini paylaş — her öneriyi okuyorum ve gelecek güncellemelerde dikkate alıyorum.',suggest_ph:'Sonraki güncelleme için fikir ve isteklerin…',suggest_send_btn:'📤 Gönder',suggest_skip_btn:'Atla',suggest_thanks:'Fikrin için teşekkürler! 🙏 Dikkate alacağım.',
     mode_meta: {
       skill:{blocksTitle:'Skill Builder nod referansı', blocksDesc:'Tüm alanları görmek için bir noda tıkla. Renk kategoriyi gösterir.', ideasTitle:'Skill Builder için fikirler', ideasDesc:'Kullanmak istediğin nodları seç ve bir beceri fikri almak için ruleti çevir.', aiTitle:'Skill Builder YZ Asistanı', aiDesc:'Yüzlerce özel moveset oluşturmuş birine sorar gibi sor: nodlar, Tag mantığı, buglar, koordinatlar, animasyonlar ve görseller hakkında.', chatHeader:'Skill Builder Asistanı', placeholder:'Herhangi bir nod veya mekanik hakkında sor…', navTab:'Nodlar', searchPh:'Nod ara…', blockCount:(s,t)=>`${t} noddan ${s} gösteriliyor`, aiEmptyState:'Bir soru sor veya nod ayarlarının ekran görüntüsünü ekle.', takeIdeaBtn:'🎲 Bu nodla fikir al', ideasSearchPh:'Nod adına göre ara…', spinHintHas:'Fikir, seçilen nodlardan en az birini içerecek.', spinHintEmpty:'Seçim yapmadan da çevirebilirsin — rastgele bir fikir çıkar.'},
       build:{blocksTitle:'Builder blok referansı', blocksDesc:'İnşaat, Input/Output/Interaction blokları ve Logic Gates. Alanları görmek için bloka tıkla.', ideasTitle:'Builder için fikirler', ideasDesc:'Kullanmak istediğin blokları ve gateleri seç ve bir mekanik veya oda fikri için ruleti çevir.', aiTitle:'Builder YZ Asistanı', aiDesc:'Bloklar, ID sinyalleri, gateler ve hazır mantık devreleri hakkında sor.', chatHeader:'Builder Asistanı', placeholder:'Bir blok, gate veya devre hakkında sor…', navTab:'Bloklar', searchPh:'Blok ara…', blockCount:(s,t)=>`${t} bloktan ${s} gösteriliyor`, aiEmptyState:'Bir soru sor veya blok ayarlarının ekran görüntüsünü ekle.', takeIdeaBtn:'🎲 Bu blokla fikir al', ideasSearchPh:'Blok adına göre ara…', spinHintHas:'Fikir, seçilen bloklardan en az birini içerecek.', spinHintEmpty:'Seçim yapmadan da çevirebilirsin — rastgele bir fikir çıkar.'},
@@ -5306,7 +5459,7 @@ async function sendMessage(rawText){
   chatBox.appendChild(typing);
   chatBox.scrollTop = chatBox.scrollHeight;
 
-  const _langNames = {en:'English',de:'German',pl:'Polish',pt:'Portuguese',es:'Spanish',fr:'French',tr:'Turkish',id:'Indonesian',vi:'Vietnamese',th:'Thai',fil:'Filipino/Tagalog',ar:'Arabic'};
+  const _langNames = {en:'English',de:'German',pl:'Polish',pt:'Portuguese',['pt-br']:'Brazilian Portuguese',es:'Spanish',fr:'French',tr:'Turkish',id:'Indonesian',vi:'Vietnamese',th:'Thai',fil:'Filipino/Tagalog',ar:'Arabic'};
   const langDirective = currentLang === 'ru'
     ? '\n\n=== ЯЗЫК ОТВЕТА ===\nИнтерфейс сайта переключён на русский. Отвечай ТОЛЬКО на русском языке, даже если где-то в этом промпте или истории встречается другой язык.'
     : `\n\n=== LANGUAGE OVERRIDE ===\nThe user has set the site language to ${_langNames[currentLang]||'English'}. Respond ONLY in ${_langNames[currentLang]||'English'} from now on, regardless of what language the system prompt or history is written in.`;
@@ -5578,6 +5731,7 @@ let _isAdmin = false, _isGuest = true, _supaInited = false;
 let _forumFilter = 'all', _forumSearchQ = '', _forumPosts = [];
 let _currentReportPostId = null, _currentPostDetail = null, _currentPostAuthorId = null, _newCommentCount = 0;
 let _cpMode = null, _cpMediaFiles = [], _cpSelectedNodes = new Set();
+let _editingPostId = null, _cpExistingMediaUrls = [];
 let _cmMediaFile = null, _searchDebounce = null;
 
 async function supaInit(){
@@ -5843,7 +5997,9 @@ function renderPostCard(p,likedSet){
   const media=cnt?`<div class="post-media-preview count-${cnt}">${mediaHtml}</div>`:'';
   const liked=likedSet&&likedSet.has(p.id);
   const canLike=_supaUser&&!_supaProfile?.is_muted;
-  const isOwnerOrAdmin=_supaUser&&(_supaUser.id===p.user_id||_isAdmin);
+  const isOwner=_supaUser&&_supaUser.id===p.user_id;
+  const isOwnerOrAdmin=isOwner||_isAdmin;
+  const mcChip=p.moveset_code?renderMovesetChip(p.moveset_code):'';
   return `<div class="post-card${p.is_pinned?' pinned':''}" id="post-card-${p.id}" onclick="handleCardClick(event,${p.id})">
     ${pin}
     <div class="post-header">
@@ -5853,13 +6009,14 @@ function renderPostCard(p,likedSet){
           <span class="post-nick" onclick="event.stopPropagation();openProfileModal('${p.user_id}')">${escHtml(pr.nickname||'?')}</span>
           ${pr.is_verified?'<span class="verified-badge"></span>':''}<span class="post-pid">#${pr.pid||'?'}</span>
         </div>
-        <span class="post-time">${formatTime(p.created_at)}</span>
+        <span class="post-time">${formatTime(p.created_at)}${p.is_edited?` · <span style="color:var(--text-faint)">${t('edited_label')}</span>`:''}</span>
       </div>
       ${modeBadge}
     </div>
     <div class="post-title">${escHtml(p.title)}</div>
     ${excerptHtml}
     ${nodes?`<div class="post-nodes">${nodes}</div>`:''}
+    ${mcChip}
     ${media}
     ${tags?`<div class="post-hashtags">${tags}</div>`:''}
     <div class="post-actions" onclick="event.stopPropagation()">
@@ -5870,6 +6027,7 @@ function renderPostCard(p,likedSet){
         💬 <span id="cc-${p.id}">${p.comments_count||0}</span>
       </button>
       <span class="post-action-sep"></span>
+      ${isOwner?`<button class="post-action-btn post-report-btn" onclick="event.stopPropagation();openEditPost(${p.id})" title="Редактировать">✏️</button>`:''}
       ${isOwnerOrAdmin?`<button class="post-action-btn post-report-btn" onclick="deletePost(${p.id})">🗑</button>`:''}
       <button class="post-action-btn post-report-btn" onclick="openReport(${p.id})" ${!_supaUser?'disabled':''}>🚩</button>
     </div>
@@ -6028,7 +6186,9 @@ async function openPostDetail(postId){
         </div>
        </div>`
     :`<div class="guest-prompt">${!_supaUser?`<a onclick="closePostDetail();showAuthModal()" style="cursor:pointer">${t('guest_login_cta')}</a>${t('guest_login_suffix')}`:t('muted_comment_msg')}</div>`;
-  const isOwner=_supaUser&&(_supaUser.id===p.user_id||_isAdmin);
+  const isOwner=_supaUser&&_supaUser.id===p.user_id;
+  const isOwnerOrAdminPd=isOwner||_isAdmin;
+  const mcChipPd=p.moveset_code?renderMovesetChip(p.moveset_code):'';
   body.innerHTML=`
     <div class="post-header" style="margin-bottom:14px">
       <div class="post-avatar" onclick="openProfileModal('${p.user_id}')" style="cursor:pointer">${avatarHtml(pr.avatar,34)}</div>
@@ -6037,19 +6197,21 @@ async function openPostDetail(postId){
           <span class="post-nick" onclick="openProfileModal('${p.user_id}')" style="cursor:pointer">${escHtml(pr.nickname||'?')}</span>
           ${verified}<span class="post-pid">#${pr.pid||'?'}</span>
         </div>
-        <span class="post-time">${formatTime(p.created_at)}</span>
+        <span class="post-time">${formatTime(p.created_at)}${p.is_edited?` · <span style="color:var(--text-faint)">${t('edited_label')}</span>`:''}</span>
       </div>${modeBadge}
     </div>
     ${nodes?`<div class="post-nodes" style="margin-bottom:10px">${nodes}</div>`:''}
     ${tags?`<div class="post-hashtags" style="margin-bottom:12px">${tags}</div>`:''}
     <div class="post-full-content">${sanitizePostHtml(p.content||'')}</div>
+    ${mcChipPd}
     ${media?`<div class="post-media-grid">${media}</div>`:''}
     <div class="post-actions" style="margin-bottom:18px">
       <button class="post-action-btn" onclick="toggleLike(${p.id},this)" ${!_supaUser?'disabled':''}>❤️ <span id="pdLc">${p.likes_count||0}</span></button>
       <button class="post-action-btn" disabled style="opacity:.4">${t('share_btn')}</button>
       <span class="post-action-sep"></span>
       ${_supaUser?`<button class="post-action-btn post-report-btn" onclick="openReport(${p.id})">${t('report_btn')}</button>`:''}
-      ${isOwner?`<button class="post-action-btn post-report-btn" onclick="deletePost(${p.id})">${t('del_post_btn')}</button>`:''}
+      ${isOwner?`<button class="post-action-btn post-report-btn" onclick="openEditPost(${p.id})">✏️ Редактировать</button>`:''}
+      ${isOwnerOrAdminPd?`<button class="post-action-btn post-report-btn" onclick="deletePost(${p.id})">${t('del_post_btn')}</button>`:''}
     </div>
     <div class="comments-section">
       <div class="comments-title">${t('comments_header')} (${topCms.length})</div>
@@ -6183,17 +6345,20 @@ async function deletePost(postId){
 function openCreatePost(){
   if(!_supaUser){showAuthModal();return;}
   if(_supaProfile?.is_muted){alert('You are muted and cannot publish posts.');return;}
+  _editingPostId=null;_cpExistingMediaUrls=[];
   _cpMode=null;_cpMediaFiles=[];_cpSelectedNodes=new Set();
   document.getElementById('cpTitle').value='';
   const rte=document.getElementById('rteContent');
   rte.innerHTML='';
   rte.dataset.placeholder=t('cp_content_ph');
   document.getElementById('cpHashtags').value='';
+  const mcEl=document.getElementById('cpMovesetCode');
+  if(mcEl) mcEl.value='';
   document.getElementById('cpMediaThumbs').innerHTML='';
   const cb=document.getElementById('cpRulesCheck');
   if(cb) cb.checked=false;
   const sb=document.getElementById('submitPostBtn');
-  if(sb) sb.disabled=true;
+  if(sb){sb.disabled=true;sb.textContent=t('post_btn_label');}
   document.getElementById('cpModeSkill').classList.remove('active');
   document.getElementById('cpModeBuild').classList.remove('active');
   document.getElementById('cpPickerSkill').innerHTML=BLOCKS_SKILL.map(b=>`<button class="node-pick-btn" onclick="toggleNodePick('${escHtml(b.name||'')}',this)">${escHtml(b.name||'')}</button>`).join('');
@@ -6206,7 +6371,86 @@ function openCreatePost(){
     setupMentionListener();
   }
 }
-function closeCreatePost(){ document.getElementById('createPostOv').classList.remove('on');closeMentionDropdown(); }
+function closeCreatePost(){
+  document.getElementById('createPostOv').classList.remove('on');
+  closeMentionDropdown();
+  _editingPostId=null;_cpExistingMediaUrls=[];
+  const sb=document.getElementById('submitPostBtn');
+  if(sb) sb.textContent=t('post_btn_label');
+}
+async function openEditPost(postId){
+  if(!_supaUser) return;
+  const{data:p}=await _supa.from('forum_posts').select('*').eq('id',postId).maybeSingle();
+  if(!p||p.user_id!==_supaUser.id) return;
+  _editingPostId=postId;
+  _cpMode=p.mode;
+  _cpMediaFiles=[];
+  _cpExistingMediaUrls=(p.media_urls||[]).slice();
+  _cpSelectedNodes=new Set(p.used_nodes||[]);
+  document.getElementById('cpModeSkill').classList.remove('active');
+  document.getElementById('cpModeBuild').classList.remove('active');
+  document.getElementById('cpSectionSkill').classList.add('disabled');
+  document.getElementById('cpSectionBuild').classList.add('disabled');
+  if(p.mode==='skill'||p.mode==='both'){
+    document.getElementById('cpModeSkill').classList.add('active');
+    document.getElementById('cpSectionSkill').classList.remove('disabled');
+  }
+  if(p.mode==='build'||p.mode==='both'){
+    document.getElementById('cpModeBuild').classList.add('active');
+    document.getElementById('cpSectionBuild').classList.remove('disabled');
+  }
+  document.getElementById('cpPickerSkill').innerHTML=BLOCKS_SKILL.map(b=>`<button class="node-pick-btn${_cpSelectedNodes.has(b.name||'')?' sel':''}" onclick="toggleNodePick('${escHtml(b.name||'')}',this)">${escHtml(b.name||'')}</button>`).join('');
+  document.getElementById('cpPickerBuild').innerHTML=BLOCKS_BUILD.map(b=>`<button class="node-pick-btn${_cpSelectedNodes.has(b.name||'')?' sel':''}" onclick="toggleNodePick('${escHtml(b.name||'')}',this)">${escHtml(b.name||'')}</button>`).join('');
+  document.getElementById('cpTitle').value=p.title||'';
+  const rte=document.getElementById('rteContent');
+  rte.innerHTML=p.content||'';
+  rte.dataset.placeholder=t('cp_content_ph');
+  document.getElementById('cpHashtags').value=(p.hashtags||[]).map(h=>'#'+h).join(' ');
+  const mcEl=document.getElementById('cpMovesetCode');
+  if(mcEl) mcEl.value=p.moveset_code||'';
+  const thumbs=document.getElementById('cpMediaThumbs');
+  thumbs.innerHTML='';
+  _cpExistingMediaUrls.forEach((url,i)=>{
+    if(!url) return;
+    const isVid=url.match(/\.(mp4|webm|mov)(\?|$)/i);
+    const wrap=document.createElement('div');
+    wrap.className='media-thumb-wrap';wrap.id='mt-ex-'+i;
+    wrap.innerHTML=(isVid
+      ?`<video src="${url}" style="width:70px;height:55px;object-fit:cover;border-radius:7px" muted></video>`
+      :`<img src="${url}" style="width:70px;height:55px;object-fit:cover;border-radius:7px">`)
+      +`<button class="media-thumb-del" onclick="removeExistingMedia(${i})">✕</button>`;
+    thumbs.appendChild(wrap);
+  });
+  const cb=document.getElementById('cpRulesCheck');
+  if(cb) cb.checked=true;
+  const sb=document.getElementById('submitPostBtn');
+  if(sb){sb.disabled=false;sb.textContent='Сохранить';}
+  document.getElementById('createPostOv').classList.add('on');
+  if(!rte._mentionBound){rte._mentionBound=true;setupMentionListener();}
+}
+function removeExistingMedia(i){
+  _cpExistingMediaUrls[i]=null;
+  const el=document.getElementById('mt-ex-'+i);
+  if(el) el.remove();
+}
+function renderMovesetChip(code){
+  const short=code.length>44?code.slice(0,44)+'…':code;
+  return `<div class="mc-chip" onclick="event.stopPropagation();copyMcChip(this)" data-mc="${escHtml(code)}" title="${escHtml(code)}" style="display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(176,122,255,.1),rgba(88,180,255,.06));border:1px solid rgba(176,122,255,.25);border-radius:8px;padding:7px 12px;margin-bottom:8px;cursor:pointer;transition:background .15s" onmouseover="this.style.background='linear-gradient(135deg,rgba(176,122,255,.18),rgba(88,180,255,.1))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(176,122,255,.1),rgba(88,180,255,.06))'">
+    <span style="font-size:13px;flex-shrink:0">⚔️</span>
+    <span style="font-family:monospace;font-size:11px;color:var(--accent);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(short)}</span>
+    <span class="mc-copy-hint" style="font-size:10px;color:var(--text-faint);flex-shrink:0">📋</span>
+  </div>`;
+}
+function copyMcChip(el){
+  const code=el.dataset.mc||'';
+  const hint=el.querySelector('.mc-copy-hint');
+  navigator.clipboard.writeText(code).then(()=>{
+    if(hint){const o=hint.textContent;hint.textContent='✓';setTimeout(()=>hint.textContent=o,1500);}
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=code;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+    if(hint){const o=hint.textContent;hint.textContent='✓';setTimeout(()=>hint.textContent=o,1500);}
+  });
+}
 const _skillNodeNames=new Set(BLOCKS_SKILL.map(b=>b.name||''));
 const _buildNodeNames=new Set(BLOCKS_BUILD.map(b=>b.name||''));
 function selectPostMode(mode){
@@ -6261,22 +6505,23 @@ function removeMedia(idx){ _cpMediaFiles[idx]=null; const el=document.getElement
 
 
 async function submitPost(){
-  if(!_cpMode){alert('Select a mode (Skill Builder or Builder)');return;}
+  if(!_editingPostId&&!_cpMode){alert('Select a mode (Skill Builder or Builder)');return;}
   const title=document.getElementById('cpTitle').value.trim();
   const content=document.getElementById('rteContent').innerHTML.trim();
   if(!title){alert('Enter a title');return;}
   if(!content||content==='<br>'){alert('Enter post content');return;}
   if(!document.getElementById('cpRulesCheck')?.checked){alert('Please confirm you agree with the community rules');return;}
-  // Anti-spam cooldown: 1 minute
-  const lastPost=parseInt(safeStorage.get('nodecraft_lastpost')||'0');
-  const now=Date.now();
-  if(now-lastPost<60000){
-    const wait=Math.ceil((60000-(now-lastPost))/1000);
-    alert(t('cooldown_msg')(wait));
-    return;
+  if(!_editingPostId){
+    const lastPost=parseInt(safeStorage.get('nodecraft_lastpost')||'0');
+    const now=Date.now();
+    if(now-lastPost<60000){
+      const wait=Math.ceil((60000-(now-lastPost))/1000);
+      alert(t('cooldown_msg')(wait));
+      return;
+    }
   }
   const btn=document.getElementById('submitPostBtn');
-  btn.disabled=true;btn.textContent=t('publishing_text');
+  btn.disabled=true;btn.textContent=_editingPostId?'Сохранение…':t('publishing_text');
   const mediaUrls=[];
   const files=_cpMediaFiles.filter(Boolean);
   if(files.length){
@@ -6289,20 +6534,41 @@ async function submitPost(){
       const{data:up}=await _supa.storage.from('forum-media').upload(path,f,{upsert:true});
       if(up){const{data:ud}=_supa.storage.from('forum-media').getPublicUrl(path);if(ud?.publicUrl)mediaUrls.push(ud.publicUrl);}
     }
-    btn.textContent=t('publishing_text');
+    btn.textContent=_editingPostId?'Сохранение…':t('publishing_text');
   }
   const hashInp=document.getElementById('cpHashtags');
   normalizeHashtags(hashInp);
   const hashtagRaw=hashInp.value;
   const hashtags=(hashtagRaw.match(/#?\w+/g)||[]).map(h=>h.replace('#','').toLowerCase());
-  const{error}=await _supa.from('forum_posts').insert({
-    user_id:_supaUser.id,mode:_cpMode,title,content,
-    hashtags,used_nodes:Array.from(_cpSelectedNodes),media_urls:mediaUrls
-  });
-  btn.disabled=false;btn.textContent=t('post_btn_label');
+  const movesetCode=document.getElementById('cpMovesetCode')?.value.trim()||'';
+  let error;
+  if(_editingPostId){
+    const allMedia=[..._cpExistingMediaUrls.filter(Boolean),...mediaUrls];
+    ({error}=await _supa.from('forum_posts').update({
+      title,content,hashtags,
+      used_nodes:Array.from(_cpSelectedNodes),
+      media_urls:allMedia,
+      moveset_code:movesetCode||null,
+      is_edited:true
+    }).eq('id',_editingPostId).eq('user_id',_supaUser.id));
+  } else {
+    ({error}=await _supa.from('forum_posts').insert({
+      user_id:_supaUser.id,mode:_cpMode,title,content,
+      hashtags,used_nodes:Array.from(_cpSelectedNodes),
+      media_urls:mediaUrls,
+      moveset_code:movesetCode||null
+    }));
+  }
+  btn.disabled=false;btn.textContent=_editingPostId?'Сохранить':t('post_btn_label');
   if(!error){
-    safeStorage.set('nodecraft_lastpost',String(Date.now()));
-    closeCreatePost();showTab('forum');loadForum();
+    if(!_editingPostId) safeStorage.set('nodecraft_lastpost',String(Date.now()));
+    const wasEditing=_editingPostId;
+    closeCreatePost();
+    if(wasEditing&&document.getElementById('postDetailOv')?.classList.contains('on')){
+      openPostDetail(wasEditing);
+    } else {
+      showTab('forum');loadForum();
+    }
   } else alert(t('error_prefix')+error.message);
 }
 
@@ -6634,6 +6900,7 @@ function switchAdminTab(tab,btn){
   else if(tab==='users') loadAdminUsers();
   else if(tab==='posts') loadAdminPosts();
   else if(tab==='announce') loadAdminAnnouncements();
+  else if(tab==='wishes') loadAdminWishes();
   else if(tab==='stats') loadAdminStats();
 }
 
@@ -6696,7 +6963,11 @@ async function loadAdminUsers(q=''){
   el.innerHTML='<div class="forum-loading">Loading…</div>';
   let qb=_supa.from('profiles').select('*').order('created_at',{ascending:false}).limit(100);
   if(q) qb=qb.or(`nickname.ilike.%${q}%,pid.ilike.%${q}%`);
-  const{data}=await qb;
+  const[{data},{count:totalCount}]=await Promise.all([qb,
+    _supa.from('profiles').select('*',{count:'exact',head:true})
+  ]);
+  const totalEl=document.getElementById('adminUsersTotal');
+  if(totalEl) totalEl.textContent=`Всего игроков: ${totalCount||0}${q?` · найдено: ${data?.length||0}`:''}`;
   if(!data?.length){el.innerHTML=`<div class="forum-empty">${t('nobody_found')}</div>`;return;}
   el.innerHTML=data.map(u=>{
     const verified=u.is_verified?`<span class="verified-badge" style="transform:scale(.85)"></span>`:'';
@@ -6820,17 +7091,40 @@ async function adminToggleAnnounce(id,cur){
 
 async function loadAdminStats(){
   const el=document.getElementById('adminStatGrid');
+  el.innerHTML='<div class="forum-loading">Loading…</div>';
   const today=new Date(); today.setHours(0,0,0,0);
-  const t=today.toISOString();
+  const ts=today.toISOString();
   const[u,p,c,tp,tu]=await Promise.all([
     _supa.from('profiles').select('*',{count:'exact',head:true}),
     _supa.from('forum_posts').select('*',{count:'exact',head:true}).eq('is_deleted',false),
     _supa.from('comments').select('*',{count:'exact',head:true}).eq('is_deleted',false),
-    _supa.from('forum_posts').select('*',{count:'exact',head:true}).gte('created_at',t),
-    _supa.from('profiles').select('*',{count:'exact',head:true}).gte('created_at',t),
+    _supa.from('forum_posts').select('*',{count:'exact',head:true}).gte('created_at',ts),
+    _supa.from('profiles').select('*',{count:'exact',head:true}).gte('created_at',ts),
   ]);
   el.innerHTML=[['👥',t('stat_users'),u.count||0],['📝',t('stat_posts_admin'),p.count||0],['💬',t('stat_comments'),c.count||0],['📅',t('stat_posts_today'),tp.count||0],['🆕',t('stat_users_today'),tu.count||0]]
     .map(([i,l,v])=>`<div class="admin-stat-card"><span class="admin-stat-val">${v}</span><span class="admin-stat-lbl">${i} ${l}</span></div>`).join('');
+}
+
+async function loadAdminWishes(){
+  const el=document.getElementById('adminWishesList'); if(!el||!_supa) return;
+  el.innerHTML='<div class="forum-loading">Loading…</div>';
+  const{data}=await _supa.from('notifications').select('*,profiles:from_user_id(nickname,avatar,pid)')
+    .eq('type','suggestion').order('created_at',{ascending:false}).limit(200);
+  if(!data?.length){el.innerHTML='<div class="forum-empty">Пожеланий пока нет 🙏</div>';return;}
+  el.innerHTML=data.map(w=>{
+    const pr=w.profiles||{};
+    const nick=pr.nickname?`<b>${escHtml(pr.nickname)}</b> #${pr.pid||'?'}` : '<span style="color:var(--text-faint)">Гость / Аноним</span>';
+    const date=formatRegDate(w.created_at);
+    const text=escHtml(w.message||'').replace(/\n/g,'<br>');
+    return `<div class="post-card" style="margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">${avatarHtml(pr.avatar,32)}</div>
+        <div style="flex:1;min-width:0">${nick}</div>
+        <div style="font-size:11px;color:var(--text-faint);flex-shrink:0">${date}</div>
+      </div>
+      <div style="font-size:13px;color:var(--text);line-height:1.6;background:rgba(176,122,255,.06);border-radius:8px;padding:10px 12px">${text}</div>
+    </div>`;
+  }).join('');
 }
 
 /* ─── REALTIME ─── */
@@ -7238,9 +7532,53 @@ function showChangelog(force){
   if(!force&&safeStorage.get('nodecraft_seen_v111')==='1') return;
   document.getElementById('changelogOv').classList.add('on');
 }
+function initSuggestCard(){
+  const card=document.getElementById('suggestCard');
+  if(!card) return;
+  if(safeStorage.get('nodecraft_suggest_v1')==='1'){card.style.display='none';return;}
+  const g=id=>document.getElementById(id);
+  if(g('suggestTitle')) g('suggestTitle').textContent=t('suggest_title');
+  if(g('suggestText')) g('suggestText').placeholder=t('suggest_ph');
+  if(g('suggestSendBtn')) g('suggestSendBtn').textContent=t('suggest_send_btn');
+  const skipBtn=g('suggestSkipBtn');
+  if(skipBtn){skipBtn.textContent=t('suggest_skip_btn');skipBtn.style.display='inline-block';}
+  card.style.display='block';
+}
 function closeChangelog(markSeen){
   document.getElementById('changelogOv').classList.remove('on');
   if(markSeen) safeStorage.set('nodecraft_seen_v111','1');
+}
+function closeSuggestBox(){
+  const card=document.getElementById('suggestCard');
+  if(card) card.style.display='none';
+  const skipBtn=document.getElementById('suggestSkipBtn');
+  if(skipBtn) skipBtn.style.display='none';
+  safeStorage.set('nodecraft_suggest_v1','1');
+}
+async function submitSuggestion(){
+  const txt=(document.getElementById('suggestText')?.value||'').trim();
+  if(!txt) return;
+  const btn=document.getElementById('suggestSendBtn');
+  if(btn){btn.disabled=true;btn.textContent='…';}
+  if(_supa){
+    const{data:admins}=await _supa.from('admins').select('user_id');
+    if(admins?.length){
+      for(const a of admins){
+        await _supa.from('notifications').insert({
+          user_id:a.user_id,
+          from_user_id:_supaUser?.id||null,
+          type:'suggestion',
+          message:txt
+        });
+      }
+    }
+  }
+  const card=document.getElementById('suggestCard');
+  if(card) card.innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:4px 0"><span style="font-size:22px">🙏</span><span style="font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--accent)">${t('suggest_thanks')}</span></div>`;
+  const skipBtnSub=document.getElementById('suggestSkipBtn');
+  if(skipBtnSub) skipBtnSub.style.display='none';
+  safeStorage.set('nodecraft_suggest_v1','1');
+  setTimeout(()=>{const c=document.getElementById('suggestCard');if(c)c.style.display='none';},2500);
 }
 
 /* ─── BUG REPORT ─── */
@@ -7331,12 +7669,12 @@ async function adminReplyBug(userId,nick){
 }
 
 const savedLang = safeStorage.get('nodecraft_lang');
-const _allLangs = ['ru','en','de','pl','pt','es','fr','tr','id','vi','th','fil','ar'];
+const _allLangs = ['ru','en','de','pl','pt','pt-br','es','fr','tr','id','vi','th','fil','ar'];
 if(savedLang && _allLangs.includes(savedLang)){
   setLanguageContent(savedLang);
   document.getElementById('langModal').style.display = 'none';
   supaInit();
-  setTimeout(()=>showChangelog(false), 600);
+  setTimeout(()=>{ showChangelog(false); initSuggestCard(); }, 600);
 } else {
   document.getElementById('langModal').style.display = 'flex';
 }
@@ -7361,9 +7699,14 @@ if(savedLang && _allLangs.includes(savedLang)){
 
     <div class="changelog-sec">
       <div class="changelog-sec-title">💬 Forum & Profile i18n</div>
-      <div class="changelog-item"><span class="changelog-ico">✅</span><span>All forum, profile, auth and admin strings now work in every language — no more English mixed into other languages</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🔔</span><span>Notifications, time labels and banners translated for all 13 languages</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🛡</span><span>Admin panel fully translated — reports, user management, announcements and stats</span></div>
+      <div class="changelog-item"><span class="changelog-ico">✅</span><span>All forum, profile, auth and notification strings now work in every language — no more English mixed in</span></div>
+      <div class="changelog-item"><span class="changelog-ico">🔔</span><span>Notifications, time labels and banners translated for all languages</span></div>
+    </div>
+
+    <div class="changelog-sec">
+      <div class="changelog-sec-title">✏️ Post Editor</div>
+      <div class="changelog-item"><span class="changelog-ico">✏️</span><span>Edit your own posts — fixed a typo or want to update your build? Hit the pencil button. Edited posts show a small "Edited" label so everyone knows</span></div>
+      <div class="changelog-item"><span class="changelog-ico">⚔️</span><span>Dedicated moveset code field — paste your long moveset code when creating a post. In the feed it shows as a compact accent-colored chip; click it to copy the full code instantly</span></div>
     </div>
 
     <div class="changelog-sec">
@@ -7371,7 +7714,6 @@ if(savedLang && _allLangs.includes(savedLang)){
       <div class="changelog-item"><span class="changelog-ico">⌨️</span><span>Hashtag field now allows spaces — you can add multiple hashtags without the field breaking</span></div>
       <div class="changelog-item"><span class="changelog-ico">👁</span><span>"Show more" now expands inline on the forum page — no longer opens the post modal accidentally</span></div>
       <div class="changelog-item"><span class="changelog-ico">☑️</span><span>Publish button is now locked until you confirm the community rules — no more accidental posts</span></div>
-      <div class="changelog-item"><span class="changelog-ico">🇵🇹</span><span>Portuguese flag fixed (was showing Brazil flag)</span></div>
     </div>
 
     <div class="changelog-footer">
