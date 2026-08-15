@@ -1773,7 +1773,11 @@
         <div id="adminWishesList"><div class="forum-loading">Loading…</div></div>
       </div>
       <div class="admin-section" id="adminSec-stats">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+          <button onclick="loadAdminStats()" style="background:none;border:1px solid rgba(176,122,255,.2);color:var(--text-faint);font-family:var(--font-display);font-size:12px;font-weight:600;padding:5px 14px;border-radius:7px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='rgba(176,122,255,.2)';this.style.color='var(--text-faint)'">🔄 Обновить</button>
+        </div>
         <div class="admin-stat-grid" id="adminStatGrid"><div class="forum-loading">Loading…</div></div>
+        <div id="adminBlacklistPanel" style="display:none;margin-top:16px"></div>
       </div>
     </div>
   </div>
@@ -5732,6 +5736,7 @@ let _forumFilter = 'all', _forumSearchQ = '', _forumPosts = [];
 let _currentReportPostId = null, _currentPostDetail = null, _currentPostAuthorId = null, _newCommentCount = 0;
 let _cpMode = null, _cpMediaFiles = [], _cpSelectedNodes = new Set();
 let _editingPostId = null, _cpExistingMediaUrls = [];
+let _banWatchChannel = null, _justBanned = false;
 let _cmMediaFile = null, _searchDebounce = null;
 
 async function supaInit(){
@@ -5742,12 +5747,20 @@ async function supaInit(){
     if(session?.user){ await handleAuthUser(session.user); }
     else{
       const g = safeStorage.get('jjs_guest_mode');
-      if(g==='1'){ setGuestMode(); } else { showAuthModal(); }
+      if(safeStorage.get('jjs_was_banned')==='1'){ showBannedScreen(); }
+      else if(g==='1'){ setGuestMode(); }
+      else { showAuthModal(); }
     }
     _supa.auth.onAuthStateChange(async(event,session)=>{
       if(event==='SIGNED_IN'&&session?.user){
         if(_supaUser?.id!==session.user.id) await handleAuthUser(session.user);
-      } else if(event==='SIGNED_OUT'){ _supaUser=null;_supaProfile=null;_isAdmin=false;_isGuest=true;updateNavUI();showAuthModal(); }
+      } else if(event==='SIGNED_OUT'){
+        _supaUser=null;_supaProfile=null;_isAdmin=false;_isGuest=true;
+        if(_banWatchChannel){try{_supa.removeChannel(_banWatchChannel);}catch(e){}  _banWatchChannel=null;}
+        updateNavUI();
+        if(_justBanned){_justBanned=false;showBannedScreen();}
+        else showAuthModal();
+      }
     });
     loadAnnouncement();
     setupRealtime();
@@ -5827,8 +5840,28 @@ async function doRegister(){
 }
 
 function doGuest(){
+  if(safeStorage.get('jjs_was_banned')==='1'){
+    alert('Доступ запрещён. Ваш аккаунт был заблокирован администратором.');
+    return;
+  }
   safeStorage.set('jjs_guest_mode','1');
   setGuestMode(); hideAuthModal();
+}
+function showBannedScreen(){
+  document.querySelectorAll('.big-modal-ov.on,.changelog-ov.on').forEach(el=>el.classList.remove('on'));
+  safeStorage.set('jjs_was_banned','1');
+  safeStorage.set('jjs_guest_mode','0');
+  let el=document.getElementById('bannedScreen');
+  if(!el){
+    el=document.createElement('div');
+    el.id='bannedScreen';
+    el.style.cssText='position:fixed;inset:0;background:rgba(8,8,14,.98);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:var(--font-display);text-align:center;padding:24px';
+    el.innerHTML=`<div style="font-size:72px;line-height:1">🚫</div>
+      <div style="font-size:22px;font-weight:700;color:#fff;margin-top:4px">Аккаунт заблокирован</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.4);max-width:300px;line-height:1.65">Ваш аккаунт был заблокирован администратором.<br>Если считаете это ошибкой — свяжитесь с поддержкой.</div>`;
+    document.body.appendChild(el);
+  }
+  el.style.display='flex';
 }
 function setGuestMode(){
   _isGuest=true;_supaUser=null;_supaProfile=null;_isAdmin=false;
@@ -5847,10 +5880,12 @@ async function handleAuthUser(user){
   _supaProfile=prof;
   // Check if banned
   if(prof?.is_banned){
-    alert('Your account has been banned by an administrator.');
+    _justBanned=true;
     await _supa.auth.signOut();
     return;
   }
+  // Не забанен — сбрасываем флаг (на случай если разбанили)
+  safeStorage.set('jjs_was_banned','0');
   // Check mute expiry
   if(prof?.muted_until&&new Date(prof.muted_until)<new Date()){
     _supa.from('profiles').update({is_muted:false,muted_until:null}).eq('user_id',user.id).then(()=>{});
@@ -5863,6 +5898,18 @@ async function handleAuthUser(user){
   loadMyFollows();
   loadNotifications();
   initFingerprint();
+  // Realtime ban watch — мгновенный выброс при бане
+  try{
+    if(_banWatchChannel){_supa.removeChannel(_banWatchChannel);_banWatchChannel=null;}
+    _banWatchChannel=_supa.channel('ban-watch-'+user.id)
+      .on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:`user_id=eq.${user.id}`},payload=>{
+        if(payload.new?.is_banned&&_supaUser){
+          _justBanned=true;
+          _supa.auth.signOut();
+        }
+      })
+      .subscribe();
+  }catch(e){}
   // Store fingerprint with user profile
   getDeviceFingerprint().then(fp=>{
     if(fp&&fp!=='unknown'&&_supa)
@@ -6727,6 +6774,18 @@ async function openProfileModal(userId){
   const joinDate=prof.created_at
     ?new Date(prof.created_at).toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric'}):'';
   document.getElementById('profileModalTitle').textContent=isMine?t('my_profile_label'):t('profile_label');
+  // Admin status badges and action buttons
+  let adminStatusBadges='';
+  let adminBtns='';
+  if(_isAdmin&&!isMine){
+    if(prof.is_muted) adminStatusBadges+=`<span style="font-size:10px;background:rgba(255,165,58,.15);border:1px solid rgba(255,165,58,.35);border-radius:10px;padding:2px 9px;color:var(--amber);font-weight:700;vertical-align:middle">MUTED</span>`;
+    if(prof.is_banned) adminStatusBadges+=`<span style="font-size:10px;background:rgba(255,77,90,.15);border:1px solid rgba(255,77,90,.35);border-radius:10px;padding:2px 9px;color:var(--coral);font-weight:700;vertical-align:middle">BANNED</span>`;
+    adminBtns=`<div style="display:flex;gap:6px;flex-wrap:wrap;width:100%;margin-top:8px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.07)">
+      <span style="font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--text-faint);align-self:center">🔧 ADMIN</span>
+      <button onclick="adminToggleMute('${targetId}',${!!prof.is_muted})" style="background:${prof.is_muted?'rgba(88,180,255,.1)':'rgba(255,165,58,.1)'};border:1px solid ${prof.is_muted?'rgba(88,180,255,.25)':'rgba(255,165,58,.3)'};color:${prof.is_muted?'var(--accent)':'var(--amber)'};font-family:var(--font-display);font-size:11px;font-weight:700;padding:5px 13px;border-radius:7px;cursor:pointer">${prof.is_muted?'🔊 Снять мут':'🔇 Замутить'}</button>
+      <button onclick="adminToggleBan('${targetId}',${!!prof.is_banned})" style="background:${prof.is_banned?'rgba(88,180,255,.1)':'rgba(255,77,90,.1)'};border:1px solid ${prof.is_banned?'rgba(88,180,255,.25)':'rgba(255,77,90,.3)'};color:${prof.is_banned?'var(--accent)':'var(--coral)'};font-family:var(--font-display);font-size:11px;font-weight:700;padding:5px 13px;border-radius:7px;cursor:pointer">${prof.is_banned?'✅ Разбанить':'🚫 Забанить'}</button>
+    </div>`;
+  }
   const verified=prof.is_verified?`<span class="verified-badge" data-tip="${t('verified_tip')}"></span>`:'';
   const linkHtml=prof.link?`<div class="profile-link" onclick="openLinkWarn('${escHtml(prof.link)}')">${escHtml(prof.link)}</div>`:'';
   // full post cards in profile
@@ -6746,7 +6805,7 @@ async function openProfileModal(userId){
       </div>
       <div class="profile-info">
         <div class="profile-nick-row">
-          <span class="profile-nick">${escHtml(prof.nickname||'?')}</span>${verified}
+          <span class="profile-nick">${escHtml(prof.nickname||'?')}</span>${verified}${adminStatusBadges}
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
           <span class="profile-pid">ID: ${prof.pid||'?'}</span>
@@ -6758,6 +6817,7 @@ async function openProfileModal(userId){
           ${isMine?`<button class="profile-edit-btn" onclick="toggleProfileEdit()">${t('edit_profile_btn')}</button>`:''}
           ${!isMine&&_supaUser?`<button class="follow-btn ${amFollowing?'following':'not-following'}" id="followBtn-${targetId}" onclick="toggleFollow('${targetId}')">${amFollowing?t('unfollow_label'):t('follow_label')}</button>`:''}
           ${isFriend?`<span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--accent);background:var(--bg-card);border:1px solid var(--border-soft);border-radius:20px;padding:4px 10px;">${t('friends_label')}</span>`:''}
+          ${adminBtns}
         </div>
       </div>
     </div>
@@ -7006,7 +7066,6 @@ function adminSearchUsers(q){ clearTimeout(_searchDebounce); _searchDebounce=set
 async function adminToggleVerify(uid,cur){ await _supa.from('profiles').update({is_verified:!cur}).eq('user_id',uid); loadAdminUsers(); }
 async function adminToggleMute(uid,cur){
   if(cur){
-    // unmute
     try{await _supa.rpc('admin_mute_user',{target_id:uid,hours_count:0});}
     catch(e){await _supa.from('profiles').update({is_muted:false,muted_until:null}).eq('user_id',uid);}
     showAdminToast(t('mute_removed'));
@@ -7018,22 +7077,35 @@ async function adminToggleMute(uid,cur){
     catch(e){await _supa.from('profiles').update({is_muted:true}).eq('user_id',uid);}
     showAdminToast(t('muted_toast')(hrs));
   }
-  loadAdminUsers();
+  if(document.getElementById('profileOv')?.classList.contains('on')) openProfileModal(uid);
+  else loadAdminUsers();
 }
 async function adminToggleBan(uid,cur){
   if(cur){
-    // unban
-    try{await _supa.rpc('admin_unban_user',{target_id:uid});}
-    catch(e){await _supa.from('profiles').update({is_banned:false}).eq('user_id',uid);}
+    try{await _supa.rpc('admin_unban_user',{target_id:uid});}catch(e){}
+    await _supa.from('profiles').update({is_banned:false,ban_reason:null}).eq('user_id',uid);
     showAdminToast(t('unban_done'));
   } else {
     const reason=prompt(t('ban_prompt_text'),'');
     if(reason===null) return;
-    try{await _supa.rpc('admin_ban_user',{target_id:uid,fingerprint_val:''});}
-    catch(e){await _supa.from('profiles').update({is_banned:true}).eq('user_id',uid);}
+    try{await _supa.rpc('admin_ban_user',{target_id:uid,fingerprint_val:''});}catch(e){}
+    await _supa.from('profiles').update({is_banned:true,ban_reason:reason||null}).eq('user_id',uid);
     showAdminToast(t('banned_toast'));
   }
-  loadAdminUsers();
+  if(document.getElementById('profileOv')?.classList.contains('on')){
+    openProfileModal(uid);
+  } else {
+    const bl=document.getElementById('adminBlacklistPanel');
+    if(bl&&bl.style.display!=='none') loadAdminBlacklist();
+    else loadAdminUsers();
+  }
+  // Обновить счётчик в карточке статы
+  const banCard=document.getElementById('statBanCard');
+  if(banCard){
+    const{count}=await _supa.from('profiles').select('*',{count:'exact',head:true}).eq('is_banned',true);
+    const valEl=banCard.querySelector('.admin-stat-val');
+    if(valEl) valEl.textContent=count||0;
+  }
 }
 function showAdminToast(msg){
   let t=document.getElementById('adminToast');
@@ -7094,17 +7166,74 @@ async function loadAdminStats(){
   el.innerHTML='<div class="forum-loading">Loading…</div>';
   const today=new Date(); today.setHours(0,0,0,0);
   const ts=today.toISOString();
-  const[u,p,c,tp,tu]=await Promise.all([
+  const[u,p,c,tp,tu,banned,muted]=await Promise.all([
     _supa.from('profiles').select('*',{count:'exact',head:true}),
     _supa.from('forum_posts').select('*',{count:'exact',head:true}).eq('is_deleted',false),
     _supa.from('comments').select('*',{count:'exact',head:true}).eq('is_deleted',false),
     _supa.from('forum_posts').select('*',{count:'exact',head:true}).gte('created_at',ts),
     _supa.from('profiles').select('*',{count:'exact',head:true}).gte('created_at',ts),
+    _supa.from('profiles').select('*',{count:'exact',head:true}).eq('is_banned',true),
+    _supa.from('profiles').select('*',{count:'exact',head:true}).eq('is_muted',true),
   ]);
-  el.innerHTML=[['👥',t('stat_users'),u.count||0],['📝',t('stat_posts_admin'),p.count||0],['💬',t('stat_comments'),c.count||0],['📅',t('stat_posts_today'),tp.count||0],['🆕',t('stat_users_today'),tu.count||0]]
-    .map(([i,l,v])=>`<div class="admin-stat-card"><span class="admin-stat-val">${v}</span><span class="admin-stat-lbl">${i} ${l}</span></div>`).join('');
+  const normal=[
+    ['👥',t('stat_users'),u.count||0],
+    ['📝',t('stat_posts_admin'),p.count||0],
+    ['💬',t('stat_comments'),c.count||0],
+    ['📅',t('stat_posts_today'),tp.count||0],
+    ['🆕',t('stat_users_today'),tu.count||0],
+  ].map(([i,l,v])=>`<div class="admin-stat-card"><span class="admin-stat-val">${v}</span><span class="admin-stat-lbl">${i} ${l}</span></div>`).join('');
+  const bannedCard=`<div class="admin-stat-card" id="statBanCard" onclick="toggleAdminBlacklist()" style="cursor:pointer;border-color:rgba(255,77,90,.25);background:rgba(255,77,90,.04)" title="Нажмите чтобы открыть чёрный список">
+    <span class="admin-stat-val" style="color:var(--coral)">${banned.count||0}</span>
+    <span class="admin-stat-lbl">🚫 Чёрный список</span>
+  </div>`;
+  const mutedCard=`<div class="admin-stat-card" style="border-color:rgba(255,165,58,.2);background:rgba(255,165,58,.03)">
+    <span class="admin-stat-val" style="color:var(--amber)">${muted.count||0}</span>
+    <span class="admin-stat-lbl">🔇 Замучено</span>
+  </div>`;
+  el.innerHTML=normal+bannedCard+mutedCard;
+  // Hide blacklist panel when stats reload
+  const bl=document.getElementById('adminBlacklistPanel');
+  if(bl) bl.style.display='none';
 }
 
+function toggleAdminBlacklist(){
+  const panel=document.getElementById('adminBlacklistPanel');
+  const card=document.getElementById('statBanCard');
+  if(!panel) return;
+  if(panel.style.display==='none'){
+    panel.style.display='block';
+    if(card) card.style.outline='2px solid var(--coral)';
+    loadAdminBlacklist();
+  } else {
+    panel.style.display='none';
+    if(card) card.style.outline='';
+  }
+}
+async function loadAdminBlacklist(){
+  const panel=document.getElementById('adminBlacklistPanel');
+  if(!panel||!_supa) return;
+  panel.innerHTML='<div class="forum-loading">Загрузка…</div>';
+  const{data}=await _supa.from('profiles').select('*').eq('is_banned',true).order('created_at',{ascending:false});
+  if(!data?.length){
+    panel.innerHTML=`<div style="background:rgba(255,77,90,.04);border:1px solid rgba(255,77,90,.15);border-radius:var(--radius);padding:24px;text-align:center;color:var(--text-faint);font-size:13px">Чёрный список пуст 🎉</div>`;
+    return;
+  }
+  panel.innerHTML=`<div style="background:rgba(255,77,90,.04);border:1px solid rgba(255,77,90,.18);border-radius:var(--radius);padding:16px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--coral)">🚫 Чёрный список</span>
+      <span style="font-size:12px;color:var(--text-faint)">${data.length} пользователей</span>
+    </div>
+    ${data.map(u=>`<div class="post-card" style="margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;padding:12px 14px">
+      <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;cursor:pointer;margin-top:2px" onclick="openProfileModal('${u.user_id}')">${avatarHtml(u.avatar,42)}</div>
+      <div style="flex:1;min-width:0;cursor:pointer" onclick="openProfileModal('${u.user_id}')">
+        <div style="font-family:var(--font-display);font-weight:700;font-size:14px">${escHtml(u.nickname||'?')} <span style="font-size:11px;color:var(--text-faint);font-weight:400">#${u.pid||'?'}</span></div>
+        <div style="font-size:11px;color:var(--text-faint);margin-bottom:${u.ban_reason?'5px':'0'}">${formatRegDate(u.created_at)}</div>
+        ${u.ban_reason?`<div style="font-size:12px;color:var(--coral);background:rgba(255,77,90,.08);border:1px solid rgba(255,77,90,.18);border-radius:6px;padding:4px 9px;display:inline-block">📋 ${escHtml(u.ban_reason)}</div>`:''}
+      </div>
+      <button onclick="adminToggleBan('${u.user_id}',true)" class="admin-action-btn success" style="flex-shrink:0;margin-top:2px">✅ Разбанить</button>
+    </div>`).join('')}
+  </div>`;
+}
 async function loadAdminWishes(){
   const el=document.getElementById('adminWishesList'); if(!el||!_supa) return;
   el.innerHTML='<div class="forum-loading">Loading…</div>';
