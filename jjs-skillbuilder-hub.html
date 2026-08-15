@@ -780,17 +780,11 @@
   .nick-count{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--text-faint);pointer-events:none;}
   .nick-count.warn{color:var(--coral);}
   .pass-hint{font-size:11px;color:var(--text-faint);margin:3px 0 10px;line-height:1.4;}
-  .auth-divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--text-faint);font-size:12px;}
-  .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border-soft);}
-  .auth-guest-btn{width:100%;padding:11px;border:1px solid var(--border);border-radius:10px;background:none;color:var(--text-dim);font-family:var(--font-body);font-size:14px;cursor:pointer;transition:all .15s;}
-  .auth-guest-btn:hover{border-color:var(--text-faint);color:var(--text);}
-
   /* ══════════════ NAV USER AREA ══════════════ */
   .nav-user{display:flex;align-items:center;gap:8px;cursor:pointer;border-radius:var(--radius-sm);padding:5px 12px;border:1px solid rgba(176,122,255,.1);background:rgba(176,122,255,.05);transition:all .3s var(--ease-smooth);flex-shrink:0;}
   .nav-user:hover{border-color:rgba(255,165,58,.25);background:rgba(255,165,58,.06);box-shadow:0 0 20px rgba(255,165,58,.08);}
   .nav-avatar{width:28px;height:28px;border-radius:50%;background:var(--grad-accent);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;overflow:hidden;}
   .nav-nick{font-family:var(--font-display);font-weight:600;font-size:13px;color:var(--text);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .nav-guest-badge{font-size:11px;color:var(--text-faint);background:var(--bg-card);border:1px solid var(--border-soft);border-radius:8px;padding:4px 10px;flex-shrink:0;}
   .nav-admin-btn{font-size:12px;color:var(--amber);background:rgba(255,194,102,.08);border:1px solid rgba(255,194,102,.3);border-radius:8px;padding:5px 10px;cursor:pointer;flex-shrink:0;transition:background .15s;}
   .nav-admin-btn:hover{background:rgba(255,194,102,.15);}
   .verified-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:var(--accent);border-radius:4px;transform:rotate(45deg);flex-shrink:0;cursor:default;position:relative;}
@@ -1229,8 +1223,6 @@
       </label>
       <button class="auth-btn" id="authRegBtn" data-i18n="auth_reg_btn" onclick="doRegister()" disabled>Создать аккаунт</button>
     </div>
-    <div class="auth-divider" data-i18n="auth_or">или</div>
-    <button class="auth-guest-btn" data-i18n="auth_guest_btn" onclick="doGuest()">👤 Войти как гость</button>
   </div>
 </div>
 
@@ -1254,7 +1246,6 @@
     <button class="navtab" data-tab="forum" data-i18n="nav_forum">💬 Форум</button>
   </div>
   <div id="navUserArea" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-    <span class="nav-guest-badge" id="navGuestBadge" data-i18n="guest_badge" style="display:none">Гость</span>
     <div class="nav-user" id="navUserBtn" style="display:none" onclick="openProfileModal('me')">
       <div class="nav-avatar" id="navAvatar">⚔️</div>
       <span class="nav-nick" id="navNick">—</span>
@@ -5860,18 +5851,18 @@ async function supaInit(){
   try{
     _supa = supabase.createClient(SUPA_URL, SUPA_KEY);
     const {data:{session}} = await _supa.auth.getSession();
+    // Гостевой режим удалён — вход обязателен
+    safeStorage.set('jjs_guest_mode','0');
     if(session?.user){ await handleAuthUser(session.user); }
     else{
-      const g = safeStorage.get('jjs_guest_mode');
       if(safeStorage.get('jjs_was_banned')==='1'){ showBannedScreen(); }
-      else if(g==='1'){ setGuestMode(); }
       else { showAuthModal(); }
     }
     _supa.auth.onAuthStateChange(async(event,session)=>{
       if(event==='SIGNED_IN'&&session?.user){
         if(_supaUser?.id!==session.user.id) await handleAuthUser(session.user);
       } else if(event==='SIGNED_OUT'){
-        _supaUser=null;_supaProfile=null;_isAdmin=false;_isGuest=true;
+        _supaUser=null;_supaProfile=null;_isAdmin=false;_isGuest=false;
         if(_banWatchChannel){try{_supa.removeChannel(_banWatchChannel);}catch(e){}  _banWatchChannel=null;}
         updateNavUI();
         if(_justBanned){_justBanned=false;showBannedScreen();}
@@ -5960,14 +5951,6 @@ async function doRegister(){
   // Profile is created in handleAuthUser via onAuthStateChange
 }
 
-function doGuest(){
-  if(safeStorage.get('jjs_was_banned')==='1'){
-    alert(t('banned_guest_alert'));
-    return;
-  }
-  safeStorage.set('jjs_guest_mode','1');
-  setGuestMode(); hideAuthModal();
-}
 async function doLogout(){
   if(!confirm(t('logout_confirm'))) return;
   document.getElementById('profileOv')?.classList.remove('on');
@@ -5992,12 +5975,6 @@ function showBannedScreen(){
     <button onclick="safeStorage.set('jjs_was_banned','0');document.getElementById('bannedScreen').style.display='none';showAuthModal()" style="margin-top:8px;background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.3);font-family:var(--font-display);font-size:11px;padding:6px 16px;border-radius:8px;cursor:pointer">${t('ban_screen_try_login')}</button>`;
   el.style.display='flex';
 }
-function setGuestMode(){
-  if(safeStorage.get('jjs_was_banned')==='1'){showBannedScreen();return;}
-  _isGuest=true;_supaUser=null;_supaProfile=null;_isAdmin=false;
-  updateNavUI(); loadForum();
-}
-
 async function handleAuthUser(user){
   _supaUser=user; _isGuest=false;
   safeStorage.set('jjs_guest_mode','0');
@@ -6052,18 +6029,18 @@ async function handleAuthUser(user){
 }
 
 function updateNavUI(){
-  const gb=document.getElementById('navGuestBadge');
   const ub=document.getElementById('navUserBtn');
   const ab=document.getElementById('navAdminBtn');
   const fnb=document.getElementById('forumNewBtn');
   const nb=document.getElementById('notifBtn');
-  if(_isGuest||!_supaProfile){
-    gb.style.display='inline-flex'; ub.style.display='none'; ab.style.display='none';
+  if(!_supaUser||!_supaProfile){
+    if(ub) ub.style.display='none';
+    if(ab) ab.style.display='none';
     if(fnb) fnb.disabled=true;
     if(nb) nb.style.display='none';
   } else {
-    gb.style.display='none'; ub.style.display='flex';
-    ab.style.display=_isAdmin?'':'none';
+    if(ub) ub.style.display='flex';
+    if(ab) ab.style.display=_isAdmin?'':'none';
     if(fnb) fnb.disabled=false;
     if(nb) nb.style.display='flex';
     document.getElementById('navAvatar').innerHTML=avatarHtml(_supaProfile.avatar,28);
