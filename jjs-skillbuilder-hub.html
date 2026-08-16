@@ -7911,6 +7911,13 @@ async function loadGlobalChat(){
       const{data:profs}=await _supa.from('profiles').select('*').in('user_id',uids);
       (profs||[]).forEach(p=>{_gchatProfCache[p.user_id]=p;});
       msgs.reverse().forEach(m=>{m._prof=_gchatProfCache[m.user_id];});
+      // load reactions for these messages
+      _gchatReacts={};
+      try{
+        const{data:reacts}=await _supa.from('global_chat_reactions')
+          .select('message_id,user_id,emoji').in('message_id',msgs.map(m=>m.id));
+        (reacts||[]).forEach(r=>{(_gchatReacts[r.message_id]=_gchatReacts[r.message_id]||[]).push(r);});
+      }catch(e){}
       if(el){el.innerHTML=msgs.map(renderGchatMsg).join('');el.scrollTop=el.scrollHeight;}
     } else {
       if(el) el.innerHTML=`<div class="gchat-empty">${t('gchat_empty')}</div>`;
@@ -7950,6 +7957,18 @@ function gchatSubscribeRealtime(){
       } else if(!m.is_pinned&&old?.is_pinned){
         renderGchatPinned(null);
       }
+    })
+    .on('postgres_changes',{event:'*',schema:'public',table:'global_chat_reactions'},payload=>{
+      const r=payload.new||payload.old; if(!r) return;
+      const mid=r.message_id;
+      const list=_gchatReacts[mid]=_gchatReacts[mid]||[];
+      if(payload.eventType==='DELETE'){
+        _gchatReacts[mid]=list.filter(x=>!(x.user_id===r.user_id));
+      } else {
+        // INSERT или UPDATE — одна реакция на человека
+        _gchatReacts[mid]=list.filter(x=>x.user_id!==r.user_id).concat([{user_id:r.user_id,emoji:r.emoji}]);
+      }
+      gchatRefreshReacts(mid);
     })
     .subscribe();
 }
