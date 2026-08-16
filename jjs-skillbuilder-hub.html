@@ -123,6 +123,37 @@
   .navtab:hover{color:var(--text);background:var(--blue-dim);}
   .navtab.active{color:var(--accent);background:var(--blue-dim);}
   .navtab.active::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:18px;height:2.5px;background:var(--grad-accent);border-radius:2px;}
+  #forumNavBadge{position:absolute;top:-5px;right:-6px;background:#ef4444;color:#fff;font-size:9px;font-weight:800;min-width:15px;height:15px;border-radius:8px;align-items:center;justify-content:center;padding:0 3px;pointer-events:none;}
+
+  /* ─ Global Chat ─ */
+  .gchat-wrap{display:flex;flex-direction:column;height:min(580px,60vh);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;background:var(--bg-card);}
+  .gchat-pinned{padding:10px 14px;background:rgba(176,122,255,.07);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px;cursor:pointer;flex-shrink:0;}
+  .gchat-pin-ico{font-size:14px;flex-shrink:0;margin-top:2px;}
+  .gchat-pin-body{flex:1;min-width:0;}
+  .gchat-pin-text{font-size:12.5px;color:var(--text);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .gchat-pin-meta{font-size:11px;color:var(--text-faint);margin-top:2px;display:flex;align-items:center;gap:4px;}
+  .gchat-unpin-btn{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:auto;}
+  .gchat-unpin-btn:hover{color:var(--text);background:var(--blue-dim);}
+  .gchat-messages{flex:1;overflow-y:auto;padding:8px 0;}
+  .gchat-msg{display:flex;gap:10px;padding:5px 14px;border-radius:8px;transition:background .12s;}
+  .gchat-msg:hover{background:var(--blue-dim);}
+  .gchat-msg-ava{flex-shrink:0;margin-top:2px;}
+  .gchat-msg-body{flex:1;min-width:0;}
+  .gchat-msg-header{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:2px;}
+  .gchat-msg-nick{font-size:13px;font-weight:700;color:var(--text);}
+  .gchat-verified-ico{color:var(--accent);font-size:11px;font-weight:700;}
+  .gchat-online-dot{width:7px;height:7px;background:#22c55e;border-radius:50%;display:inline-block;flex-shrink:0;}
+  .gchat-msg-time{font-size:11px;color:var(--text-faint);}
+  .gchat-pin-msg-btn{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:11px;padding:1px 5px;border-radius:4px;opacity:0;transition:opacity .12s;}
+  .gchat-msg:hover .gchat-pin-msg-btn{opacity:1;}
+  .gchat-pin-msg-btn:hover{color:var(--accent);}
+  .gchat-msg-text{font-size:13.5px;color:var(--text);word-break:break-word;white-space:pre-wrap;}
+  .gchat-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);align-items:flex-end;flex-shrink:0;}
+  .gchat-input{flex:1;resize:none;background:var(--bg-elev);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-size:13.5px;font-family:var(--font-body);line-height:1.4;min-height:36px;max-height:100px;overflow-y:auto;}
+  .gchat-input:focus{outline:none;border-color:var(--accent);}
+  .gchat-send-btn{background:linear-gradient(135deg,var(--accent),#7c3aed);border:none;border-radius:10px;padding:8px 14px;color:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+  .gchat-send-btn:hover{opacity:.85;transform:translateY(-1px);}
+  .gchat-empty,.gchat-loading{padding:40px 20px;text-align:center;color:var(--text-faint);font-size:13px;}
 
   main{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 24px 80px;width:100%;}
   section{display:none;}
@@ -780,6 +811,7 @@
   .nick-count{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--text-faint);pointer-events:none;}
   .nick-count.warn{color:var(--coral);}
   .pass-hint{font-size:11px;color:var(--text-faint);margin:3px 0 10px;line-height:1.4;}
+  .terms-link{color:var(--accent);text-decoration:underline;cursor:pointer;font-weight:600;}
   /* ══════════════ NAV USER AREA ══════════════ */
   .nav-user{display:flex;align-items:center;gap:8px;cursor:pointer;border-radius:var(--radius-sm);padding:5px 12px;border:1px solid rgba(176,122,255,.1);background:rgba(176,122,255,.05);transition:all .3s var(--ease-smooth);flex-shrink:0;}
   .nav-user:hover{border-color:rgba(255,165,58,.25);background:rgba(255,165,58,.06);box-shadow:0 0 20px rgba(255,165,58,.08);}
@@ -1219,7 +1251,7 @@
       <div class="pass-hint" data-i18n="auth_pass_hint">Мин. 8 символов · хотя бы один спецсимвол (!@#$%^&*…)</div>
       <label style="display:flex;align-items:flex-start;gap:8px;margin:10px 0 2px;cursor:pointer;font-size:12px;color:var(--text-faint);line-height:1.5">
         <input type="checkbox" id="regTermsCheck" style="margin-top:2px;accent-color:var(--accent);width:15px;height:15px;flex-shrink:0;cursor:pointer" onchange="document.getElementById('authRegBtn').disabled=!this.checked">
-        <span>Я принимаю <a onclick="openPrivacyModal()" style="color:var(--accent);text-decoration:underline;cursor:pointer;font-weight:600">Политику конфиденциальности</a> и <a onclick="openRulesModal()" style="color:var(--accent);text-decoration:underline;cursor:pointer;font-weight:600">Правила</a> JJS Nodecraft</span>
+        <span data-i18n="auth_terms_label">Я принимаю <a onclick="openPrivacyModal()" class="terms-link">Политику конфиденциальности</a> и <a onclick="openRulesModal()" class="terms-link">Правила</a> JJS Nodecraft</span>
       </label>
       <button class="auth-btn" id="authRegBtn" data-i18n="auth_reg_btn" onclick="doRegister()" disabled>Создать аккаунт</button>
     </div>
@@ -1243,7 +1275,8 @@
     <button class="navtab" data-tab="blocks" data-i18n="nav_blocks">Блоки</button>
     <button class="navtab" data-tab="ai" data-i18n="nav_ai">ИИ-ассистент</button>
     <button class="navtab" data-tab="ideas" data-i18n="nav_ideas">Идеи</button>
-    <button class="navtab" data-tab="forum" data-i18n="nav_forum">💬 Форум</button>
+    <button class="navtab" data-tab="forum" data-i18n="nav_forum">💬 Форум<span id="forumNavBadge" style="display:none"></span></button>
+    <button class="navtab" data-tab="gchat">🌐 Чат</button>
   </div>
   <div id="navUserArea" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
     <div class="nav-user" id="navUserBtn" style="display:none" onclick="openProfileModal('me')">
@@ -1653,6 +1686,39 @@
     </div>
   </section>
 
+  <!-- ================= GCHAT ================= -->
+  <section id="gchat">
+    <div class="page-head">
+      <h2>🌐 Глобальный чат</h2>
+      <p>Общайтесь с другими игроками в реальном времени.</p>
+    </div>
+    <div class="gchat-wrap">
+      <!-- Pinned message (hidden by default) -->
+      <div id="gchatPinned" class="gchat-pinned" style="display:none" onclick="gchatScrollToMsg(_gchatPinnedId)">
+        <div class="gchat-pin-ico">📌</div>
+        <div class="gchat-pin-body">
+          <div class="gchat-pin-text" id="gchatPinnedText"></div>
+          <div class="gchat-pin-meta">
+            <span id="gchatPinnedAuthor"></span>
+            <button id="gchatUnpinBtn" class="gchat-unpin-btn" style="display:none" onclick="event.stopPropagation();toggleGchatPin(_gchatPinnedId,true)">✕ Открепить</button>
+          </div>
+        </div>
+      </div>
+      <!-- Messages list -->
+      <div class="gchat-messages" id="gchatMessages">
+        <div class="gchat-loading">Загрузка чата…</div>
+      </div>
+      <!-- Input row -->
+      <div class="gchat-input-row">
+        <textarea id="gchatInput" class="gchat-input" placeholder="Написать сообщение…" rows="1"
+          onkeydown="gchatKeyDown(event)" oninput="gchatAutoResize(this)"></textarea>
+        <button class="gchat-send-btn" onclick="sendGchatMessage()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <!-- ===== POST DETAIL MODAL ===== -->
@@ -1711,8 +1777,8 @@
       </div>
       <div class="create-post-label" data-i18n="cp_hashtags_label">Хэштеги</div>
       <input class="create-post-input" id="cpHashtags" type="text" data-i18n-placeholder="cp_hashtags_ph" placeholder="#урон #комбо #скорость — через пробел" onblur="normalizeHashtags(this)" onkeyup="if(event.key==='Enter')normalizeHashtags(this)">
-      <div class="create-post-label">Moveset-код <span style="color:var(--text-faint);font-weight:400;font-size:11px">(опционально)</span></div>
-      <textarea id="cpMovesetCode" class="create-post-input" rows="2" style="resize:vertical;font-family:monospace;font-size:11px;line-height:1.4;width:100%;box-sizing:border-box" placeholder="Вставьте длинный moveset-код сюда…"></textarea>
+      <div class="create-post-label"><span data-i18n="cp_moveset_label">Moveset-код</span> <span style="color:var(--text-faint);font-weight:400;font-size:11px" data-i18n="cp_optional">(опционально)</span></div>
+      <textarea id="cpMovesetCode" class="create-post-input" rows="2" style="resize:vertical;font-family:monospace;font-size:11px;line-height:1.4;width:100%;box-sizing:border-box" data-i18n-placeholder="cp_moveset_ph" placeholder="Вставьте длинный moveset-код сюда…"></textarea>
       <div class="create-post-label" data-i18n="cp_media_label">Медиа (фото/видео, до 10 МБ каждое)</div>
       <div class="media-upload-area" onclick="document.getElementById('cpMediaInput').click()">
         <span data-i18n="cp_media_upload">📎 Нажми чтобы прикрепить фото или видео</span>
@@ -1721,7 +1787,7 @@
       <div class="media-thumbs" id="cpMediaThumbs"></div>
       <label style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer;font-size:13px;color:var(--text-dim);line-height:1.45">
         <input type="checkbox" id="cpRulesCheck" style="margin-top:2px;accent-color:var(--accent);width:16px;height:16px;flex-shrink:0;cursor:pointer" onchange="document.getElementById('submitPostBtn').disabled=!this.checked">
-        <span id="cpRulesLabel">Я прочитал <a onclick="openRulesModal()" style="color:var(--accent);text-decoration:underline;cursor:pointer;font-weight:600">правила форума</a> и подтверждаю, что мой пост не содержит оскорблений, спама, NSFW-контента или нарушений правил JJS Nodecraft</span>
+        <span id="cpRulesLabel" data-i18n="cp_rules_text">Я прочитал <a onclick="openRulesModal()" class="terms-link">правила форума</a> и подтверждаю, что мой пост не содержит оскорблений, спама, NSFW-контента или нарушений правил JJS Nodecraft</span>
       </label>
       <div class="create-post-footer">
         <button class="cancel-btn" data-i18n="cancel_btn" onclick="closeCreatePost()">Отмена</button>
@@ -1935,7 +2001,7 @@ const STRINGS = {
     bio_ph:'Пара слов о себе…',
     link_label:'Ссылка',
     verified_only_note:'✓ только для верифицированных',
-    cancel_btn:'Отмена',
+    cancel_btn:'Отмена',got_it_btn:'Понятно ✓',
     save_btn:'Сохранить',
     following_label:'Подписки',
     followers_label:'Подписчики',
@@ -2033,6 +2099,7 @@ const STRINGS = {
     auth_or:'или',
     auth_guest_btn:'👤 Войти как гость',
     auth_login_btn:'Войти',
+    auth_terms_label:'Я принимаю <a onclick="openPrivacyModal()" class="terms-link">Политику конфиденциальности</a> и <a onclick="openRulesModal()" class="terms-link">Правила</a> JJS Nodecraft',auth_terms_err:'Примите Политику конфиденциальности и Правила для продолжения',
     auth_reg_btn:'Создать аккаунт',
     auth_logging_in:'Входим…',
     auth_creating:'Создаём…',
@@ -2050,9 +2117,10 @@ const STRINGS = {
     cp_nodes_label:'Ноды / блоки (использованные в билде)',
     cp_hashtags_label:'Хэштеги',
     cp_hashtags_ph:'#урон #комбо #скорость — через пробел',
+    cp_moveset_label:'Moveset-код',cp_optional:'(опционально)',cp_moveset_ph:'Вставьте длинный moveset-код сюда…',
     cp_media_label:'Медиа (фото/видео, до 10 МБ каждое)',
     cp_media_upload:'📎 Нажми чтобы прикрепить фото или видео',
-    cp_rules_text:'Я прочитал правила сообщества и подтверждаю, что мой пост не содержит оскорблений, спама, NSFW-контента или нарушений правил JJS Nodecraft',
+    cp_rules_text:'Я прочитал <a onclick="openRulesModal()" class="terms-link">правила форума</a> и подтверждаю, что мой пост не содержит оскорблений, спама, NSFW-контента или нарушений правил JJS Nodecraft',
     notif_panel_title:'🔔 Уведомления',
     notif_mark_all:'Прочитать все',
     admin_panel_title:'🔧 Панель администратора',
@@ -2186,7 +2254,7 @@ const STRINGS = {
     bio_ph:'A few words about yourself…',
     link_label:'Link',
     verified_only_note:'✓ verified only',
-    cancel_btn:'Cancel',
+    cancel_btn:'Cancel',got_it_btn:'Got it ✓',
     save_btn:'Save',
     following_label:'Following',
     followers_label:'Followers',
@@ -2284,6 +2352,7 @@ const STRINGS = {
     auth_or:'or',
     auth_guest_btn:'👤 Continue as Guest',
     auth_login_btn:'Log In',
+    auth_terms_label:'I accept the <a onclick="openPrivacyModal()" class="terms-link">Privacy Policy</a> and <a onclick="openRulesModal()" class="terms-link">Community Rules</a> of JJS Nodecraft',auth_terms_err:'Please accept the Privacy Policy and Community Rules to continue',
     auth_reg_btn:'Create Account',
     auth_logging_in:'Logging in…',
     auth_creating:'Creating account…',
@@ -2301,9 +2370,10 @@ const STRINGS = {
     cp_nodes_label:'Nodes / blocks (used in this build)',
     cp_hashtags_label:'Hashtags',
     cp_hashtags_ph:'#damage #combo #speed — space-separated',
+    cp_moveset_label:'Moveset code',cp_optional:'(optional)',cp_moveset_ph:'Paste your long moveset code here…',
     cp_media_label:'Media (photo/video, max 10 MB each)',
     cp_media_upload:'📎 Click to attach a photo or video',
-    cp_rules_text:'I have read the community rules and confirm that my post does not contain insults, spam, NSFW content, or violations of JJS Nodecraft rules',
+    cp_rules_text:'I have read the <a onclick="openRulesModal()" class="terms-link">forum rules</a> and confirm that my post does not contain insults, spam, NSFW content, or violations of JJS Nodecraft rules',
     notif_panel_title:'🔔 Notifications',
     notif_mark_all:'Mark all read',
     admin_panel_title:'🔧 Admin Panel',
@@ -2402,7 +2472,7 @@ const STRINGS = {
     my_profile_label:'Mein Profil',profile_label:'Profil',verified_tip:'Verifiziertes Konto',unfollow_label:'Entfolgen',follow_label:'Folgen',
     friends_label:'🤝 Freunde',edit_profile_btn:'✏️ Bearbeiten',nick_label:'Spitzname',username_ph:'Buchstaben, Zahlen und _',
     bio_label:'Über mich',bio_ph:'Ein paar Worte über dich…',link_label:'Link',verified_only_note:'✓ nur für Verifizierte',
-    cancel_btn:'Abbrechen',save_btn:'Speichern',following_label:'Abonniert',followers_label:'Abonnenten',likes_label:'Likes',
+    cancel_btn:'Abbrechen',got_it_btn:'Verstanden ✓',save_btn:'Speichern',following_label:'Abonniert',followers_label:'Abonnenten',likes_label:'Likes',
     member_since_label:'Mitglied seit',my_posts_label:'Meine Beiträge',posts_label_profile:'Beiträge',active_label:'aktiv',deleted_label:'gelöscht',
     no_posts_profile:'Noch keine Beiträge',username_err:'@username: 3–20 Zeichen, Buchstaben, Zahlen und _',save_err:'Speicherfehler: ',
     followers_title:'Abonnenten',following_title:'Abonniert',no_reports:'Keine Meldungen ✅',deleted_post_ref:'Gelöschter Beitrag',
@@ -2430,14 +2500,15 @@ const STRINGS = {
     auth_sub:'Anmelden oder registrieren — Forum und Synchronisation',auth_tab_login:'Anmelden',auth_tab_reg:'Registrieren',
     auth_nick_ph:'Spitzname',auth_pass_ph:'Passwort',auth_nick_reg_ph:'Spitzname (2–20 Zeichen)',
     auth_pass_hint:'Mind. 8 Zeichen · min. ein Sonderzeichen (!@#$%^&*…)',auth_or:'oder',auth_guest_btn:'👤 Als Gast weiter',
-    auth_login_btn:'Anmelden',auth_reg_btn:'Konto erstellen',auth_logging_in:'Anmelden…',auth_creating:'Wird erstellt…',
+    auth_login_btn:'Anmelden',auth_terms_label:'Ich akzeptiere die <a onclick="openPrivacyModal()" class="terms-link">Datenschutzrichtlinie</a> und die <a onclick="openRulesModal()" class="terms-link">Regeln</a> von JJS Nodecraft',auth_terms_err:'Bitte Datenschutzrichtlinie und Regeln akzeptieren um fortzufahren',auth_reg_btn:'Konto erstellen',auth_logging_in:'Anmelden…',auth_creating:'Wird erstellt…',
     auth_fill_all:'Bitte alle Felder ausfüllen',auth_wrong_creds:'Falscher Spitzname oder Passwort',
     auth_nick_taken:'Dieser Spitzname ist vergeben',auth_too_many:'Zu viele Versuche, bitte eine Minute warten',guest_badge:'Gast',
     cp_modal_title:'✏️ Neuer Beitrag',cp_mode_label:'Modus *',cp_title_label:'Titel *',cp_title_ph:'Kurze Beschreibung des Builds…',
     cp_content_label:'Inhalt *',cp_content_ph:'Beschreib den Build, wie er funktioniert, welche Nodes man wählt…',
     cp_nodes_label:'Nodes / Blöcke (im Build verwendet)',cp_hashtags_label:'Hashtags',cp_hashtags_ph:'#schaden #kombo #speed — getrennt durch Leerzeichen',
+    cp_moveset_label:'Moveset-Code',cp_optional:'(optional)',cp_moveset_ph:'Langen Moveset-Code hier einfügen…',
     cp_media_label:'Medien (Foto/Video, max. 10 MB je)',cp_media_upload:'📎 Klicken zum Anhängen',
-    cp_rules_text:'Ich habe die Community-Regeln gelesen und bestätige, dass mein Beitrag keine Beleidigungen, Spam oder NSFW-Inhalte enthält',
+    cp_rules_text:'Ich habe die <a onclick="openRulesModal()" class="terms-link">Forum-Regeln</a> gelesen und bestätige, dass mein Beitrag keine Beleidigungen, Spam, NSFW-Inhalte oder Verstöße gegen JJS Nodecraft-Regeln enthält',
     notif_panel_title:'🔔 Benachrichtigungen',notif_mark_all:'Alle als gelesen markieren',
     admin_panel_title:'🔧 Adminbereich',admin_tab_reports:'🚩 Meldungen',admin_tab_bugs:'🐛 Bugs',admin_tab_users:'👥 Nutzer',
     admin_tab_posts:'📌 Beiträge',admin_tab_announce:'📣 Ankündigungen',admin_tab_stats:'📊 Statistik',
@@ -2519,7 +2590,7 @@ const STRINGS = {
     my_profile_label:'Mój profil',profile_label:'Profil',verified_tip:'Zweryfikowane konto',unfollow_label:'Obserwuj mniej',follow_label:'Obserwuj',
     friends_label:'🤝 Znajomi',edit_profile_btn:'✏️ Edytuj',nick_label:'Pseudonim',username_ph:'litery, cyfry i _',
     bio_label:'O mnie',bio_ph:'Kilka słów o sobie…',link_label:'Link',verified_only_note:'✓ tylko dla zweryfikowanych',
-    cancel_btn:'Anuluj',save_btn:'Zapisz',following_label:'Obserwowani',followers_label:'Obserwujący',likes_label:'Lajki',
+    cancel_btn:'Anuluj',got_it_btn:'Rozumiem ✓',save_btn:'Zapisz',following_label:'Obserwowani',followers_label:'Obserwujący',likes_label:'Lajki',
     member_since_label:'Dołączył od',my_posts_label:'Moje posty',posts_label_profile:'Posty',active_label:'aktywnych',deleted_label:'usuniętych',
     no_posts_profile:'Brak postów',username_err:'@username: 3–20 znaków, tylko litery łacińskie, cyfry i _',save_err:'Błąd zapisu: ',
     followers_title:'Obserwujący',following_title:'Obserwowani',no_reports:'Brak zgłoszeń ✅',deleted_post_ref:'Usunięty post',
@@ -2547,14 +2618,15 @@ const STRINGS = {
     auth_sub:'Zaloguj się lub zarejestruj — forum i synchronizacja',auth_tab_login:'Zaloguj się',auth_tab_reg:'Rejestracja',
     auth_nick_ph:'Pseudonim',auth_pass_ph:'Hasło',auth_nick_reg_ph:'Pseudonim (2–20 znaków)',
     auth_pass_hint:'Min. 8 znaków · przynajmniej jeden znak specjalny (!@#$%^&*…)',auth_or:'lub',auth_guest_btn:'👤 Kontynuuj jako gość',
-    auth_login_btn:'Zaloguj się',auth_reg_btn:'Utwórz konto',auth_logging_in:'Logowanie…',auth_creating:'Tworzenie…',
+    auth_login_btn:'Zaloguj się',auth_terms_label:'Akceptuję <a onclick="openPrivacyModal()" class="terms-link">Politykę prywatności</a> i <a onclick="openRulesModal()" class="terms-link">Regulamin</a> JJS Nodecraft',auth_terms_err:'Zaakceptuj Politykę prywatności i Regulamin aby kontynuować',auth_reg_btn:'Utwórz konto',auth_logging_in:'Logowanie…',auth_creating:'Tworzenie…',
     auth_fill_all:'Wypełnij wszystkie pola',auth_wrong_creds:'Błędny pseudonim lub hasło',
     auth_nick_taken:'Ten pseudonim jest zajęty',auth_too_many:'Zbyt wiele prób, poczekaj minutę',guest_badge:'Gość',
     cp_modal_title:'✏️ Nowy post',cp_mode_label:'Tryb *',cp_title_label:'Tytuł *',cp_title_ph:'Krótki opis builda lub mechaniki…',
     cp_content_label:'Treść *',cp_content_ph:'Opisz build, jak go używać, które węzły wybrać…',
     cp_nodes_label:'Węzły / bloki (użyte w buildzie)',cp_hashtags_label:'Hashtagi',cp_hashtags_ph:'#obrażenia #kombo #szybkość — oddzielone spacją',
+    cp_moveset_label:'Kod movesetu',cp_optional:'(opcjonalnie)',cp_moveset_ph:'Wklej tutaj długi kod movesetu…',
     cp_media_label:'Media (foto/wideo, maks. 10 MB każde)',cp_media_upload:'📎 Kliknij, aby załączyć foto lub wideo',
-    cp_rules_text:'Przeczytałem regulamin społeczności i potwierdzam, że mój post nie zawiera obrażeń, spamu ani treści NSFW',
+    cp_rules_text:'Przeczytałem <a onclick="openRulesModal()" class="terms-link">regulamin forum</a> i potwierdzam, że mój post nie zawiera obrażeń, spamu ani treści NSFW',
     notif_panel_title:'🔔 Powiadomienia',notif_mark_all:'Oznacz wszystkie jako przeczytane',
     admin_panel_title:'🔧 Panel administratora',admin_tab_reports:'🚩 Zgłoszenia',admin_tab_bugs:'🐛 Błędy',admin_tab_users:'👥 Użytkownicy',
     admin_tab_posts:'📌 Posty',admin_tab_announce:'📣 Ogłoszenia',admin_tab_stats:'📊 Statystyki',
@@ -2636,7 +2708,7 @@ const STRINGS = {
     my_profile_label:'O meu perfil',profile_label:'Perfil',verified_tip:'Conta verificada',unfollow_label:'Deixar de seguir',follow_label:'Seguir',
     friends_label:'🤝 Amigos',edit_profile_btn:'✏️ Editar',nick_label:'Apelido',username_ph:'letras, dígitos e _',
     bio_label:'Sobre mim',bio_ph:'Algumas palavras sobre ti…',link_label:'Link',verified_only_note:'✓ só para verificados',
-    cancel_btn:'Cancelar',save_btn:'Guardar',following_label:'A seguir',followers_label:'Seguidores',likes_label:'Gostos',
+    cancel_btn:'Cancelar',got_it_btn:'Entendido ✓',save_btn:'Guardar',following_label:'A seguir',followers_label:'Seguidores',likes_label:'Gostos',
     member_since_label:'Membro desde',my_posts_label:'As minhas publicações',posts_label_profile:'Publicações',active_label:'ativas',deleted_label:'eliminadas',
     no_posts_profile:'Sem publicações',username_err:'@username: 3–20 caracteres, só letras latinas, dígitos e _',save_err:'Erro ao guardar: ',
     followers_title:'Seguidores',following_title:'A seguir',no_reports:'Sem denúncias ✅',deleted_post_ref:'Publicação eliminada',
@@ -2664,14 +2736,15 @@ const STRINGS = {
     auth_sub:'Inicia sessão ou cria uma conta — fórum e sincronização',auth_tab_login:'Entrar',auth_tab_reg:'Registar',
     auth_nick_ph:'Apelido',auth_pass_ph:'Palavra-passe',auth_nick_reg_ph:'Apelido (2–20 caracteres)',
     auth_pass_hint:'Mín. 8 caracteres · pelo menos um caractere especial (!@#$%^&*…)',auth_or:'ou',auth_guest_btn:'👤 Continuar como convidado',
-    auth_login_btn:'Entrar',auth_reg_btn:'Criar conta',auth_logging_in:'A entrar…',auth_creating:'A criar…',
+    auth_login_btn:'Entrar',auth_terms_label:'Aceito a <a onclick="openPrivacyModal()" class="terms-link">Política de Privacidade</a> e as <a onclick="openRulesModal()" class="terms-link">Regras</a> do JJS Nodecraft',auth_terms_err:'Aceita a Política de Privacidade e as Regras para continuar',auth_reg_btn:'Criar conta',auth_logging_in:'A entrar…',auth_creating:'A criar…',
     auth_fill_all:'Preenche todos os campos',auth_wrong_creds:'Apelido ou palavra-passe incorretos',
     auth_nick_taken:'Este apelido já está em uso',auth_too_many:'Demasiadas tentativas, aguarda um minuto',guest_badge:'Convidado',
     cp_modal_title:'✏️ Nova publicação',cp_mode_label:'Modo *',cp_title_label:'Título *',cp_title_ph:'Breve descrição do build ou mecânica…',
     cp_content_label:'Conteúdo *',cp_content_ph:'Fala sobre o build, como usá-lo, que nodes escolher…',
     cp_nodes_label:'Nodes / blocos (usados no build)',cp_hashtags_label:'Hashtags',cp_hashtags_ph:'#dano #combo #velocidade — separados por espaço',
+    cp_moveset_label:'Código de moveset',cp_optional:'(opcional)',cp_moveset_ph:'Cola aqui o teu código de moveset longo…',
     cp_media_label:'Média (foto/vídeo, máx. 10 MB cada)',cp_media_upload:'📎 Clica para anexar foto ou vídeo',
-    cp_rules_text:'Li as regras da comunidade e confirmo que a minha publicação não contém insultos, spam ou conteúdo NSFW',
+    cp_rules_text:'Li as <a onclick="openRulesModal()" class="terms-link">regras do fórum</a> e confirmo que a minha publicação não contém insultos, spam ou conteúdo NSFW',
     notif_panel_title:'🔔 Notificações',notif_mark_all:'Marcar todas como lidas',
     admin_panel_title:'🔧 Painel de administração',admin_tab_reports:'🚩 Denúncias',admin_tab_bugs:'🐛 Erros',admin_tab_users:'👥 Utilizadores',
     admin_tab_posts:'📌 Publicações',admin_tab_announce:'📣 Anúncios',admin_tab_stats:'📊 Estatísticas',
@@ -2754,7 +2827,7 @@ const STRINGS = {
     my_profile_label:'Meu perfil',profile_label:'Perfil',verified_tip:'Conta verificada',
     unfollow_label:'Deixar de seguir',follow_label:'Seguir',friends_label:'Amigos',
     edit_profile_btn:'✏️ Editar perfil',nick_label:'Nome',username_ph:'nome_usuario',bio_label:'Bio',bio_ph:'Conte algo sobre você…',
-    link_label:'Link',verified_only_note:'Apenas contas verificadas podem adicionar link externo',cancel_btn:'Cancelar',save_btn:'Salvar',
+    link_label:'Link',verified_only_note:'Apenas contas verificadas podem adicionar link externo',cancel_btn:'Cancelar',got_it_btn:'Entendido ✓',save_btn:'Salvar',
     following_label:'Seguindo',followers_label:'Seguidores',likes_label:'Curtidas',
     member_since_label:'Membro desde',my_posts_label:'Meus posts',posts_label_profile:'Posts',active_label:'ativos',deleted_label:'excluídos',
     no_posts_profile:'Sem posts',username_err:'@username: 3–20 caracteres, só letras latinas, dígitos e _',save_err:'Erro ao salvar: ',
@@ -2783,14 +2856,15 @@ const STRINGS = {
     auth_sub:'Faça login ou crie uma conta — fórum e sincronização',auth_tab_login:'Entrar',auth_tab_reg:'Cadastrar',
     auth_nick_ph:'Apelido',auth_pass_ph:'Senha',auth_nick_reg_ph:'Apelido (2–20 caracteres)',
     auth_pass_hint:'Mín. 8 caracteres · pelo menos um caractere especial (!@#$%^&*…)',auth_or:'ou',auth_guest_btn:'👤 Continuar como visitante',
-    auth_login_btn:'Entrar',auth_reg_btn:'Criar conta',auth_logging_in:'Entrando…',auth_creating:'Criando…',
+    auth_login_btn:'Entrar',auth_terms_label:'Aceito a <a onclick="openPrivacyModal()" class="terms-link">Política de Privacidade</a> e as <a onclick="openRulesModal()" class="terms-link">Regras</a> da JJS Nodecraft',auth_terms_err:'Aceite a Política de Privacidade e as Regras para continuar',auth_reg_btn:'Criar conta',auth_logging_in:'Entrando…',auth_creating:'Criando…',
     auth_fill_all:'Preencha todos os campos',auth_wrong_creds:'Apelido ou senha incorretos',
     auth_nick_taken:'Esse apelido já está em uso',auth_too_many:'Muitas tentativas, aguarde um minuto',guest_badge:'Visitante',
     cp_modal_title:'✏️ Nova publicação',cp_mode_label:'Modo *',cp_title_label:'Título *',cp_title_ph:'Breve descrição do build ou mecânica…',
     cp_content_label:'Conteúdo *',cp_content_ph:'Fale sobre o build, como usá-lo, quais nodes escolher…',
     cp_nodes_label:'Nodes / blocos (usados no build)',cp_hashtags_label:'Hashtags',cp_hashtags_ph:'#dano #combo #velocidade — separados por espaço',
+    cp_moveset_label:'Código de moveset',cp_optional:'(opcional)',cp_moveset_ph:'Cole aqui o código de moveset longo…',
     cp_media_label:'Mídia (foto/vídeo, máx. 10 MB cada)',cp_media_upload:'📎 Clique para anexar foto ou vídeo',
-    cp_rules_text:'Li as regras da comunidade e confirmo que meu post não contém insultos, spam ou conteúdo NSFW',
+    cp_rules_text:'Li as <a onclick="openRulesModal()" class="terms-link">regras do fórum</a> e confirmo que meu post não contém insultos, spam ou conteúdo NSFW',
     notif_panel_title:'🔔 Notificações',notif_mark_all:'Marcar todas como lidas',
     admin_panel_title:'🔧 Painel de administração',admin_tab_reports:'🚩 Denúncias',admin_tab_bugs:'🐛 Erros',admin_tab_users:'👥 Usuários',
     admin_tab_posts:'📌 Posts',admin_tab_announce:'📣 Anúncios',admin_tab_stats:'📊 Estatísticas',
@@ -2872,7 +2946,7 @@ const STRINGS = {
     my_profile_label:'Profil saya',profile_label:'Profil',verified_tip:'Akun terverifikasi',unfollow_label:'Batal ikuti',follow_label:'Ikuti',
     friends_label:'🤝 Teman',edit_profile_btn:'✏️ Edit',nick_label:'Nama pengguna',username_ph:'huruf, angka, dan _',
     bio_label:'Tentang saya',bio_ph:'Beberapa kata tentang dirimu…',link_label:'Link',verified_only_note:'✓ hanya terverifikasi',
-    cancel_btn:'Batal',save_btn:'Simpan',following_label:'Mengikuti',followers_label:'Pengikut',likes_label:'Suka',
+    cancel_btn:'Batal',got_it_btn:'Mengerti ✓',save_btn:'Simpan',following_label:'Mengikuti',followers_label:'Pengikut',likes_label:'Suka',
     member_since_label:'Bergabung sejak',my_posts_label:'Postingan saya',posts_label_profile:'Postingan',active_label:'aktif',deleted_label:'dihapus',
     no_posts_profile:'Belum ada postingan',username_err:'@username: 3–20 karakter, huruf latin, angka dan _',save_err:'Error simpan: ',
     followers_title:'Pengikut',following_title:'Mengikuti',no_reports:'Tidak ada laporan ✅',deleted_post_ref:'Postingan dihapus',
@@ -2900,14 +2974,15 @@ const STRINGS = {
     auth_sub:'Masuk atau daftar — forum dan sinkronisasi',auth_tab_login:'Masuk',auth_tab_reg:'Daftar',
     auth_nick_ph:'Nama pengguna',auth_pass_ph:'Kata sandi',auth_nick_reg_ph:'Nama pengguna (2–20 karakter)',
     auth_pass_hint:'Min. 8 karakter · min. satu karakter khusus (!@#$%^&*…)',auth_or:'atau',auth_guest_btn:'👤 Lanjut sebagai tamu',
-    auth_login_btn:'Masuk',auth_reg_btn:'Buat akun',auth_logging_in:'Masuk…',auth_creating:'Membuat…',
+    auth_login_btn:'Masuk',auth_terms_label:'Saya menyetujui <a onclick="openPrivacyModal()" class="terms-link">Kebijakan Privasi</a> dan <a onclick="openRulesModal()" class="terms-link">Aturan</a> JJS Nodecraft',auth_terms_err:'Setujui Kebijakan Privasi dan Aturan untuk melanjutkan',auth_reg_btn:'Buat akun',auth_logging_in:'Masuk…',auth_creating:'Membuat…',
     auth_fill_all:'Isi semua kolom',auth_wrong_creds:'Nama pengguna atau kata sandi salah',
     auth_nick_taken:'Nama pengguna sudah dipakai',auth_too_many:'Terlalu banyak percobaan, tunggu sebentar',guest_badge:'Tamu',
     cp_modal_title:'✏️ Postingan baru',cp_mode_label:'Mode *',cp_title_label:'Judul *',cp_title_ph:'Deskripsi singkat build atau mekanik…',
     cp_content_label:'Konten *',cp_content_ph:'Ceritakan tentang build, cara pakainya, node apa yang dipilih…',
     cp_nodes_label:'Node / blok (dipakai dalam build)',cp_hashtags_label:'Hashtag',cp_hashtags_ph:'#damage #combo #speed — pisahkan dengan spasi',
+    cp_moveset_label:'Kode moveset',cp_optional:'(opsional)',cp_moveset_ph:'Tempel kode moveset panjang di sini…',
     cp_media_label:'Media (foto/video, maks. 10 MB per file)',cp_media_upload:'📎 Klik untuk lampirkan foto atau video',
-    cp_rules_text:'Saya sudah membaca aturan komunitas dan memastikan postingan saya tidak mengandung hinaan, spam, atau konten NSFW',
+    cp_rules_text:'Saya sudah membaca <a onclick="openRulesModal()" class="terms-link">aturan forum</a> dan memastikan postingan saya tidak mengandung hinaan, spam, atau konten NSFW',
     notif_panel_title:'🔔 Notifikasi',notif_mark_all:'Tandai semua sudah dibaca',
     admin_panel_title:'🔧 Panel admin',admin_tab_reports:'🚩 Laporan',admin_tab_bugs:'🐛 Bug',admin_tab_users:'👥 Pengguna',
     admin_tab_posts:'📌 Postingan',admin_tab_announce:'📣 Pengumuman',admin_tab_stats:'📊 Statistik',
@@ -2989,7 +3064,7 @@ const STRINGS = {
     my_profile_label:'Hồ sơ của tôi',profile_label:'Hồ sơ',verified_tip:'Tài khoản đã xác minh',unfollow_label:'Bỏ theo dõi',follow_label:'Theo dõi',
     friends_label:'🤝 Bạn bè',edit_profile_btn:'✏️ Chỉnh sửa',nick_label:'Biệt danh',username_ph:'chữ cái, số và _',
     bio_label:'Giới thiệu',bio_ph:'Vài lời về bản thân…',link_label:'Liên kết',verified_only_note:'✓ chỉ dành cho đã xác minh',
-    cancel_btn:'Hủy',save_btn:'Lưu',following_label:'Đang theo dõi',followers_label:'Người theo dõi',likes_label:'Lượt thích',
+    cancel_btn:'Hủy',got_it_btn:'Đã hiểu ✓',save_btn:'Lưu',following_label:'Đang theo dõi',followers_label:'Người theo dõi',likes_label:'Lượt thích',
     member_since_label:'Thành viên từ',my_posts_label:'Bài của tôi',posts_label_profile:'Bài viết',active_label:'đang hoạt động',deleted_label:'đã xóa',
     no_posts_profile:'Chưa có bài viết',username_err:'@username: 3–20 ký tự, chữ Latin, số và _',save_err:'Lỗi lưu: ',
     followers_title:'Người theo dõi',following_title:'Đang theo dõi',no_reports:'Không có báo cáo ✅',deleted_post_ref:'Bài đã xóa',
@@ -3016,14 +3091,15 @@ const STRINGS = {
     auth_sub:'Đăng nhập hoặc đăng ký — diễn đàn và đồng bộ',auth_tab_login:'Đăng nhập',auth_tab_reg:'Đăng ký',
     auth_nick_ph:'Biệt danh',auth_pass_ph:'Mật khẩu',auth_nick_reg_ph:'Biệt danh (2–20 ký tự)',
     auth_pass_hint:'Tối thiểu 8 ký tự · ít nhất một ký tự đặc biệt (!@#$%^&*…)',auth_or:'hoặc',auth_guest_btn:'👤 Tiếp tục làm khách',
-    auth_login_btn:'Đăng nhập',auth_reg_btn:'Tạo tài khoản',auth_logging_in:'Đang đăng nhập…',auth_creating:'Đang tạo…',
+    auth_login_btn:'Đăng nhập',auth_terms_label:'Tôi đồng ý với <a onclick="openPrivacyModal()" class="terms-link">Chính sách Bảo mật</a> và <a onclick="openRulesModal()" class="terms-link">Quy tắc Cộng đồng</a> của JJS Nodecraft',auth_terms_err:'Vui lòng chấp nhận Chính sách Bảo mật và Quy tắc để tiếp tục',auth_reg_btn:'Tạo tài khoản',auth_logging_in:'Đang đăng nhập…',auth_creating:'Đang tạo…',
     auth_fill_all:'Điền đầy đủ thông tin',auth_wrong_creds:'Biệt danh hoặc mật khẩu sai',
     auth_nick_taken:'Biệt danh này đã được dùng',auth_too_many:'Quá nhiều lần thử, chờ một phút',guest_badge:'Khách',
     cp_modal_title:'✏️ Bài viết mới',cp_mode_label:'Chế độ *',cp_title_label:'Tiêu đề *',cp_title_ph:'Mô tả ngắn về build hoặc cơ chế…',
     cp_content_label:'Nội dung *',cp_content_ph:'Kể về build, cách dùng, chọn node nào…',
     cp_nodes_label:'Node / block (dùng trong build)',cp_hashtags_label:'Hashtag',cp_hashtags_ph:'#dame #combo #tốcđộ — cách nhau bằng dấu cách',
+    cp_moveset_label:'Mã moveset',cp_optional:'(tùy chọn)',cp_moveset_ph:'Dán mã moveset dài của bạn vào đây…',
     cp_media_label:'Media (ảnh/video, tối đa 10 MB mỗi cái)',cp_media_upload:'📎 Nhấn để đính kèm ảnh hoặc video',
-    cp_rules_text:'Tôi đã đọc quy tắc cộng đồng và xác nhận bài viết không chứa xúc phạm, spam hay nội dung NSFW',
+    cp_rules_text:'Tôi đã đọc <a onclick="openRulesModal()" class="terms-link">quy tắc diễn đàn</a> và xác nhận bài viết không chứa xúc phạm, spam hay nội dung NSFW',
     notif_panel_title:'🔔 Thông báo',notif_mark_all:'Đánh dấu tất cả đã đọc',
     admin_panel_title:'🔧 Bảng quản trị',admin_tab_reports:'🚩 Báo cáo',admin_tab_bugs:'🐛 Lỗi',admin_tab_users:'👥 Người dùng',
     admin_tab_posts:'📌 Bài',admin_tab_announce:'📣 Thông báo',admin_tab_stats:'📊 Thống kê',
@@ -3105,7 +3181,7 @@ const STRINGS = {
     my_profile_label:'โปรไฟล์ของฉัน',profile_label:'โปรไฟล์',verified_tip:'บัญชีที่ยืนยันแล้ว',unfollow_label:'เลิกติดตาม',follow_label:'ติดตาม',
     friends_label:'🤝 เพื่อน',edit_profile_btn:'✏️ แก้ไข',nick_label:'ชื่อเล่น',username_ph:'ตัวอักษร ตัวเลข และ _',
     bio_label:'เกี่ยวกับฉัน',bio_ph:'สองสามคำเกี่ยวกับตัวเอง…',link_label:'ลิงก์',verified_only_note:'✓ สำหรับผู้ยืนยันแล้วเท่านั้น',
-    cancel_btn:'ยกเลิก',save_btn:'บันทึก',following_label:'กำลังติดตาม',followers_label:'ผู้ติดตาม',likes_label:'ไลก์',
+    cancel_btn:'ยกเลิก',got_it_btn:'เข้าใจแล้ว ✓',save_btn:'บันทึก',following_label:'กำลังติดตาม',followers_label:'ผู้ติดตาม',likes_label:'ไลก์',
     member_since_label:'สมาชิกตั้งแต่',my_posts_label:'โพสต์ของฉัน',posts_label_profile:'โพสต์',active_label:'ใช้งาน',deleted_label:'ลบแล้ว',
     no_posts_profile:'ยังไม่มีโพสต์',username_err:'@username: 3–20 ตัวอักษร เฉพาะตัวอักษรละติน ตัวเลข และ _',save_err:'ข้อผิดพลาดในการบันทึก: ',
     followers_title:'ผู้ติดตาม',following_title:'กำลังติดตาม',no_reports:'ไม่มีรายงาน ✅',deleted_post_ref:'โพสต์ที่ลบแล้ว',
@@ -3132,14 +3208,15 @@ const STRINGS = {
     auth_sub:'เข้าสู่ระบบหรือสมัคร — ฟอรัมและซิงค์ข้อมูล',auth_tab_login:'เข้าสู่ระบบ',auth_tab_reg:'สมัคร',
     auth_nick_ph:'ชื่อเล่น',auth_pass_ph:'รหัสผ่าน',auth_nick_reg_ph:'ชื่อเล่น (2–20 ตัวอักษร)',
     auth_pass_hint:'อย่างน้อย 8 ตัวอักษร · อย่างน้อยหนึ่งอักขระพิเศษ (!@#$%^&*…)',auth_or:'หรือ',auth_guest_btn:'👤 ดำเนินการในฐานะแขก',
-    auth_login_btn:'เข้าสู่ระบบ',auth_reg_btn:'สร้างบัญชี',auth_logging_in:'กำลังเข้าสู่ระบบ…',auth_creating:'กำลังสร้าง…',
+    auth_login_btn:'เข้าสู่ระบบ',auth_terms_label:'ฉันยอมรับ<a onclick="openPrivacyModal()" class="terms-link">นโยบายความเป็นส่วนตัว</a>และ<a onclick="openRulesModal()" class="terms-link">กฎชุมชน</a>ของ JJS Nodecraft',auth_terms_err:'โปรดยอมรับนโยบายความเป็นส่วนตัวและกฎเพื่อดำเนินการต่อ',auth_reg_btn:'สร้างบัญชี',auth_logging_in:'กำลังเข้าสู่ระบบ…',auth_creating:'กำลังสร้าง…',
     auth_fill_all:'กรอกข้อมูลทุกช่อง',auth_wrong_creds:'ชื่อเล่นหรือรหัสผ่านไม่ถูกต้อง',
     auth_nick_taken:'ชื่อเล่นนี้ถูกใช้แล้ว',auth_too_many:'พยายามมากเกินไป รอสักครู่',guest_badge:'แขก',
     cp_modal_title:'✏️ โพสต์ใหม่',cp_mode_label:'โหมด *',cp_title_label:'หัวข้อ *',cp_title_ph:'คำอธิบายสั้นๆ เกี่ยวกับบิลด์หรือกลไก…',
     cp_content_label:'เนื้อหา *',cp_content_ph:'เล่าเกี่ยวกับบิลด์ วิธีใช้ โหนดที่ควรเลือก…',
     cp_nodes_label:'โหนด / บล็อก (ใช้ในบิลด์)',cp_hashtags_label:'แฮชแท็ก',cp_hashtags_ph:'#ดาเมจ #คอมโบ #สปีด — คั่นด้วยช่องว่าง',
+    cp_moveset_label:'โค้ด Moveset',cp_optional:'(ไม่บังคับ)',cp_moveset_ph:'วางโค้ด moveset ยาวๆ ที่นี่…',
     cp_media_label:'มีเดีย (รูป/วิดีโอ สูงสุด 10 MB ต่อไฟล์)',cp_media_upload:'📎 กดเพื่อแนบรูปหรือวิดีโอ',
-    cp_rules_text:'ฉันอ่านกฎชุมชนแล้วและยืนยันว่าโพสต์ของฉันไม่มีการดูถูก สแปม หรือเนื้อหา NSFW',
+    cp_rules_text:'ฉันอ่าน<a onclick="openRulesModal()" class="terms-link">กฎฟอรัม</a>แล้วและยืนยันว่าโพสต์ของฉันไม่มีการดูถูก สแปม หรือเนื้อหา NSFW',
     notif_panel_title:'🔔 การแจ้งเตือน',notif_mark_all:'ทำเครื่องหมายทั้งหมดว่าอ่านแล้ว',
     admin_panel_title:'🔧 แผงผู้ดูแลระบบ',admin_tab_reports:'🚩 รายงาน',admin_tab_bugs:'🐛 บัก',admin_tab_users:'👥 ผู้ใช้',
     admin_tab_posts:'📌 โพสต์',admin_tab_announce:'📣 ประกาศ',admin_tab_stats:'📊 สถิติ',
@@ -3221,7 +3298,7 @@ const STRINGS = {
     my_profile_label:'Aking profile',profile_label:'Profile',verified_tip:'Na-verify na account',unfollow_label:'I-unfollow',follow_label:'I-follow',
     friends_label:'🤝 Mga Kaibigan',edit_profile_btn:'✏️ I-edit',nick_label:'Palayaw',username_ph:'mga titik, numero at _',
     bio_label:'Tungkol sa akin',bio_ph:'Ilang salita tungkol sa iyo…',link_label:'Link',verified_only_note:'✓ para sa verified lang',
-    cancel_btn:'Kanselahin',save_btn:'I-save',following_label:'Sinusundan',followers_label:'Mga Follower',likes_label:'Mga Like',
+    cancel_btn:'Kanselahin',got_it_btn:'Naiintindihan ✓',save_btn:'I-save',following_label:'Sinusundan',followers_label:'Mga Follower',likes_label:'Mga Like',
     member_since_label:'Miyembro mula',my_posts_label:'Aking mga post',posts_label_profile:'Mga Post',active_label:'aktibo',deleted_label:'nabura',
     no_posts_profile:'Wala pang post',username_err:'@username: 3–20 karakter, Latin na titik, numero at _',save_err:'Error sa pag-save: ',
     followers_title:'Mga Follower',following_title:'Sinusundan',no_reports:'Walang ulat ✅',deleted_post_ref:'Naburing post',
@@ -3248,14 +3325,15 @@ const STRINGS = {
     auth_sub:'Mag-login o mag-sign up — forum at sync',auth_tab_login:'Mag-login',auth_tab_reg:'Mag-sign up',
     auth_nick_ph:'Palayaw',auth_pass_ph:'Password',auth_nick_reg_ph:'Palayaw (2–20 karakter)',
     auth_pass_hint:'Min. 8 karakter · kahit isang espesyal na karakter (!@#$%^&*…)',auth_or:'o',auth_guest_btn:'👤 Magpatuloy bilang bisita',
-    auth_login_btn:'Mag-login',auth_reg_btn:'Gumawa ng account',auth_logging_in:'Nagla-login…',auth_creating:'Gumagawa…',
+    auth_login_btn:'Mag-login',auth_terms_label:'Tinatanggap ko ang <a onclick="openPrivacyModal()" class="terms-link">Patakaran sa Privacy</a> at ang <a onclick="openRulesModal()" class="terms-link">Mga Panuntunan</a> ng JJS Nodecraft',auth_terms_err:'Tanggapin ang Patakaran sa Privacy at Mga Panuntunan para magpatuloy',auth_reg_btn:'Gumawa ng account',auth_logging_in:'Nagla-login…',auth_creating:'Gumagawa…',
     auth_fill_all:'Punan ang lahat ng field',auth_wrong_creds:'Maling palayaw o password',
     auth_nick_taken:'Ginagamit na ang palayaw na ito',auth_too_many:'Maraming pagsubok, maghintay ng isang minuto',guest_badge:'Bisita',
     cp_modal_title:'✏️ Bagong post',cp_mode_label:'Mode *',cp_title_label:'Pamagat *',cp_title_ph:'Maikling paglalarawan ng build o mechanic…',
     cp_content_label:'Nilalaman *',cp_content_ph:'Ipaliwanag ang build, kung paano gamitin, kung aling nodes ang pipiliin…',
     cp_nodes_label:'Mga Node / block (ginamit sa build)',cp_hashtags_label:'Mga Hashtag',cp_hashtags_ph:'#damage #combo #bilis — hiwalay sa pamamagitan ng espasyo',
+    cp_moveset_label:'Moveset code',cp_optional:'(opsyonal)',cp_moveset_ph:'I-paste ang iyong mahabang moveset code dito…',
     cp_media_label:'Media (larawan/video, max 10 MB bawat isa)',cp_media_upload:'📎 Pindutin para mag-attach ng larawan o video',
-    cp_rules_text:'Nabasa ko na ang mga patakaran ng komunidad at kinukumpirma ko na ang aking post ay walang insulto, spam o NSFW na nilalaman',
+    cp_rules_text:'Nabasa ko na ang <a onclick="openRulesModal()" class="terms-link">mga patakaran ng forum</a> at kinukumpirma ko na ang aking post ay walang insulto, spam o NSFW na nilalaman',
     notif_panel_title:'🔔 Mga Notification',notif_mark_all:'Markahan lahat bilang nabasa',
     admin_panel_title:'🔧 Admin Panel',admin_tab_reports:'🚩 Mga Ulat',admin_tab_bugs:'🐛 Mga Bug',admin_tab_users:'👥 Mga User',
     admin_tab_posts:'📌 Mga Post',admin_tab_announce:'📣 Mga Anunsyo',admin_tab_stats:'📊 Estadistika',
@@ -3337,7 +3415,7 @@ const STRINGS = {
     my_profile_label:'ملفي الشخصي',profile_label:'الملف الشخصي',verified_tip:'حساب موثّق',unfollow_label:'إلغاء المتابعة',follow_label:'متابعة',
     friends_label:'🤝 أصدقاء',edit_profile_btn:'✏️ تعديل',nick_label:'الاسم المستعار',username_ph:'حروف وأرقام و _',
     bio_label:'عني',bio_ph:'كلمات قليلة عن نفسك…',link_label:'رابط',verified_only_note:'✓ للموثّقين فقط',
-    cancel_btn:'إلغاء',save_btn:'حفظ',following_label:'المتابَعون',followers_label:'المتابعون',likes_label:'إعجابات',
+    cancel_btn:'إلغاء',got_it_btn:'حسناً ✓',save_btn:'حفظ',following_label:'المتابَعون',followers_label:'المتابعون',likes_label:'إعجابات',
     member_since_label:'عضو منذ',my_posts_label:'بوستاتي',posts_label_profile:'البوستات',active_label:'نشط',deleted_label:'محذوف',
     no_posts_profile:'لا يوجد بوستات',username_err:'@username: 3–20 حرف، حروف لاتينية وأرقام و _',save_err:'خطأ في الحفظ: ',
     followers_title:'المتابعون',following_title:'المتابَعون',no_reports:'لا يوجد إبلاغات ✅',deleted_post_ref:'بوست محذوف',
@@ -3364,14 +3442,15 @@ const STRINGS = {
     auth_sub:'سجّل دخول أو أنشئ حساباً — المنتدى والمزامنة',auth_tab_login:'دخول',auth_tab_reg:'تسجيل',
     auth_nick_ph:'الاسم المستعار',auth_pass_ph:'كلمة المرور',auth_nick_reg_ph:'الاسم المستعار (2–20 حرف)',
     auth_pass_hint:'8 حروف على الأقل · رمز خاص واحد على الأقل (!@#$%^&*…)',auth_or:'أو',auth_guest_btn:'👤 متابعة كضيف',
-    auth_login_btn:'دخول',auth_reg_btn:'إنشاء حساب',auth_logging_in:'جاري الدخول…',auth_creating:'جاري الإنشاء…',
+    auth_login_btn:'دخول',auth_terms_label:'أوافق على <a onclick="openPrivacyModal()" class="terms-link">سياسة الخصوصية</a> و<a onclick="openRulesModal()" class="terms-link">قواعد المجتمع</a> الخاصة بـ JJS Nodecraft',auth_terms_err:'يرجى قبول سياسة الخصوصية والقواعد للمتابعة',auth_reg_btn:'إنشاء حساب',auth_logging_in:'جاري الدخول…',auth_creating:'جاري الإنشاء…',
     auth_fill_all:'امل جميع الحقول',auth_wrong_creds:'اسم مستعار أو كلمة مرور خاطئة',
     auth_nick_taken:'هذا الاسم المستعار مستخدم',auth_too_many:'محاولات كثيرة، انتظر دقيقة',guest_badge:'ضيف',
     cp_modal_title:'✏️ بوست جديد',cp_mode_label:'الوضع *',cp_title_label:'العنوان *',cp_title_ph:'وصف مختصر للبيلد أو الميكانيكا…',
     cp_content_label:'المحتوى *',cp_content_ph:'اشرح البيلد وكيف تستخدمه وأي nodes تختار…',
     cp_nodes_label:'الـ Nodes / البلوكات (المستخدمة في البيلد)',cp_hashtags_label:'الهاشتاقات',cp_hashtags_ph:'#ضرر #كومبو #سرعة — افصل بمسافة',
+    cp_moveset_label:'كود الـ Moveset',cp_optional:'(اختياري)',cp_moveset_ph:'الصق كود الـ moveset الطويل هنا…',
     cp_media_label:'وسائط (صور/فيديو، حتى 10 MB لكل ملف)',cp_media_upload:'📎 اضغط لإرفاق صورة أو فيديو',
-    cp_rules_text:'قرأت قواعد المجتمع وأؤكد أن بوستي لا يحتوي على إهانات أو سبام أو محتوى NSFW',
+    cp_rules_text:'قرأت <a onclick="openRulesModal()" class="terms-link">قواعد المنتدى</a> وأؤكد أن بوستي لا يحتوي على إهانات أو سبام أو محتوى NSFW',
     notif_panel_title:'🔔 الإشعارات',notif_mark_all:'تعليم الكل كمقروء',
     admin_panel_title:'🔧 لوحة الإدارة',admin_tab_reports:'🚩 الإبلاغات',admin_tab_bugs:'🐛 الأخطاء',admin_tab_users:'👥 المستخدمون',
     admin_tab_posts:'📌 البوستات',admin_tab_announce:'📣 الإعلانات',admin_tab_stats:'📊 الإحصائيات',
@@ -3453,7 +3532,7 @@ const STRINGS = {
     my_profile_label:'Mi perfil',profile_label:'Perfil',verified_tip:'Cuenta verificada',unfollow_label:'Dejar de seguir',follow_label:'Seguir',
     friends_label:'🤝 Amigos',edit_profile_btn:'✏️ Editar',nick_label:'Apodo',username_ph:'letras, números y _',
     bio_label:'Sobre mí',bio_ph:'Unas palabras sobre ti…',link_label:'Enlace',verified_only_note:'✓ solo para verificados',
-    cancel_btn:'Cancelar',save_btn:'Guardar',following_label:'Siguiendo',followers_label:'Seguidores',likes_label:'Me gusta',
+    cancel_btn:'Cancelar',got_it_btn:'Entendido ✓',save_btn:'Guardar',following_label:'Siguiendo',followers_label:'Seguidores',likes_label:'Me gusta',
     member_since_label:'Miembro desde',my_posts_label:'Mis publicaciones',posts_label_profile:'Publicaciones',active_label:'activas',deleted_label:'eliminadas',
     no_posts_profile:'Aún no hay publicaciones',username_err:'@username: 3–20 caracteres, solo letras latinas, números y _',save_err:'Error al guardar: ',
     followers_title:'Seguidores',following_title:'Siguiendo',no_reports:'Sin reportes ✅',deleted_post_ref:'Publicación eliminada',
@@ -3481,14 +3560,15 @@ const STRINGS = {
     auth_sub:'Inicia sesión o crea una cuenta — foro y sincronización',auth_tab_login:'Iniciar sesión',auth_tab_reg:'Registrarse',
     auth_nick_ph:'Apodo',auth_pass_ph:'Contraseña',auth_nick_reg_ph:'Apodo (2–20 caracteres)',
     auth_pass_hint:'Mín. 8 caracteres · al menos un carácter especial (!@#$%^&*…)',auth_or:'o',auth_guest_btn:'👤 Continuar como invitado',
-    auth_login_btn:'Iniciar sesión',auth_reg_btn:'Crear cuenta',auth_logging_in:'Iniciando sesión…',auth_creating:'Creando cuenta…',
+    auth_login_btn:'Iniciar sesión',auth_terms_label:'Acepto la <a onclick="openPrivacyModal()" class="terms-link">Política de Privacidad</a> y las <a onclick="openRulesModal()" class="terms-link">Reglas</a> de JJS Nodecraft',auth_terms_err:'Acepta la Política de Privacidad y las Reglas para continuar',auth_reg_btn:'Crear cuenta',auth_logging_in:'Iniciando sesión…',auth_creating:'Creando cuenta…',
     auth_fill_all:'Rellena todos los campos',auth_wrong_creds:'Apodo o contraseña incorrectos',
     auth_nick_taken:'Este apodo ya está en uso',auth_too_many:'Demasiados intentos, espera un minuto',guest_badge:'Invitado',
     cp_modal_title:'✏️ Nueva publicación',cp_mode_label:'Modo *',cp_title_label:'Título *',cp_title_ph:'Breve descripción del build o mecánica…',
     cp_content_label:'Contenido *',cp_content_ph:'Cuéntanos sobre el build, cómo usarlo, qué nodos elegir…',
     cp_nodes_label:'Nodos / bloques (usados en el build)',cp_hashtags_label:'Hashtags',cp_hashtags_ph:'#daño #combo #velocidad — separados por espacio',
+    cp_moveset_label:'Código de moveset',cp_optional:'(opcional)',cp_moveset_ph:'Pega aquí tu código de moveset largo…',
     cp_media_label:'Media (foto/video, máx. 10 MB cada uno)',cp_media_upload:'📎 Haz clic para adjuntar foto o video',
-    cp_rules_text:'He leído las reglas de la comunidad y confirmo que mi publicación no contiene insultos, spam, contenido NSFW ni infracciones de las normas de JJS Nodecraft',
+    cp_rules_text:'He leído las <a onclick="openRulesModal()" class="terms-link">reglas del foro</a> y confirmo que mi publicación no contiene insultos, spam, contenido NSFW ni infracciones de las normas de JJS Nodecraft',
     notif_panel_title:'🔔 Notificaciones',notif_mark_all:'Marcar todas como leídas',
     admin_panel_title:'🔧 Panel de administración',admin_tab_reports:'🚩 Reportes',admin_tab_bugs:'🐛 Errores',admin_tab_users:'👥 Usuarios',
     admin_tab_posts:'📌 Publicaciones',admin_tab_announce:'📣 Anuncios',admin_tab_stats:'📊 Estadísticas',
@@ -3570,7 +3650,7 @@ const STRINGS = {
     my_profile_label:'Mon profil',profile_label:'Profil',verified_tip:'Compte vérifié',unfollow_label:'Ne plus suivre',follow_label:'Suivre',
     friends_label:'🤝 Amis',edit_profile_btn:'✏️ Modifier',nick_label:'Pseudo',username_ph:'lettres, chiffres et _',
     bio_label:'À propos',bio_ph:'Quelques mots sur toi…',link_label:'Lien',verified_only_note:'✓ vérifié uniquement',
-    cancel_btn:'Annuler',save_btn:'Enregistrer',following_label:'Abonnements',followers_label:'Abonnés',likes_label:'J\'aime',
+    cancel_btn:'Annuler',got_it_btn:'Compris ✓',save_btn:'Enregistrer',following_label:'Abonnements',followers_label:'Abonnés',likes_label:'J\'aime',
     member_since_label:'Membre depuis',my_posts_label:'Mes publications',posts_label_profile:'Publications',active_label:'actives',deleted_label:'supprimées',
     no_posts_profile:'Aucune publication',username_err:'@username : 3–20 caractères, lettres latines, chiffres et _',save_err:'Erreur d\'enregistrement : ',
     followers_title:'Abonnés',following_title:'Abonnements',no_reports:'Aucun signalement ✅',deleted_post_ref:'Publication supprimée',
@@ -3598,14 +3678,15 @@ const STRINGS = {
     auth_sub:'Connecte-toi ou crée un compte — forum et synchronisation',auth_tab_login:'Se connecter',auth_tab_reg:'S\'inscrire',
     auth_nick_ph:'Pseudo',auth_pass_ph:'Mot de passe',auth_nick_reg_ph:'Pseudo (2–20 caractères)',
     auth_pass_hint:'Min. 8 caractères · au moins un caractère spécial (!@#$%^&*…)',auth_or:'ou',auth_guest_btn:'👤 Continuer en tant qu\'invité',
-    auth_login_btn:'Se connecter',auth_reg_btn:'Créer un compte',auth_logging_in:'Connexion…',auth_creating:'Création…',
+    auth_login_btn:'Se connecter',auth_terms_label:'J\'accepte la <a onclick="openPrivacyModal()" class="terms-link">Politique de confidentialité</a> et les <a onclick="openRulesModal()" class="terms-link">Règles</a> de JJS Nodecraft',auth_terms_err:'Accepte la Politique de confidentialité et les Règles pour continuer',auth_reg_btn:'Créer un compte',auth_logging_in:'Connexion…',auth_creating:'Création…',
     auth_fill_all:'Remplis tous les champs',auth_wrong_creds:'Pseudo ou mot de passe incorrect',
     auth_nick_taken:'Ce pseudo est déjà pris',auth_too_many:'Trop de tentatives, attends une minute',guest_badge:'Invité',
     cp_modal_title:'✏️ Nouvelle publication',cp_mode_label:'Mode *',cp_title_label:'Titre *',cp_title_ph:'Brève description du build ou de la mécanique…',
     cp_content_label:'Contenu *',cp_content_ph:'Parle du build, comment l\'utiliser, quels nœuds choisir…',
     cp_nodes_label:'Nœuds / blocs (utilisés dans le build)',cp_hashtags_label:'Hashtags',cp_hashtags_ph:'#dégâts #combo #vitesse — séparés par des espaces',
+    cp_moveset_label:'Code de moveset',cp_optional:'(facultatif)',cp_moveset_ph:'Colle ici ton long code de moveset…',
     cp_media_label:'Médias (photo/vidéo, max. 10 Mo chacun)',cp_media_upload:'📎 Clique pour joindre une photo ou vidéo',
-    cp_rules_text:'J\'ai lu les règles de la communauté et confirme que ma publication ne contient pas d\'insultes, de spam, de contenu NSFW ou de violations des règles de JJS Nodecraft',
+    cp_rules_text:'J\'ai lu les <a onclick="openRulesModal()" class="terms-link">règles du forum</a> et confirme que ma publication ne contient pas d\'insultes, de spam, de contenu NSFW ou de violations des règles de JJS Nodecraft',
     notif_panel_title:'🔔 Notifications',notif_mark_all:'Marquer tout comme lu',
     admin_panel_title:'🔧 Panneau d\'administration',admin_tab_reports:'🚩 Signalements',admin_tab_bugs:'🐛 Bugs',admin_tab_users:'👥 Utilisateurs',
     admin_tab_posts:'📌 Publications',admin_tab_announce:'📣 Annonces',admin_tab_stats:'📊 Statistiques',
@@ -3687,7 +3768,7 @@ const STRINGS = {
     my_profile_label:'Profilim',profile_label:'Profil',verified_tip:'Doğrulanmış hesap',unfollow_label:'Takibi bırak',follow_label:'Takip et',
     friends_label:'🤝 Arkadaşlar',edit_profile_btn:'✏️ Düzenle',nick_label:'Takma ad',username_ph:'harf, rakam ve _',
     bio_label:'Hakkımda',bio_ph:'Kendin hakkında birkaç kelime…',link_label:'Bağlantı',verified_only_note:'✓ yalnızca doğrulanmış',
-    cancel_btn:'İptal',save_btn:'Kaydet',following_label:'Takip edilenler',followers_label:'Takipçiler',likes_label:'Beğeniler',
+    cancel_btn:'İptal',got_it_btn:'Anladım ✓',save_btn:'Kaydet',following_label:'Takip edilenler',followers_label:'Takipçiler',likes_label:'Beğeniler',
     member_since_label:'Üyelik tarihi',my_posts_label:'Gönderilerim',posts_label_profile:'Gönderiler',active_label:'aktif',deleted_label:'silindi',
     no_posts_profile:'Henüz gönderi yok',username_err:'@username: 3–20 karakter, yalnızca latin harf, rakam ve _',save_err:'Kaydetme hatası: ',
     followers_title:'Takipçiler',following_title:'Takip edilenler',no_reports:'Şikayet yok ✅',deleted_post_ref:'Silinen gönderi',
@@ -3715,14 +3796,15 @@ const STRINGS = {
     auth_sub:'Giriş yap veya kayıt ol — forum ve senkronizasyon',auth_tab_login:'Giriş yap',auth_tab_reg:'Kayıt ol',
     auth_nick_ph:'Takma ad',auth_pass_ph:'Şifre',auth_nick_reg_ph:'Takma ad (2–20 karakter)',
     auth_pass_hint:'Min. 8 karakter · en az bir özel karakter (!@#$%^&*…)',auth_or:'veya',auth_guest_btn:'👤 Misafir olarak devam et',
-    auth_login_btn:'Giriş yap',auth_reg_btn:'Hesap oluştur',auth_logging_in:'Giriş yapılıyor…',auth_creating:'Oluşturuluyor…',
+    auth_login_btn:'Giriş yap',auth_terms_label:'JJS Nodecraft <a onclick="openPrivacyModal()" class="terms-link">Gizlilik Politikası</a>\'nı ve <a onclick="openRulesModal()" class="terms-link">Kuralları</a> kabul ediyorum',auth_terms_err:'Devam etmek için Gizlilik Politikası ve Kuralları kabul et',auth_reg_btn:'Hesap oluştur',auth_logging_in:'Giriş yapılıyor…',auth_creating:'Oluşturuluyor…',
     auth_fill_all:'Tüm alanları doldur',auth_wrong_creds:'Yanlış takma ad veya şifre',
     auth_nick_taken:'Bu takma ad zaten kullanımda',auth_too_many:'Çok fazla deneme, bir dakika bekle',guest_badge:'Misafir',
     cp_modal_title:'✏️ Yeni gönderi',cp_mode_label:'Mod *',cp_title_label:'Başlık *',cp_title_ph:'Build veya mekanik hakkında kısa açıklama…',
     cp_content_label:'İçerik *',cp_content_ph:'Build\'i anlat, nasıl kullanılır, hangi nodlar seçilir…',
     cp_nodes_label:'Nodlar / bloklar (build\'de kullanılan)',cp_hashtags_label:'Hashtagler',cp_hashtags_ph:'#hasar #kombo #hız — boşlukla ayır',
+    cp_moveset_label:'Moveset kodu',cp_optional:'(isteğe bağlı)',cp_moveset_ph:'Uzun moveset kodunu buraya yapıştır…',
     cp_media_label:'Medya (fotoğraf/video, her biri maks. 10 MB)',cp_media_upload:'📎 Fotoğraf veya video eklemek için tıkla',
-    cp_rules_text:'Topluluk kurallarını okudum ve gönderimin hakaret, spam, NSFW içeriği veya JJS Nodecraft kurallarına aykırılık içermediğini onaylıyorum',
+    cp_rules_text:'<a onclick="openRulesModal()" class="terms-link">Forum kurallarını</a> okudum ve gönderimin hakaret, spam, NSFW içeriği veya JJS Nodecraft kurallarına aykırılık içermediğini onaylıyorum',
     notif_panel_title:'🔔 Bildirimler',notif_mark_all:'Tümünü okundu işaretle',
     admin_panel_title:'🔧 Yönetici Paneli',admin_tab_reports:'🚩 Şikayetler',admin_tab_bugs:'🐛 Hatalar',admin_tab_users:'👥 Kullanıcılar',
     admin_tab_posts:'📌 Gönderiler',admin_tab_announce:'📣 Duyurular',admin_tab_stats:'📊 İstatistikler',
@@ -3827,7 +3909,8 @@ function showTab(id){
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.navtab').forEach(b=>b.classList.toggle('active', b.dataset.tab===id));
   window.scrollTo({top:0,behavior:'smooth'});
-  if(id==='forum') loadPopularHashtags();
+  if(id==='forum'){loadPopularHashtags();_forumNewCount=0;updateForumNavBadge();}
+  if(id==='gchat'&&!_gchatLoaded) loadGlobalChat();
 }
 document.querySelectorAll('[data-tab]').forEach(el=>{
   el.addEventListener('click',()=>showTab(el.dataset.tab));
@@ -5966,7 +6049,7 @@ async function doRegister(){
   const nick=document.getElementById('regNick').value.trim();
   const pass=document.getElementById('regPass').value;
   if(!nick||!pass){setAuthErr(t('auth_fill_all'));return;}
-  if(!document.getElementById('regTermsCheck')?.checked){setAuthErr('Примите Политику конфиденциальности и Правила для продолжения');return;}
+  if(!document.getElementById('regTermsCheck')?.checked){setAuthErr(t('auth_terms_err'));return;}
   if(nick.length<2||nick.length>20){setAuthErr('Nickname: 2–20 characters');return;}
   if(pass.length<8){setAuthErr('Password: minimum 8 characters');return;}
   if(!/[!@#$%^&*()\-_=+\[\]{};:'"\\|,.<>/?`~]/.test(pass)){setAuthErr('Password must contain at least one special character (!@#$%…)');return;}
@@ -6053,6 +6136,7 @@ async function handleAuthUser(user){
   loadMyFollows();
   loadNotifications();
   setupPresence();
+  setupNotifRealtime();
   initFingerprint();
   // Realtime ban watch — мгновенный выброс при бане
   try{
@@ -7436,7 +7520,8 @@ function setupRealtime(){
   if(!_supa) return;
   _supa.channel('forum-live')
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'forum_posts'},()=>{
-      if(document.getElementById('forum')?.classList.contains('active')) showNewPostsBanner();
+      if(document.getElementById('forum')?.classList.contains('active')){showNewPostsBanner();}
+      else{_forumNewCount++;updateForumNavBadge();}
     })
     .on('postgres_changes',{event:'UPDATE',schema:'public',table:'forum_posts'},payload=>{
       const p=payload.new;
@@ -7455,16 +7540,7 @@ function setupRealtime(){
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'announcements'},()=>loadAnnouncement())
     .subscribe();
 
-  // notifications realtime (graceful — table may not exist yet)
-  if(_supaUser){
-    try{
-      _supa.channel('notif-'+_supaUser.id)
-        .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:`user_id=eq.${_supaUser.id}`},payload=>{
-          handleNewNotif(payload.new);
-        })
-        .subscribe();
-    }catch(e){}
-  }
+  setupNotifRealtime();
 }
 
 /* ─── PRESENCE (онлайн-статус) ─── */
@@ -7492,6 +7568,31 @@ function setupPresence(){
           if(priv!=='none') await _presenceChannel.track({ts:Date.now()}).catch(()=>{});
         }
       });
+  }catch(e){}
+}
+
+/* ─── FORUM NAV BADGE ─── */
+let _forumNewCount=0;
+function updateForumNavBadge(){
+  const b=document.getElementById('forumNavBadge'); if(!b) return;
+  if(_forumNewCount>0){b.style.display='flex';b.textContent=_forumNewCount>9?'9+':_forumNewCount;}
+  else b.style.display='none';
+}
+
+/* ─── NOTIF REALTIME (extracted so re-login also subscribes) ─── */
+let _notifRealtimeDone=false;
+function setupNotifRealtime(){
+  if(!_supa||!_supaUser) return;
+  // Clean up previous channel if exists (re-login)
+  try{const ch=_supa.channel('notif-'+_supaUser.id);_supa.removeChannel(ch);}catch(e){}
+  _notifRealtimeDone=false;
+  try{
+    _supa.channel('notif-'+_supaUser.id)
+      .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:`user_id=eq.${_supaUser.id}`},payload=>{
+        handleNewNotif(payload.new);
+      })
+      .subscribe();
+    _notifRealtimeDone=true;
   }catch(e){}
 }
 
@@ -7558,6 +7659,140 @@ function toggleNotifPanel(){
   if(on) loadNotifications();
 }
 function closeNotifPanel(){document.getElementById('notifPanel')?.classList.remove('on');}
+
+/* ─── GLOBAL CHAT ─── */
+let _gchatLoaded=false,_gchatSub=null,_gchatPinnedId=null,_gchatProfCache={};
+
+async function loadGlobalChat(){
+  if(!_supa){document.getElementById('gchatMessages').innerHTML='<div class="gchat-empty">Нет подключения.</div>';return;}
+  _gchatLoaded=true;
+  const el=document.getElementById('gchatMessages');
+  if(el) el.innerHTML='<div class="gchat-loading">Загрузка чата…</div>';
+  try{
+    // load pinned
+    const{data:pins}=await _supa.from('global_chat').select('*').eq('is_pinned',true)
+      .order('pinned_at',{ascending:false}).limit(1);
+    const pm=pins?.[0]||null;
+    if(pm){
+      const{data:pp}=await _supa.from('profiles').select('*').eq('user_id',pm.user_id).maybeSingle();
+      pm._prof=pp;
+      if(pp) _gchatProfCache[pm.user_id]=pp;
+    }
+    renderGchatPinned(pm);
+    // load messages
+    const{data:msgs}=await _supa.from('global_chat').select('*')
+      .order('created_at',{ascending:false}).limit(80);
+    if(msgs?.length){
+      const uids=[...new Set(msgs.map(m=>m.user_id).filter(Boolean))];
+      const{data:profs}=await _supa.from('profiles').select('*').in('user_id',uids);
+      (profs||[]).forEach(p=>{_gchatProfCache[p.user_id]=p;});
+      msgs.reverse().forEach(m=>{m._prof=_gchatProfCache[m.user_id];});
+      if(el){el.innerHTML=msgs.map(renderGchatMsg).join('');el.scrollTop=el.scrollHeight;}
+    } else {
+      if(el) el.innerHTML='<div class="gchat-empty">Нет сообщений. Будь первым! 💬</div>';
+    }
+  }catch(e){if(el) el.innerHTML='<div class="gchat-empty">Ошибка загрузки чата.</div>';}
+  gchatSubscribeRealtime();
+}
+
+function gchatSubscribeRealtime(){
+  if(_gchatSub||!_supa) return;
+  _gchatSub=_supa.channel('global-chat-live')
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'global_chat'},async payload=>{
+      const m=payload.new;
+      if(!_gchatProfCache[m.user_id]){
+        const{data:p}=await _supa.from('profiles').select('*').eq('user_id',m.user_id).maybeSingle();
+        if(p) _gchatProfCache[m.user_id]=p;
+      }
+      m._prof=_gchatProfCache[m.user_id];
+      gchatAppendMsg(m);
+    })
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'global_chat'},async payload=>{
+      const m=payload.new,old=payload.old;
+      // update pin button state on the message element
+      const msgEl=document.getElementById('gcmsg-'+m.id);
+      if(msgEl&&_isAdmin){
+        const pb=msgEl.querySelector('.gchat-pin-msg-btn');
+        if(pb) pb.onclick=()=>toggleGchatPin(m.id,m.is_pinned);
+      }
+      // update pinned header
+      if(m.is_pinned&&!old?.is_pinned){
+        if(!_gchatProfCache[m.user_id]){
+          const{data:p}=await _supa.from('profiles').select('*').eq('user_id',m.user_id).maybeSingle();
+          if(p) _gchatProfCache[m.user_id]=p;
+        }
+        m._prof=_gchatProfCache[m.user_id];
+        renderGchatPinned(m);
+      } else if(!m.is_pinned&&old?.is_pinned){
+        renderGchatPinned(null);
+      }
+    })
+    .subscribe();
+}
+
+function renderGchatMsg(m){
+  const p=m._prof;
+  const nick=escHtml(p?.nickname||'Игрок');
+  const ava=avatarHtml(p?.avatar,32);
+  const online=_onlineSet.has(m.user_id)?'<span class="gchat-online-dot"></span>':'';
+  const ver=p?.is_verified?'<span class="gchat-verified-ico" title="Верифицирован">✓</span>':'';
+  const pinBtn=_isAdmin?`<button class="gchat-pin-msg-btn" onclick="toggleGchatPin(${m.id},${m.is_pinned})" title="${m.is_pinned?'Открепить':'Закрепить'}">📌</button>`:'';
+  return`<div class="gchat-msg" id="gcmsg-${m.id}"><div class="gchat-msg-ava">${ava}</div><div class="gchat-msg-body"><div class="gchat-msg-header"><span class="gchat-msg-nick">${nick}</span>${ver}${online}<span class="gchat-msg-time">${formatTime(m.created_at)}</span>${pinBtn}</div><div class="gchat-msg-text">${escHtml(m.message)}</div></div></div>`;
+}
+
+function gchatAppendMsg(m){
+  const el=document.getElementById('gchatMessages'); if(!el) return;
+  const empty=el.querySelector('.gchat-empty,.gchat-loading');
+  if(empty) el.innerHTML='';
+  el.insertAdjacentHTML('beforeend',renderGchatMsg(m));
+  const nearBot=el.scrollHeight-el.scrollTop-el.clientHeight<160;
+  if(nearBot) el.scrollTop=el.scrollHeight;
+}
+
+function renderGchatPinned(m){
+  const el=document.getElementById('gchatPinned'); if(!el) return;
+  if(!m){el.style.display='none';_gchatPinnedId=null;return;}
+  _gchatPinnedId=m.id;
+  document.getElementById('gchatPinnedText').textContent=m.message;
+  document.getElementById('gchatPinnedAuthor').textContent=m._prof?.nickname||'Игрок';
+  el.style.display='flex';
+  const ub=document.getElementById('gchatUnpinBtn');
+  if(ub) ub.style.display=_isAdmin?'':'none';
+}
+
+async function sendGchatMessage(){
+  if(!_supa||!_supaUser){return;}
+  const inp=document.getElementById('gchatInput');
+  const text=inp?.value.trim(); if(!text) return;
+  inp.value='';gchatAutoResize(inp);
+  try{await _supa.from('global_chat').insert({user_id:_supaUser.id,message:text});}
+  catch(e){inp.value=text;}
+}
+
+async function toggleGchatPin(msgId,isCurrentlyPinned){
+  if(!_isAdmin||!_supa) return;
+  if(isCurrentlyPinned){
+    await _supa.from('global_chat').update({is_pinned:false,pinned_at:null,pinned_by:null}).eq('id',msgId);
+    renderGchatPinned(null);
+  } else {
+    if(_gchatPinnedId&&_gchatPinnedId!==msgId){
+      await _supa.from('global_chat').update({is_pinned:false,pinned_at:null,pinned_by:null}).eq('id',_gchatPinnedId);
+    }
+    const now=new Date().toISOString();
+    await _supa.from('global_chat').update({is_pinned:true,pinned_at:now,pinned_by:_supaUser?.id}).eq('id',msgId);
+    const{data:m}=await _supa.from('global_chat').select('*').eq('id',msgId).maybeSingle();
+    if(m){m._prof=_gchatProfCache[m.user_id];renderGchatPinned(m);}
+  }
+}
+
+function gchatScrollToMsg(id){
+  if(!id) return;
+  const el=document.getElementById('gcmsg-'+id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function gchatKeyDown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendGchatMessage();}}
+function gchatAutoResize(ta){ta.style.height='auto';ta.style.height=Math.min(ta.scrollHeight,100)+'px';}
 
 /* ─── COMMENT LIKES + REPLIES ─── */
 async function toggleCommentLike(cid,btn){
@@ -8210,7 +8445,7 @@ if(savedLang && _allLangs.includes(savedLang)){
 
     <div class="changelog-footer">
       <span style="font-size:12px;color:var(--text-faint)">JJS Nodecraft · Effective August 15, 2026</span>
-      <button onclick="closeRulesModal()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;padding:8px 22px;border-radius:8px;cursor:pointer">Понятно ✓</button>
+      <button onclick="closeRulesModal()" data-i18n="got_it_btn" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;padding:8px 22px;border-radius:8px;cursor:pointer">Понятно ✓</button>
     </div>
   </div>
 </div>
@@ -8277,7 +8512,7 @@ if(savedLang && _allLangs.includes(savedLang)){
 
     <div class="changelog-footer">
       <span style="font-size:12px;color:var(--text-faint)">JJS Nodecraft · Effective August 15, 2026</span>
-      <button onclick="closePrivacyModal()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;padding:8px 22px;border-radius:8px;cursor:pointer">Got it ✓</button>
+      <button onclick="closePrivacyModal()" data-i18n="got_it_btn" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;padding:8px 22px;border-radius:8px;cursor:pointer">Got it ✓</button>
     </div>
   </div>
 </div>
