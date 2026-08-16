@@ -126,7 +126,8 @@
   #forumNavBadge{position:absolute;top:-5px;right:-6px;background:#ef4444;color:#fff;font-size:9px;font-weight:800;min-width:15px;height:15px;border-radius:8px;align-items:center;justify-content:center;padding:0 3px;pointer-events:none;}
 
   /* ─ Global Chat ─ */
-  section#gchat.active{display:flex;flex-direction:column;}
+  section#gchat.active{display:flex;flex-direction:column;height:calc(100dvh - var(--nav-h,62px));overflow:hidden;}
+  main:has(section#gchat.active){padding-bottom:0;}
   .gchat-pinned{padding:10px 14px;background:rgba(176,122,255,.07);border:1px solid rgba(176,122,255,.18);border-radius:var(--radius-sm);display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:12px;}
   .gchat-pin-ico{font-size:14px;flex-shrink:0;margin-top:2px;}
   .gchat-pin-body{flex:1;min-width:0;}
@@ -134,7 +135,7 @@
   .gchat-pin-meta{font-size:11px;color:var(--text-faint);margin-top:2px;display:flex;align-items:center;gap:4px;}
   .gchat-unpin-btn{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:auto;}
   .gchat-unpin-btn:hover{color:var(--text);background:var(--blue-dim);}
-  .gchat-messages{flex:1;padding:4px 0 8px;}
+  .gchat-messages{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:4px 0 8px;}
   .gchat-msg{display:flex;gap:10px;padding:5px 0;border-radius:8px;transition:background .12s;}
   .gchat-msg:hover{background:var(--blue-dim);padding-left:8px;padding-right:8px;margin:0 -8px;}
   .gchat-msg-ava{flex-shrink:0;margin-top:2px;}
@@ -147,8 +148,12 @@
   .gchat-pin-msg-btn{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:11px;padding:1px 5px;border-radius:4px;opacity:0;transition:opacity .12s;}
   .gchat-msg:hover .gchat-pin-msg-btn{opacity:1;}
   .gchat-pin-msg-btn:hover{color:var(--accent);}
-  .gchat-msg-text{font-size:13.5px;color:var(--text);word-break:break-word;white-space:pre-wrap;}
-  .gchat-input-row{display:flex;gap:8px;padding:12px 0 4px;border-top:1px solid var(--border);align-items:flex-end;position:sticky;bottom:0;background:var(--bg);margin-top:8px;}
+  .gchat-msg-text{font-size:13.5px;color:var(--text);word-break:break-word;white-space:pre-wrap;overflow-wrap:anywhere;}
+  .gchat-input-row{display:flex;gap:8px;flex-direction:column;border-top:1px solid var(--border);flex-shrink:0;background:var(--bg);padding:6px 0 10px;}
+  .gchat-input-inner{display:flex;gap:8px;align-items:flex-end;}
+  .gchat-cd-hint{font-size:11px;color:var(--text-faint);text-align:center;height:0;overflow:hidden;transition:height .15s;display:flex;align-items:center;justify-content:center;gap:4px;}
+  .gchat-cd-hint.on{height:18px;}
+  .gchat-send-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
   .gchat-input{flex:1;resize:none;background:var(--bg-elev);border:1px solid var(--border);border-radius:12px;padding:9px 14px;color:var(--text);font-size:13.5px;font-family:var(--font-body);line-height:1.4;min-height:38px;max-height:120px;overflow-y:auto;}
   .gchat-input:focus{outline:none;border-color:var(--accent);}
   .gchat-send-btn{background:linear-gradient(135deg,var(--accent),#7c3aed);border:none;border-radius:12px;padding:9px 16px;color:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
@@ -1129,9 +1134,12 @@
   .admin-action-btn.gold{color:var(--amber);border-color:rgba(255,194,102,.3);}
   .admin-action-btn.gold:hover{background:var(--amber-dim);}
   #nukeModal{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:10000;display:flex;align-items:center;justify-content:center;}
-  .nuke-box{background:var(--bg-elev);border:1px solid rgba(239,68,68,.35);border-radius:16px;padding:28px 32px;width:400px;max-width:92vw;box-shadow:0 24px 64px rgba(0,0,0,.65);}
+  .nuke-box{background:var(--bg-elev);border:1px solid rgba(239,68,68,.35);border-radius:16px;padding:28px 32px;width:420px;max-width:92vw;box-shadow:0 24px 64px rgba(0,0,0,.65);}
   .nuke-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:5px;}
-  .nuke-subtitle{font-size:12.5px;color:var(--text-muted);margin-bottom:20px;line-height:1.5;}
+  .nuke-subtitle{font-size:12.5px;color:var(--text-muted);margin-bottom:12px;line-height:1.5;}
+  .nuke-breakdown{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;flex-direction:column;gap:4px;}
+  .nuke-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-dim);}
+  .nuke-row b{color:var(--text);font-variant-numeric:tabular-nums;}
   .nuke-phase{font-size:13px;color:var(--text-dim);margin-bottom:8px;min-height:18px;}
   .nuke-track{background:var(--bg);border-radius:8px;height:14px;overflow:hidden;margin:0 0 6px;}
   .nuke-bar{height:100%;width:0%;background:linear-gradient(90deg,#ef4444,#f97316);border-radius:8px;transition:width .2s ease;}
@@ -1698,9 +1706,12 @@
 
   <!-- ================= GCHAT ================= -->
   <section id="gchat">
-    <div class="page-head">
-      <h2>🌐 Глобальный чат</h2>
-      <p>Общайтесь с другими игроками в реальном времени.</p>
+    <div class="page-head" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div>
+        <h2 data-i18n="gchat_title">🌐 Глобальный чат</h2>
+        <p data-i18n="gchat_subtitle">Общайтесь с другими игроками в реальном времени.</p>
+      </div>
+      <button id="gchatClearBtn" class="admin-action-btn danger" style="display:none;margin-top:4px" onclick="adminClearGchat()" data-i18n="gchat_clear">🗑 Очистить чат</button>
     </div>
     <!-- Pinned message (hidden by default) -->
     <div id="gchatPinned" class="gchat-pinned" style="display:none" onclick="gchatScrollToMsg(_gchatPinnedId)">
@@ -1709,7 +1720,7 @@
         <div class="gchat-pin-text" id="gchatPinnedText"></div>
         <div class="gchat-pin-meta">
           <span id="gchatPinnedAuthor"></span>
-          <button id="gchatUnpinBtn" class="gchat-unpin-btn" style="display:none" onclick="event.stopPropagation();toggleGchatPin(_gchatPinnedId,true)">✕ Открепить</button>
+          <button id="gchatUnpinBtn" class="gchat-unpin-btn" style="display:none" onclick="event.stopPropagation();toggleGchatPin(_gchatPinnedId,true)" data-i18n="gchat_unpin">✕ Открепить</button>
         </div>
       </div>
     </div>
@@ -1717,13 +1728,17 @@
     <div class="gchat-messages" id="gchatMessages">
       <div class="gchat-loading">Загрузка чата…</div>
     </div>
-    <!-- Input row (sticky bottom) -->
     <div class="gchat-input-row">
-      <textarea id="gchatInput" class="gchat-input" placeholder="Написать сообщение…" rows="1"
-        onkeydown="gchatKeyDown(event)" oninput="gchatAutoResize(this)"></textarea>
-      <button class="gchat-send-btn" onclick="sendGchatMessage()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      </button>
+      <div id="gchatCdHint" class="gchat-cd-hint"></div>
+      <div class="gchat-input-inner">
+        <textarea id="gchatInput" class="gchat-input" placeholder="Написать сообщение…" rows="1"
+          onkeydown="gchatKeyDown(event)" oninput="gchatAutoResize(this)"
+          data-i18n-placeholder="gchat_ph"></textarea>
+        <button id="gchatSendBtn" class="gchat-send-btn" onclick="sendGchatMessage()">
+          <span id="gchatSendIco"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>
+          <span id="gchatCdNum" style="display:none;font-size:12px;font-weight:700;min-width:22px;text-align:center">10s</span>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -3834,7 +3849,26 @@ const STRINGS = {
   },
 };
 
+const GCHAT_STRINGS={
+  gchat_title:{ru:'🌐 Глобальный чат',en:'🌐 Global Chat',de:'🌐 Globaler Chat',pl:'🌐 Globalny czat',pt:'🌐 Chat Global','pt-br':'🌐 Chat Global',id:'🌐 Obrolan Global',vi:'🌐 Trò Chuyện Toàn Cầu',th:'🌐 แชทสากล',fil:'🌐 Pandaigdigang Chat',ar:'🌐 الدردشة العالمية',es:'🌐 Chat Global',fr:'🌐 Chat Mondial',tr:'🌐 Küresel Sohbet'},
+  gchat_subtitle:{ru:'Общайтесь с другими игроками в реальном времени.',en:'Chat with other players in real time.',de:'Chatte in Echtzeit mit anderen Spielern.',pl:'Rozmawiaj z innymi graczami w czasie rzeczywistym.',pt:'Converse com outros jogadores em tempo real.','pt-br':'Converse com outros jogadores em tempo real.',id:'Ngobrol dengan pemain lain secara real-time.',vi:'Trò chuyện với người chơi khác trong thời gian thực.',th:'พูดคุยกับผู้เล่นคนอื่นแบบเรียลไทม์',fil:'Makipag-chat sa ibang manlalaro nang real time.',ar:'تحدث مع لاعبين آخرين في الوقت الفعلي.',es:'Chatea con otros jugadores en tiempo real.',fr:'Discutez avec d\'autres joueurs en temps réel.',tr:'Diğer oyuncularla gerçek zamanlı sohbet et.'},
+  gchat_ph:{ru:'Написать сообщение…',en:'Write a message…',de:'Nachricht schreiben…',pl:'Napisz wiadomość…',pt:'Escrever uma mensagem…','pt-br':'Escrever uma mensagem…',id:'Tulis pesan…',vi:'Viết tin nhắn…',th:'เขียนข้อความ…',fil:'Sumulat ng mensahe…',ar:'اكتب رسالة…',es:'Escribe un mensaje…',fr:'Écrire un message…',tr:'Mesaj yaz…'},
+  gchat_loading:{ru:'Загрузка чата…',en:'Loading chat…',de:'Chat wird geladen…',pl:'Ładowanie czatu…',pt:'Carregando chat…','pt-br':'Carregando chat…',id:'Memuat obrolan…',vi:'Đang tải trò chuyện…',th:'กำลังโหลดแชท…',fil:'Naglo-load ng chat…',ar:'جارٍ تحميل الدردشة…',es:'Cargando chat…',fr:'Chargement du chat…',tr:'Sohbet yükleniyor…'},
+  gchat_empty:{ru:'Нет сообщений. Будь первым! 💬',en:'No messages yet. Be the first! 💬',de:'Noch keine Nachrichten. Sei der Erste! 💬',pl:'Brak wiadomości. Bądź pierwszy! 💬',pt:'Sem mensagens. Seja o primeiro! 💬','pt-br':'Sem mensagens. Seja o primeiro! 💬',id:'Belum ada pesan. Jadilah yang pertama! 💬',vi:'Chưa có tin nhắn. Hãy là người đầu tiên! 💬',th:'ยังไม่มีข้อความ เป็นคนแรกเลย! 💬',fil:'Walang mensahe. Ikaw ang maging una! 💬',ar:'لا رسائل بعد. كن الأول! 💬',es:'Sin mensajes. ¡Sé el primero! 💬',fr:'Aucun message. Soyez le premier ! 💬',tr:'Henüz mesaj yok. İlk sen ol! 💬'},
+  gchat_no_conn:{ru:'Нет подключения.',en:'No connection.',de:'Keine Verbindung.',pl:'Brak połączenia.',pt:'Sem conexão.','pt-br':'Sem conexão.',id:'Tidak ada koneksi.',vi:'Không có kết nối.',th:'ไม่มีการเชื่อมต่อ',fil:'Walang koneksyon.',ar:'لا يوجد اتصال.',es:'Sin conexión.',fr:'Pas de connexion.',tr:'Bağlantı yok.'},
+  gchat_err_load:{ru:'Ошибка загрузки чата.',en:'Error loading chat.',de:'Fehler beim Laden des Chats.',pl:'Błąd ładowania czatu.',pt:'Erro ao carregar o chat.','pt-br':'Erro ao carregar o chat.',id:'Gagal memuat obrolan.',vi:'Lỗi tải trò chuyện.',th:'เกิดข้อผิดพลาดในการโหลดแชท',fil:'Error sa pag-load ng chat.',ar:'خطأ في تحميل الدردشة.',es:'Error al cargar el chat.',fr:'Erreur de chargement du chat.',tr:'Sohbet yüklenirken hata oluştu.'},
+  gchat_player:{ru:'Игрок',en:'Player',de:'Spieler',pl:'Gracz',pt:'Jogador','pt-br':'Jogador',id:'Pemain',vi:'Người chơi',th:'ผู้เล่น',fil:'Manlalaro',ar:'لاعب',es:'Jugador',fr:'Joueur',tr:'Oyuncu'},
+  gchat_unpin:{ru:'✕ Открепить',en:'✕ Unpin',de:'✕ Entheften',pl:'✕ Odepnij',pt:'✕ Desafixar','pt-br':'✕ Desafixar',id:'✕ Lepas Sematan',vi:'✕ Bỏ ghim',th:'✕ เลิกปักหมุด',fil:'✕ I-unpin',ar:'✕ إلغاء التثبيت',es:'✕ Desfijar',fr:'✕ Désépingler',tr:'✕ Sabitlemeyi kaldır'},
+  gchat_clear:{ru:'🗑 Очистить чат',en:'🗑 Clear Chat',de:'🗑 Chat leeren',pl:'🗑 Wyczyść czat',pt:'🗑 Limpar Chat','pt-br':'🗑 Limpar Chat',id:'🗑 Hapus Obrolan',vi:'🗑 Xóa Trò Chuyện',th:'🗑 ล้างแชท',fil:'🗑 Linisin ang Chat',ar:'🗑 مسح الدردشة',es:'🗑 Limpiar Chat',fr:'🗑 Vider le Chat',tr:'🗑 Sohbeti Temizle'},
+  gchat_clear_confirm:{ru:'Удалить ВСЕ сообщения чата? Это действие необратимо!',en:'Delete ALL chat messages? This cannot be undone!',de:'ALLE Chat-Nachrichten löschen? Dies kann nicht rückgängig gemacht werden!',pl:'Usunąć WSZYSTKIE wiadomości? Tej operacji nie można cofnąć!',pt:'Excluir TODAS as mensagens? Isso não pode ser desfeito!','pt-br':'Excluir TODAS as mensagens? Isso não pode ser desfeito!',id:'Hapus SEMUA pesan obrolan? Tindakan ini tidak dapat dibatalkan!',vi:'Xóa TẤT CẢ tin nhắn? Hành động này không thể hoàn tác!',th:'ลบข้อความแชททั้งหมด? ไม่สามารถยกเลิกได้!',fil:'Burahin ang LAHAT ng mensahe? Hindi ito maaaring ibalik!',ar:'حذف جميع الرسائل؟ لا يمكن التراجع عن هذا!',es:'¿Eliminar TODOS los mensajes? ¡Esto no se puede deshacer!',fr:'Supprimer TOUS les messages ? Cette action est irréversible !',tr:'TÜM mesajları sil? Bu işlem geri alınamaz!'},
+  gchat_cleared:{ru:'✅ Чат очищен',en:'✅ Chat cleared',de:'✅ Chat geleert',pl:'✅ Czat wyczyszczony',pt:'✅ Chat limpo','pt-br':'✅ Chat limpo',id:'✅ Obrolan dihapus',vi:'✅ Đã xóa trò chuyện',th:'✅ ล้างแชทแล้ว',fil:'✅ Na-clear ang chat',ar:'✅ تم مسح الدردشة',es:'✅ Chat limpio',fr:'✅ Chat vidé',tr:'✅ Sohbet temizlendi'},
+  gchat_spam_err:{ru:'🚫 Ты отправляешь слишком быстро — аккаунт заблокирован для сообщений. Обратись к администратору.',en:'🚫 You are sending too fast — account muted. Contact an administrator.',de:'🚫 Du sendest zu schnell — Konto stummgeschaltet. Wende dich an einen Admin.',pl:'🚫 Wysyłasz zbyt szybko — konto wyciszone. Skontaktuj się z administratorem.',pt:'🚫 Você está enviando rápido demais — conta silenciada. Contate um administrador.','pt-br':'🚫 Você está enviando rápido demais — conta silenciada. Contate um administrador.',id:'🚫 Kamu mengirim terlalu cepat — akun dibisukan. Hubungi administrator.',vi:'🚫 Bạn gửi quá nhanh — tài khoản bị tắt tiếng. Liên hệ quản trị viên.',th:'🚫 คุณส่งเร็วเกินไป — บัญชีถูกปิดเสียง ติดต่อผู้ดูแล',fil:'🚫 Masyadong mabilis ang pagpapadala — naka-mute ang account. Makipag-ugnayan sa admin.',ar:'🚫 تُرسل بسرعة كبيرة — تم كتم الحساب. تواصل مع المشرف.',es:'🚫 Envías demasiado rápido — cuenta silenciada. Contacta a un administrador.',fr:'🚫 Vous envoyez trop vite — compte mis en sourdine. Contactez un administrateur.',tr:'🚫 Çok hızlı gönderiyorsun — hesap susturuldu. Bir yöneticiyle iletişime geç.'},
+  gchat_muted_err:{ru:'🔇 Ты замьючен и не можешь писать сообщения.',en:'🔇 You are muted and cannot send messages.',de:'🔇 Du bist stummgeschaltet und kannst keine Nachrichten senden.',pl:'🔇 Jesteś wyciszony i nie możesz wysyłać wiadomości.',pt:'🔇 Você está silenciado e não pode enviar mensagens.','pt-br':'🔇 Você está silenciado e não pode enviar mensagens.',id:'🔇 Kamu dibisukan dan tidak bisa mengirim pesan.',vi:'🔇 Bạn đang bị tắt tiếng và không thể gửi tin nhắn.',th:'🔇 คุณถูกปิดเสียงและไม่สามารถส่งข้อความได้',fil:'🔇 Naka-mute ka at hindi makakasend ng mensahe.',ar:'🔇 أنت مكتوم ولا يمكنك إرسال رسائل.',es:'🔇 Estás silenciado y no puedes enviar mensajes.',fr:'🔇 Vous êtes mis en sourdine et ne pouvez pas envoyer de messages.',tr:'🔇 Susturuldun ve mesaj gönderemezsin.'},
+  gchat_cd_hint:{ru:(s)=>`⏳ следующее сообщение через ${s}с`,en:(s)=>`⏳ next message in ${s}s`,de:(s)=>`⏳ nächste Nachricht in ${s}s`,pl:(s)=>`⏳ następna wiadomość za ${s}s`,pt:(s)=>`⏳ próxima mensagem em ${s}s`,'pt-br':(s)=>`⏳ próxima mensagem em ${s}s`,id:(s)=>`⏳ pesan berikutnya dalam ${s}d`,vi:(s)=>`⏳ tin nhắn tiếp theo sau ${s}s`,th:(s)=>`⏳ ข้อความถัดไปใน ${s}วิ`,fil:(s)=>`⏳ susunod na mensahe sa loob ng ${s}s`,ar:(s)=>`⏳ الرسالة التالية خلال ${s}ث`,es:(s)=>`⏳ próximo mensaje en ${s}s`,fr:(s)=>`⏳ prochain message dans ${s}s`,tr:(s)=>`⏳ sonraki mesaj ${s}s içinde`},
+};
+
 function t(key){
+  if(GCHAT_STRINGS[key]) return ltext(GCHAT_STRINGS[key]);
   const s = STRINGS[currentLang] || STRINGS.en;
   const v = s[key];
   return v !== undefined ? v : (STRINGS.en[key] !== undefined ? STRINGS.en[key] : STRINGS.ru[key]);
@@ -3918,7 +3952,10 @@ function showTab(id){
   document.querySelectorAll('.navtab').forEach(b=>b.classList.toggle('active', b.dataset.tab===id));
   window.scrollTo({top:0,behavior:'smooth'});
   if(id==='forum'){loadPopularHashtags();_forumNewCount=0;updateForumNavBadge();}
-  if(id==='gchat'&&!_gchatLoaded) loadGlobalChat();
+  if(id==='gchat'){
+    document.documentElement.style.setProperty('--nav-h',(document.querySelector('nav')?.offsetHeight||62)+'px');
+    if(!_gchatLoaded) loadGlobalChat();
+  }
 }
 document.querySelectorAll('[data-tab]').forEach(el=>{
   el.addEventListener('click',()=>showTab(el.dataset.tab));
@@ -7349,14 +7386,26 @@ async function adminToggleMute(uid,cur){
 }
 async function adminToggleBan(uid,cur){
   if(cur){
+    // Разбан: снять флаг + убрать устройство из чёрного списка
+    let fp='';
+    try{const{data:p}=await _supa.from('profiles').select('device_fp').eq('user_id',uid).maybeSingle();fp=p?.device_fp||'';}catch(e){}
     try{await _supa.rpc('admin_unban_user',{target_id:uid});}catch(e){}
     await _supa.from('profiles').update({is_banned:false,ban_reason:null}).eq('user_id',uid);
+    if(fp){try{await _supa.from('device_bans').delete().eq('fingerprint',fp);}catch(e){}}
     showAdminToast(t('unban_done'));
   } else {
     const reason=prompt(t('ban_prompt_text'),'');
     if(reason===null) return;
-    try{await _supa.rpc('admin_ban_user',{target_id:uid,fingerprint_val:''});}catch(e){}
+    // Достаём fingerprint устройства банимого — чтобы занести его в device_bans
+    let fp='';
+    try{const{data:p}=await _supa.from('profiles').select('device_fp').eq('user_id',uid).maybeSingle();fp=p?.device_fp||'';}catch(e){}
+    try{await _supa.rpc('admin_ban_user',{target_id:uid,fingerprint_val:fp});}catch(e){}
     await _supa.from('profiles').update({is_banned:true,ban_reason:reason||null}).eq('user_id',uid);
+    // Прямая вставка в чёрный список устройств (на случай если RPC не сработал)
+    if(fp){try{
+      const{data:ex}=await _supa.from('device_bans').select('fingerprint').eq('fingerprint',fp).maybeSingle();
+      if(!ex) await _supa.from('device_bans').insert({fingerprint:fp});
+    }catch(e){}}
     showAdminToast(t('banned_toast'));
   }
   if(document.getElementById('profileOv')?.classList.contains('on')){
@@ -7376,52 +7425,89 @@ async function adminToggleBan(uid,cur){
 }
 async function adminNukeUserContent(uid,nick){
   if(!_isAdmin||!_supa) return;
-  const confirmed=confirm(`🧹 НЮК: удалить ВСЕ посты и комментарии пользователя "${nick}"?\n\nЭто действие необратимо!`);
+  const confirmed=confirm(`🧹 ПОЛНЫЙ НЮК: удалить ВЕСЬ контент пользователя "${nick}"?\n\n• Посты, комментарии, сообщения в чате\n• Лайки, подписки\n• Пожелания, баг-репорты, жалобы\n\nЭто действие необратимо!`);
   if(!confirmed) return;
 
-  const[{count:cc},{count:pc}]=await Promise.all([
+  // Считаем всё параллельно
+  const[
+    {count:cComm},{count:cPosts},{count:cChat},
+    {count:cPLikes},{count:cCLikes},{count:cFollows},
+    {count:cReports},{count:cNotifs}
+  ]=await Promise.all([
     _supa.from('comments').select('*',{count:'exact',head:true}).eq('user_id',uid),
-    _supa.from('forum_posts').select('*',{count:'exact',head:true}).eq('user_id',uid)
+    _supa.from('forum_posts').select('*',{count:'exact',head:true}).eq('user_id',uid),
+    _supa.from('global_chat').select('*',{count:'exact',head:true}).eq('user_id',uid),
+    _supa.from('post_likes').select('*',{count:'exact',head:true}).eq('user_id',uid),
+    _supa.from('comment_likes').select('*',{count:'exact',head:true}).eq('user_id',uid),
+    _supa.from('follows').select('*',{count:'exact',head:true}).eq('follower_id',uid),
+    _supa.from('reports').select('*',{count:'exact',head:true}).eq('reporter_id',uid),
+    _supa.from('notifications').select('*',{count:'exact',head:true}).eq('from_user_id',uid)
   ]);
-  const total=(cc||0)+(pc||0);
 
-  _nukeShowModal(nick,total);
+  const counts={
+    comments:cComm||0, posts:cPosts||0, chat:cChat||0,
+    postLikes:cPLikes||0, commentLikes:cCLikes||0, follows:cFollows||0,
+    reports:cReports||0, notifs:cNotifs||0
+  };
+  const total=Object.values(counts).reduce((a,b)=>a+b,0);
+
+  _nukeShowModal(nick,total,counts);
 
   const BATCH=200;
   let deleted=0;
 
-  _nukeSetPhase('💬 Удаляю комментарии…');
-  while(true){
-    const{data:rows,error}=await _supa.from('comments').select('id').eq('user_id',uid).limit(BATCH);
-    if(error||!rows?.length) break;
-    const{error:de}=await _supa.from('comments').delete().in('id',rows.map(r=>r.id));
-    if(de) break;
-    deleted+=rows.length;
+  async function batchDelete(table,col,val){
+    while(true){
+      const{data:rows,error}=await _supa.from(table).select('id').eq(col,val).limit(BATCH);
+      if(error||!rows?.length) break;
+      const{error:de}=await _supa.from(table).delete().in('id',rows.map(r=>r.id));
+      if(de) break;
+      deleted+=rows.length;
+      _nukeUpdateProgress(deleted,total);
+    }
+  }
+
+  async function quickDelete(table,col,val){
+    const{count:n}=await _supa.from(table).delete({count:'exact'}).eq(col,val);
+    deleted+=(n||0);
     _nukeUpdateProgress(deleted,total);
   }
 
-  _nukeSetPhase('📄 Удаляю посты…');
-  while(true){
-    const{data:rows,error}=await _supa.from('forum_posts').select('id').eq('user_id',uid).limit(BATCH);
-    if(error||!rows?.length) break;
-    const{error:de}=await _supa.from('forum_posts').delete().in('id',rows.map(r=>r.id));
-    if(de) break;
-    deleted+=rows.length;
-    _nukeUpdateProgress(deleted,total);
-  }
+  _nukeSetPhase(`💬 Комментарии (${counts.comments.toLocaleString()})…`);
+  await batchDelete('comments','user_id',uid);
+
+  _nukeSetPhase(`📄 Посты (${counts.posts.toLocaleString()})…`);
+  await batchDelete('forum_posts','user_id',uid);
+
+  _nukeSetPhase(`🌐 Чат (${counts.chat.toLocaleString()})…`);
+  await batchDelete('global_chat','user_id',uid);
+
+  _nukeSetPhase(`💡 Пожелания и баги (${counts.notifs.toLocaleString()})…`);
+  await batchDelete('notifications','from_user_id',uid);
+
+  _nukeSetPhase(`❤️ Лайки (${(counts.postLikes+counts.commentLikes).toLocaleString()})…`);
+  await quickDelete('post_likes','user_id',uid);
+  await quickDelete('comment_likes','user_id',uid);
+
+  _nukeSetPhase(`👤 Подписки (${counts.follows.toLocaleString()})…`);
+  await quickDelete('follows','follower_id',uid);
+
+  _nukeSetPhase(`🚨 Жалобы (${counts.reports.toLocaleString()})…`);
+  await quickDelete('reports','reporter_id',uid);
 
   _nukeFinish(deleted);
   if(document.getElementById('forum')?.classList.contains('active')) loadForum();
   loadAdminUsers();
 }
 
-function _nukeShowModal(nick,total){
+function _nukeShowModal(nick,total,counts){
   let m=document.getElementById('nukeModal');
   if(!m){
     m=document.createElement('div');m.id='nukeModal';
     m.innerHTML=`<div class="nuke-box">
-      <div class="nuke-title">🧹 Нюк</div>
+      <div class="nuke-title">🧹 Полный нюк</div>
       <div class="nuke-subtitle" id="nukeSubtitle"></div>
+      <div class="nuke-breakdown" id="nukeBreakdown"></div>
       <div class="nuke-phase" id="nukePhase">Подготовка…</div>
       <div class="nuke-track"><div class="nuke-bar" id="nukeBar"></div></div>
       <div class="nuke-counts" id="nukeCounts"></div>
@@ -7431,6 +7517,14 @@ function _nukeShowModal(nick,total){
   }
   const el=s=>document.getElementById(s);
   el('nukeSubtitle').textContent=`Пользователь: ${nick} — всего ${total.toLocaleString()} записей`;
+  if(counts){
+    const rows=[
+      ['💬 Комментарии',counts.comments],['📄 Посты',counts.posts],['🌐 Чат',counts.chat],
+      ['💡 Уведомления / пожелания',counts.notifs],['❤️ Лайки',counts.postLikes+counts.commentLikes],
+      ['👤 Подписки',counts.follows],['🚨 Жалобы',counts.reports]
+    ].filter(r=>r[1]>0);
+    el('nukeBreakdown').innerHTML=rows.map(r=>`<div class="nuke-row"><span>${r[0]}</span><b>${r[1].toLocaleString()}</b></div>`).join('');
+  }
   el('nukePhase').textContent='Подготовка…';
   el('nukeBar').style.width='0%';
   el('nukeCounts').textContent='0 / '+total.toLocaleString();
@@ -7774,10 +7868,12 @@ function closeNotifPanel(){document.getElementById('notifPanel')?.classList.remo
 let _gchatLoaded=false,_gchatSub=null,_gchatPinnedId=null,_gchatProfCache={};
 
 async function loadGlobalChat(){
-  if(!_supa){document.getElementById('gchatMessages').innerHTML='<div class="gchat-empty">Нет подключения.</div>';return;}
+  const btn=document.getElementById('gchatClearBtn');
+  if(btn) btn.style.display=_isAdmin?'inline-flex':'none';
+  if(!_supa){document.getElementById('gchatMessages').innerHTML=`<div class="gchat-empty">${t('gchat_no_conn')}</div>`;return;}
   _gchatLoaded=true;
   const el=document.getElementById('gchatMessages');
-  if(el) el.innerHTML='<div class="gchat-loading">Загрузка чата…</div>';
+  if(el) el.innerHTML=`<div class="gchat-loading">${t('gchat_loading')}</div>`;
   try{
     // load pinned
     const{data:pins}=await _supa.from('global_chat').select('*').eq('is_pinned',true)
@@ -7799,9 +7895,9 @@ async function loadGlobalChat(){
       msgs.reverse().forEach(m=>{m._prof=_gchatProfCache[m.user_id];});
       if(el){el.innerHTML=msgs.map(renderGchatMsg).join('');el.scrollTop=el.scrollHeight;}
     } else {
-      if(el) el.innerHTML='<div class="gchat-empty">Нет сообщений. Будь первым! 💬</div>';
+      if(el) el.innerHTML=`<div class="gchat-empty">${t('gchat_empty')}</div>`;
     }
-  }catch(e){if(el) el.innerHTML='<div class="gchat-empty">Ошибка загрузки чата.</div>';}
+  }catch(e){if(el) el.innerHTML=`<div class="gchat-empty">${t('gchat_err_load')}</div>`;}
   gchatSubscribeRealtime();
 }
 
@@ -7842,7 +7938,7 @@ function gchatSubscribeRealtime(){
 
 function renderGchatMsg(m){
   const p=m._prof;
-  const nick=escHtml(p?.nickname||'Игрок');
+  const nick=escHtml(p?.nickname||(p?.pid?'#'+p.pid:t('gchat_player')));
   const ava=avatarHtml(p?.avatar,32);
   const online=_onlineSet.has(m.user_id)?'<span class="gchat-online-dot"></span>':'';
   const ver=p?.is_verified?'<span class="gchat-verified-ico" title="Верифицирован">✓</span>':'';
@@ -7870,19 +7966,63 @@ function renderGchatPinned(m){
   if(ub) ub.style.display=_isAdmin?'':'none';
 }
 
+let _gchatCdEnd=0,_gchatCdTimer=null;
+
 async function sendGchatMessage(){
-  if(!_supa||!_supaUser){return;}
+  if(!_supa||!_supaUser) return;
+  if(Date.now()<_gchatCdEnd) return;
   const inp=document.getElementById('gchatInput');
   const text=inp?.value.trim(); if(!text) return;
-  inp.value='';gchatAutoResize(inp);
+  inp.value=''; gchatAutoResize(inp);
+  _gchatCdEnd=Date.now()+10000;
+  _gchatStartCd();
   try{
     const{error}=await _supa.from('global_chat').insert({user_id:_supaUser.id,message:text});
     if(error){
       inp.value=text;
+      _gchatCdEnd=0; _gchatClearCd();
       if(error.message?.includes('spam_limit_exceeded'))
-        alert('🚫 Ты отправляешь слишком быстро — аккаунт заблокирован для сообщений. Обратись к администратору.');
+        alert(t('gchat_spam_err'));
+      else if(error.message?.includes('muted')||error.code==='42501')
+        alert(t('gchat_muted_err'));
     }
-  }catch(e){inp.value=text;}
+  }catch(e){inp.value=text;_gchatCdEnd=0;_gchatClearCd();}
+}
+
+function _gchatStartCd(){
+  const btn=document.getElementById('gchatSendBtn');
+  const ico=document.getElementById('gchatSendIco');
+  const num=document.getElementById('gchatCdNum');
+  const hint=document.getElementById('gchatCdHint');
+  if(btn) btn.disabled=true;
+  if(ico) ico.style.display='none';
+  if(num){num.style.display='inline';num.textContent='10s';}
+  if(hint){hint.classList.add('on');_gchatUpdateCdHint(hint,10);}
+  clearInterval(_gchatCdTimer);
+  _gchatCdTimer=setInterval(()=>{
+    const rem=Math.ceil((_gchatCdEnd-Date.now())/1000);
+    if(rem<=0){_gchatClearCd();return;}
+    if(num) num.textContent=rem+'s';
+    if(hint) _gchatUpdateCdHint(hint,rem);
+  },200);
+}
+
+function _gchatUpdateCdHint(hint,rem){
+  const fn=t('gchat_cd_hint');
+  hint.textContent=typeof fn==='function'?fn(rem):fn;
+}
+
+function _gchatClearCd(){
+  clearInterval(_gchatCdTimer);_gchatCdTimer=null;
+  const btn=document.getElementById('gchatSendBtn');
+  const ico=document.getElementById('gchatSendIco');
+  const num=document.getElementById('gchatCdNum');
+  const hint=document.getElementById('gchatCdHint');
+  if(btn) btn.disabled=false;
+  if(ico) ico.style.display='';
+  if(num) num.style.display='none';
+  if(hint) hint.classList.remove('on');
+  _gchatCdEnd=0;
 }
 
 async function toggleGchatPin(msgId,isCurrentlyPinned){
@@ -7899,6 +8039,25 @@ async function toggleGchatPin(msgId,isCurrentlyPinned){
     const{data:m}=await _supa.from('global_chat').select('*').eq('id',msgId).maybeSingle();
     if(m){m._prof=_gchatProfCache[m.user_id];renderGchatPinned(m);}
   }
+}
+
+async function adminClearGchat(){
+  if(!_isAdmin||!_supa) return;
+  if(!confirm(t('gchat_clear_confirm'))) return;
+  showAdminToast('⏳ Очищаю чат…');
+  const BATCH=200;
+  while(true){
+    const{data:rows,error}=await _supa.from('global_chat').select('id').limit(BATCH);
+    if(error||!rows?.length) break;
+    const{error:de}=await _supa.from('global_chat').delete().in('id',rows.map(r=>r.id));
+    if(de) break;
+  }
+  const el=document.getElementById('gchatMessages');
+  if(el) el.innerHTML=`<div class="gchat-empty">${t('gchat_empty')}</div>`;
+  renderGchatPinned(null);
+  _gchatLoaded=false;
+  _gchatLoaded=true;
+  showAdminToast(t('gchat_cleared'));
 }
 
 function gchatScrollToMsg(id){
