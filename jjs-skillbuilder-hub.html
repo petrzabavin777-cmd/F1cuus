@@ -138,10 +138,23 @@
   .gchat-messages{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:4px 0 8px;}
   .gchat-msg{display:flex;gap:10px;padding:5px 0;border-radius:8px;transition:background .12s;}
   .gchat-msg:hover{background:var(--blue-dim);padding-left:8px;padding-right:8px;margin:0 -8px;}
-  .gchat-msg-ava{flex-shrink:0;margin-top:2px;}
+  .gchat-msg-ava{flex-shrink:0;margin-top:2px;width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--grad-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s;}
+  .gchat-msg-ava:hover{transform:scale(1.08);}
   .gchat-msg-body{flex:1;min-width:0;}
   .gchat-msg-header{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:2px;}
-  .gchat-msg-nick{font-size:13px;font-weight:700;color:var(--text);}
+  .gchat-msg-nick{font-size:13px;font-weight:700;color:var(--text);cursor:pointer;}
+  .gchat-msg-nick:hover{color:var(--accent);text-decoration:underline;}
+  .gchat-reacts{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;align-items:center;}
+  .gchat-react{display:inline-flex;align-items:center;gap:3px;font-size:12px;background:var(--bg-elev);border:1px solid var(--border);border-radius:11px;padding:1px 7px;cursor:pointer;transition:all .12s;line-height:1.6;user-select:none;}
+  .gchat-react:hover{border-color:var(--accent);}
+  .gchat-react.mine{background:var(--blue-dim);border-color:var(--accent);}
+  .gchat-react-count{font-size:11px;color:var(--text-dim);font-weight:600;}
+  .gchat-react-add{opacity:0;font-size:13px;color:var(--text-faint);background:var(--bg-elev);border:1px solid var(--border);border-radius:11px;width:24px;height:22px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .12s,border-color .12s;}
+  .gchat-msg:hover .gchat-react-add{opacity:1;}
+  .gchat-react-add:hover{border-color:var(--accent);color:var(--accent);}
+  .gchat-react-pop{position:absolute;z-index:300;background:var(--bg-elev);border:1px solid var(--border);border-radius:12px;padding:6px 8px;display:flex;gap:4px;box-shadow:0 8px 28px rgba(0,0,0,.45);}
+  .gchat-react-pop button{background:none;border:none;font-size:20px;cursor:pointer;padding:3px 5px;border-radius:8px;transition:background .12s,transform .12s;}
+  .gchat-react-pop button:hover{background:var(--blue-dim);transform:scale(1.2);}
   .gchat-verified-ico{color:var(--accent);font-size:11px;font-weight:700;}
   .gchat-online-dot{width:7px;height:7px;background:#22c55e;border-radius:50%;display:inline-block;flex-shrink:0;}
   .gchat-msg-time{font-size:11px;color:var(--text-faint);}
@@ -1294,7 +1307,7 @@
     <button class="navtab" data-tab="ai" data-i18n="nav_ai">ИИ-ассистент</button>
     <button class="navtab" data-tab="ideas" data-i18n="nav_ideas">Идеи</button>
     <button class="navtab" data-tab="forum" data-i18n="nav_forum">💬 Форум<span id="forumNavBadge" style="display:none"></span></button>
-    <button class="navtab" data-tab="gchat">🌐 Чат</button>
+    <button class="navtab" data-tab="gchat" data-i18n="nav_gchat">🌐 Чат</button>
   </div>
   <div id="navUserArea" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
     <div class="nav-user" id="navUserBtn" style="display:none" onclick="openProfileModal('me')">
@@ -3850,6 +3863,8 @@ const STRINGS = {
 };
 
 const GCHAT_STRINGS={
+  nav_gchat:{ru:'🌐 Чат',en:'🌐 Chat',de:'🌐 Chat',pl:'🌐 Czat',pt:'🌐 Chat','pt-br':'🌐 Chat',id:'🌐 Obrolan',vi:'🌐 Trò Chuyện',th:'🌐 แชท',fil:'🌐 Chat',ar:'🌐 دردشة',es:'🌐 Chat',fr:'🌐 Chat',tr:'🌐 Sohbet'},
+  gchat_react_add:{ru:'Реакция',en:'React',de:'Reagieren',pl:'Reakcja',pt:'Reagir','pt-br':'Reagir',id:'Reaksi',vi:'Thả cảm xúc',th:'รีแอค',fil:'Mag-react',ar:'تفاعل',es:'Reaccionar',fr:'Réagir',tr:'Tepki ver'},
   gchat_title:{ru:'🌐 Глобальный чат',en:'🌐 Global Chat',de:'🌐 Globaler Chat',pl:'🌐 Globalny czat',pt:'🌐 Chat Global','pt-br':'🌐 Chat Global',id:'🌐 Obrolan Global',vi:'🌐 Trò Chuyện Toàn Cầu',th:'🌐 แชทสากล',fil:'🌐 Pandaigdigang Chat',ar:'🌐 الدردشة العالمية',es:'🌐 Chat Global',fr:'🌐 Chat Mondial',tr:'🌐 Küresel Sohbet'},
   gchat_subtitle:{ru:'Общайтесь с другими игроками в реальном времени.',en:'Chat with other players in real time.',de:'Chatte in Echtzeit mit anderen Spielern.',pl:'Rozmawiaj z innymi graczami w czasie rzeczywistym.',pt:'Converse com outros jogadores em tempo real.','pt-br':'Converse com outros jogadores em tempo real.',id:'Ngobrol dengan pemain lain secara real-time.',vi:'Trò chuyện với người chơi khác trong thời gian thực.',th:'พูดคุยกับผู้เล่นคนอื่นแบบเรียลไทม์',fil:'Makipag-chat sa ibang manlalaro nang real time.',ar:'تحدث مع لاعبين آخرين في الوقت الفعلي.',es:'Chatea con otros jugadores en tiempo real.',fr:'Discutez avec d\'autres joueurs en temps réel.',tr:'Diğer oyuncularla gerçek zamanlı sohbet et.'},
   gchat_ph:{ru:'Написать сообщение…',en:'Write a message…',de:'Nachricht schreiben…',pl:'Napisz wiadomość…',pt:'Escrever uma mensagem…','pt-br':'Escrever uma mensagem…',id:'Tulis pesan…',vi:'Viết tin nhắn…',th:'เขียนข้อความ…',fil:'Sumulat ng mensahe…',ar:'اكتب رسالة…',es:'Escribe un mensaje…',fr:'Écrire un message…',tr:'Mesaj yaz…'},
@@ -7085,6 +7100,7 @@ async function openProfileModal(userId){
       <span style="font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--text-faint);align-self:center">🔧 ADMIN</span>
       <button onclick="adminToggleMute('${targetId}',${!!prof.is_muted})" style="background:${prof.is_muted?'rgba(88,180,255,.1)':'rgba(255,165,58,.1)'};border:1px solid ${prof.is_muted?'rgba(88,180,255,.25)':'rgba(255,165,58,.3)'};color:${prof.is_muted?'var(--accent)':'var(--amber)'};font-family:var(--font-display);font-size:11px;font-weight:700;padding:5px 13px;border-radius:7px;cursor:pointer">${prof.is_muted?'🔊 Снять мут':'🔇 Замутить'}</button>
       <button onclick="adminToggleBan('${targetId}',${!!prof.is_banned})" style="background:${prof.is_banned?'rgba(88,180,255,.1)':'rgba(255,77,90,.1)'};border:1px solid ${prof.is_banned?'rgba(88,180,255,.25)':'rgba(255,77,90,.3)'};color:${prof.is_banned?'var(--accent)':'var(--coral)'};font-family:var(--font-display);font-size:11px;font-weight:700;padding:5px 13px;border-radius:7px;cursor:pointer">${prof.is_banned?'✅ Разбанить':'🚫 Забанить'}</button>
+      <button onclick="adminNukeUserContent('${targetId}','${escHtml(prof.nickname||'?')}')" style="background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.4);color:#f87171;font-family:var(--font-display);font-size:11px;font-weight:700;padding:5px 13px;border-radius:7px;cursor:pointer">🧹 Нюк</button>
     </div>`;
   }
   const verified=prof.is_verified?`<span class="verified-badge" data-tip="${t('verified_tip')}"></span>`:'';
@@ -7866,6 +7882,8 @@ function closeNotifPanel(){document.getElementById('notifPanel')?.classList.remo
 
 /* ─── GLOBAL CHAT ─── */
 let _gchatLoaded=false,_gchatSub=null,_gchatPinnedId=null,_gchatProfCache={};
+let _gchatReacts={}; // messageId -> [{user_id,emoji}]
+const _gchatEmojis=['👍','❤️','😂','🔥','😮','😢','🎉'];
 
 async function loadGlobalChat(){
   const btn=document.getElementById('gchatClearBtn');
@@ -7943,7 +7961,63 @@ function renderGchatMsg(m){
   const online=_onlineSet.has(m.user_id)?'<span class="gchat-online-dot"></span>':'';
   const ver=p?.is_verified?'<span class="gchat-verified-ico" title="Верифицирован">✓</span>':'';
   const pinBtn=_isAdmin?`<button class="gchat-pin-msg-btn" onclick="toggleGchatPin(${m.id},${m.is_pinned})" title="${m.is_pinned?'Открепить':'Закрепить'}">📌</button>`:'';
-  return`<div class="gchat-msg" id="gcmsg-${m.id}"><div class="gchat-msg-ava">${ava}</div><div class="gchat-msg-body"><div class="gchat-msg-header"><span class="gchat-msg-nick">${nick}</span>${ver}${online}<span class="gchat-msg-time">${formatTime(m.created_at)}</span>${pinBtn}</div><div class="gchat-msg-text">${escHtml(m.message)}</div></div></div>`;
+  const click=m.user_id?`onclick="openProfileModal('${m.user_id}')"`:'';
+  return`<div class="gchat-msg" id="gcmsg-${m.id}"><div class="gchat-msg-ava" ${click}>${ava}</div><div class="gchat-msg-body"><div class="gchat-msg-header"><span class="gchat-msg-nick" ${click}>${nick}</span>${ver}${online}<span class="gchat-msg-time">${formatTime(m.created_at)}</span>${pinBtn}</div><div class="gchat-msg-text">${escHtml(m.message)}</div><div class="gchat-reacts" id="gcreacts-${m.id}">${renderGchatReacts(m.id)}</div></div></div>`;
+}
+
+function renderGchatReacts(msgId){
+  const list=_gchatReacts[msgId]||[];
+  const agg={}; // emoji -> {count, mine}
+  list.forEach(r=>{
+    if(!agg[r.emoji]) agg[r.emoji]={count:0,mine:false};
+    agg[r.emoji].count++;
+    if(r.user_id===_supaUser?.id) agg[r.emoji].mine=true;
+  });
+  let html=Object.keys(agg).map(e=>
+    `<span class="gchat-react${agg[e].mine?' mine':''}" onclick="gchatToggleReact(${msgId},'${e}')">${e}<span class="gchat-react-count">${agg[e].count}</span></span>`
+  ).join('');
+  if(_supaUser) html+=`<span class="gchat-react-add" title="${escHtml(t('gchat_react_add'))}" onclick="gchatOpenReactPop(event,${msgId})">☺</span>`;
+  return html;
+}
+
+function gchatRefreshReacts(msgId){
+  const el=document.getElementById('gcreacts-'+msgId);
+  if(el) el.innerHTML=renderGchatReacts(msgId);
+}
+
+function gchatOpenReactPop(ev,msgId){
+  ev.stopPropagation();
+  document.getElementById('gchatReactPop')?.remove();
+  const pop=document.createElement('div');
+  pop.id='gchatReactPop';pop.className='gchat-react-pop';
+  pop.innerHTML=_gchatEmojis.map(e=>`<button onclick="gchatToggleReact(${msgId},'${e}');document.getElementById('gchatReactPop')?.remove()">${e}</button>`).join('');
+  document.body.appendChild(pop);
+  const r=ev.target.getBoundingClientRect();
+  let top=r.top-pop.offsetHeight-6;
+  if(top<8) top=r.bottom+6;
+  let left=r.left;
+  if(left+pop.offsetWidth>window.innerWidth-8) left=window.innerWidth-pop.offsetWidth-8;
+  pop.style.top=top+'px';pop.style.left=Math.max(8,left)+'px';
+  setTimeout(()=>document.addEventListener('click',_gchatClosePop,{once:true}),0);
+}
+function _gchatClosePop(){document.getElementById('gchatReactPop')?.remove();}
+
+async function gchatToggleReact(msgId,emoji){
+  if(!_supa||!_supaUser) return;
+  const uid=_supaUser.id;
+  const list=_gchatReacts[msgId]=_gchatReacts[msgId]||[];
+  const mine=list.find(r=>r.user_id===uid);
+  if(mine&&mine.emoji===emoji){
+    // повторный клик по своей реакции → удалить
+    _gchatReacts[msgId]=list.filter(r=>r.user_id!==uid);
+    gchatRefreshReacts(msgId);
+    try{await _supa.from('global_chat_reactions').delete().eq('message_id',msgId).eq('user_id',uid);}catch(e){}
+  } else {
+    // поставить/сменить эмодзи (одна реакция на человека)
+    _gchatReacts[msgId]=list.filter(r=>r.user_id!==uid).concat([{user_id:uid,emoji}]);
+    gchatRefreshReacts(msgId);
+    try{await _supa.from('global_chat_reactions').upsert({message_id:msgId,user_id:uid,emoji},{onConflict:'message_id,user_id'});}catch(e){}
+  }
 }
 
 function gchatAppendMsg(m){
