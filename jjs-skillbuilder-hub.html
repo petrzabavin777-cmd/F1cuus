@@ -6031,10 +6031,6 @@ document.getElementById('doneSortBtn').addEventListener('click', ()=>{
 ═══════════════════════════════════════════════════ */
 const SUPA_URL = 'https://vjpuqkzkrelfcklxvcvt.supabase.co';
 const SUPA_KEY = 'sb_publishable_-Kd6IPBLUvHXtN49pVm6Hw_5wSrXV69';
-// ▼▼▼ КАПЧА: вставь сюда Site Key из Cloudflare Turnstile, чтобы включить.
-// Пока строка пустая — капча выключена, регистрация/вход работают как раньше.
-// ВАЖНО: включай галочку CAPTCHA в Supabase ТОЛЬКО после того, как ключ тут
-// стоит и HTML залит на хостинг — иначе вход сломается у всех.
 const TURNSTILE_SITE_KEY = '0x4AAAAAAER0a8L4mtuMSyep';
 let _supa = null, _supaUser = null, _supaProfile = null;
 let _isAdmin = false, _isGuest = true, _supaInited = false;
@@ -6113,7 +6109,7 @@ function updateNickCount(inp){
 /* ─── CAPTCHA (Cloudflare Turnstile) — включается, если задан ключ ─── */
 let _tsLoginWidget=null,_tsRegWidget=null;
 function initCaptcha(){
-  if(!TURNSTILE_SITE_KEY) return; // выключено — работаем как раньше
+  if(!TURNSTILE_SITE_KEY) return;
   const s=document.createElement('script');
   s.src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=_onTurnstileLoad';
   s.async=true;s.defer=true;
@@ -6219,7 +6215,6 @@ async function handleAuthUser(user){
     prof=np;
   }
   _supaProfile=prof;
-  // Check if banned
   if(prof?.is_banned){
     safeStorage.set('jjs_ban_reason',prof?.ban_reason||'');
     safeStorage.set('jjs_was_banned','1');
@@ -6227,7 +6222,6 @@ async function handleAuthUser(user){
     await _supa.auth.signOut();
     return;
   }
-  // Не забанен — сбрасываем флаг (на случай если разбанили)
   safeStorage.set('jjs_was_banned','0');
   // Check mute expiry
   if(prof?.muted_until&&new Date(prof.muted_until)<new Date()){
@@ -6245,7 +6239,6 @@ async function handleAuthUser(user){
   setupNotifRealtime();
   loadSiegeState();
   initFingerprint();
-  // Realtime ban watch — мгновенный выброс при бане
   try{
     if(_banWatchChannel){_supa.removeChannel(_banWatchChannel);_banWatchChannel=null;}
     _banWatchChannel=_supa.channel('ban-watch-'+user.id)
@@ -6259,7 +6252,6 @@ async function handleAuthUser(user){
       })
       .subscribe();
   }catch(e){}
-  // Store fingerprint with user profile
   getDeviceFingerprint().then(fp=>{
     if(fp&&fp!=='unknown'&&_supa)
       _supa.from('profiles').update({device_fp:fp}).eq('user_id',user.id).then(()=>{});
@@ -7239,7 +7231,6 @@ function toggleProfileEdit(){
 async function uploadAvatar(inp){
   const file=inp.files[0]; if(!file||!_supaUser) return;
   const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
-  // Path under user's own folder — matches standard storage RLS policy
   const path=`${_supaUser.id}/avatar.${ext}`;
   const overlay=document.querySelector('.avatar-upload-overlay');
   if(overlay) overlay.textContent='⏳';
@@ -7452,7 +7443,6 @@ async function adminToggleMute(uid,cur){
 }
 async function adminToggleBan(uid,cur){
   if(cur){
-    // Разбан: снять флаг + убрать устройство из чёрного списка
     let fp='';
     try{const{data:p}=await _supa.from('profiles').select('device_fp').eq('user_id',uid).maybeSingle();fp=p?.device_fp||'';}catch(e){}
     try{await _supa.rpc('admin_unban_user',{target_id:uid});}catch(e){}
@@ -7462,12 +7452,10 @@ async function adminToggleBan(uid,cur){
   } else {
     const reason=prompt(t('ban_prompt_text'),'');
     if(reason===null) return;
-    // Достаём fingerprint устройства банимого — чтобы занести его в device_bans
     let fp='';
     try{const{data:p}=await _supa.from('profiles').select('device_fp').eq('user_id',uid).maybeSingle();fp=p?.device_fp||'';}catch(e){}
     try{await _supa.rpc('admin_ban_user',{target_id:uid,fingerprint_val:fp});}catch(e){}
     await _supa.from('profiles').update({is_banned:true,ban_reason:reason||null}).eq('user_id',uid);
-    // Прямая вставка в чёрный список устройств (на случай если RPC не сработал)
     if(fp){try{
       const{data:ex}=await _supa.from('device_bans').select('fingerprint').eq('fingerprint',fp).maybeSingle();
       if(!ex) await _supa.from('device_bans').insert({fingerprint:fp});
@@ -7738,7 +7726,6 @@ async function loadAdminStats(){
     <span class="admin-stat-lbl">🔇 Замучено</span>
   </div>`;
   el.innerHTML=normal+onlineCard+bannedCard+mutedCard;
-  // Hide blacklist panel when stats reload
   const bl=document.getElementById('adminBlacklistPanel');
   if(bl) bl.style.display='none';
 }
