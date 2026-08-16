@@ -1268,6 +1268,7 @@
         <input class="auth-input" id="authPassLogin" type="password" data-i18n-placeholder="auth_pass_ph" placeholder="Пароль" autocomplete="current-password">
         <button class="pass-eye" type="button" onclick="togglePass('authPassLogin',this)" tabindex="-1">👁</button>
       </div>
+      <div id="tsLogin" style="margin-top:12px;display:flex;justify-content:center"></div>
       <button class="auth-btn" id="authLoginBtn" data-i18n="auth_login_btn" onclick="doLogin()" style="margin-top:12px">Войти</button>
     </div>
     <div id="authFormReg" style="display:none">
@@ -1284,6 +1285,7 @@
         <input type="checkbox" id="regTermsCheck" style="margin-top:2px;accent-color:var(--accent);width:15px;height:15px;flex-shrink:0;cursor:pointer" onchange="document.getElementById('authRegBtn').disabled=!this.checked">
         <span data-i18n="auth_terms_label">Я принимаю <a onclick="openPrivacyModal()" class="terms-link">Политику конфиденциальности</a> и <a onclick="openRulesModal()" class="terms-link">Правила</a> JJS Nodecraft</span>
       </label>
+      <div id="tsReg" style="margin-top:10px;display:flex;justify-content:center"></div>
       <button class="auth-btn" id="authRegBtn" data-i18n="auth_reg_btn" onclick="doRegister()" disabled>Создать аккаунт</button>
     </div>
   </div>
@@ -1490,6 +1492,8 @@
 </div>
 
 <main>
+
+  <div id="siegeBanner" style="display:none;background:linear-gradient(90deg,rgba(239,68,68,.18),rgba(249,115,22,.14));border:1px solid rgba(239,68,68,.4);border-radius:10px;padding:9px 14px;margin:0 0 14px;font-size:13px;font-weight:600;color:#f87171;text-align:center"></div>
 
   <!-- ================= HOME ================= -->
   <section id="home" class="active">
@@ -1849,6 +1853,7 @@
   <div class="admin-box">
     <div class="admin-hdr">
       <span class="admin-hdr-title" data-i18n="admin_panel_title">🔧 Панель администратора</span>
+      <button id="siegeToggleBtn" onclick="toggleSiege()" style="margin-left:auto;margin-right:8px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);color:#f87171;font-family:var(--font-display);font-weight:700;font-size:12px;padding:6px 14px;border-radius:8px;cursor:pointer;white-space:nowrap">⚔️ Осада: …</button>
       <button class="modal-close" onclick="document.getElementById('adminPanel').classList.remove('on')">✕</button>
     </div>
     <div class="admin-tabs">
@@ -3865,6 +3870,9 @@ const STRINGS = {
 const GCHAT_STRINGS={
   nav_gchat:{ru:'🌐 Чат',en:'🌐 Chat',de:'🌐 Chat',pl:'🌐 Czat',pt:'🌐 Chat','pt-br':'🌐 Chat',id:'🌐 Obrolan',vi:'🌐 Trò Chuyện',th:'🌐 แชท',fil:'🌐 Chat',ar:'🌐 دردشة',es:'🌐 Chat',fr:'🌐 Chat',tr:'🌐 Sohbet'},
   gchat_react_add:{ru:'Реакция',en:'React',de:'Reagieren',pl:'Reakcja',pt:'Reagir','pt-br':'Reagir',id:'Reaksi',vi:'Thả cảm xúc',th:'รีแอค',fil:'Mag-react',ar:'تفاعل',es:'Reaccionar',fr:'Réagir',tr:'Tepki ver'},
+  links_not_allowed_msg:{ru:'🔗 Ссылки запрещены. Убери ссылку из поста и попробуй снова.',en:'🔗 Links are not allowed. Remove the link and try again.',de:'🔗 Links sind nicht erlaubt. Entferne den Link und versuche es erneut.',pl:'🔗 Linki są zabronione. Usuń link i spróbuj ponownie.',pt:'🔗 Links não são permitidos. Remova o link e tente novamente.','pt-br':'🔗 Links não são permitidos. Remova o link e tente novamente.',id:'🔗 Tautan tidak diizinkan. Hapus tautan dan coba lagi.',vi:'🔗 Không cho phép liên kết. Hãy xóa liên kết và thử lại.',th:'🔗 ไม่อนุญาตให้ใส่ลิงก์ ลบลิงก์แล้วลองใหม่',fil:'🔗 Bawal ang links. Alisin ang link at subukan ulit.',ar:'🔗 الروابط غير مسموحة. احذف الرابط وحاول مجددًا.',es:'🔗 No se permiten enlaces. Quita el enlace e inténtalo de nuevo.',fr:'🔗 Les liens ne sont pas autorisés. Retire le lien et réessaie.',tr:'🔗 Bağlantılara izin verilmiyor. Bağlantıyı kaldırıp tekrar dene.'},
+  captcha_needed:{ru:'Пройди проверку «я не робот» ниже.',en:'Please complete the "I am not a robot" check below.',de:'Bitte schließe die „Ich bin kein Roboter“-Prüfung unten ab.',pl:'Ukończ weryfikację „nie jestem robotem” poniżej.',pt:'Conclua a verificação "não sou um robô" abaixo.','pt-br':'Conclua a verificação "não sou um robô" abaixo.',id:'Selesaikan verifikasi "saya bukan robot" di bawah.',vi:'Vui lòng hoàn thành xác minh "tôi không phải robot" bên dưới.',th:'กรุณายืนยัน "ฉันไม่ใช่หุ่นยนต์" ด้านล่าง',fil:'Kumpletuhin ang "hindi ako robot" na tseguridad sa ibaba.',ar:'يرجى إكمال التحقق «لست روبوتًا» أدناه.',es:'Completa la verificación "no soy un robot" abajo.',fr:'Complète la vérification « je ne suis pas un robot » ci-dessous.',tr:'Aşağıdaki "robot değilim" doğrulamasını tamamla.'},
+  siege_banner:{ru:'⚔️ Режим осады: публикация временно ограничена для новых аккаунтов.',en:'⚔️ Siege mode: posting is temporarily restricted for new accounts.',de:'⚔️ Belagerungsmodus: Posten ist für neue Konten vorübergehend eingeschränkt.',pl:'⚔️ Tryb oblężenia: publikowanie jest tymczasowo ograniczone dla nowych kont.',pt:'⚔️ Modo cerco: publicação temporariamente restrita para novas contas.','pt-br':'⚔️ Modo cerco: publicação temporariamente restrita para novas contas.',id:'⚔️ Mode kepung: posting dibatasi sementara untuk akun baru.',vi:'⚔️ Chế độ vây hãm: đăng bài tạm thời bị hạn chế với tài khoản mới.',th:'⚔️ โหมดล้อม: การโพสต์ถูกจำกัดชั่วคราวสำหรับบัญชีใหม่',fil:'⚔️ Siege mode: pansamantalang limitado ang pag-post para sa bagong account.',ar:'⚔️ وضع الحصار: النشر مقيّد مؤقتًا للحسابات الجديدة.',es:'⚔️ Modo asedio: la publicación está restringida temporalmente para cuentas nuevas.',fr:'⚔️ Mode siège : la publication est temporairement restreinte pour les nouveaux comptes.',tr:'⚔️ Kuşatma modu: yeni hesaplar için gönderi geçici olarak kısıtlı.'},
   gchat_title:{ru:'🌐 Глобальный чат',en:'🌐 Global Chat',de:'🌐 Globaler Chat',pl:'🌐 Globalny czat',pt:'🌐 Chat Global','pt-br':'🌐 Chat Global',id:'🌐 Obrolan Global',vi:'🌐 Trò Chuyện Toàn Cầu',th:'🌐 แชทสากล',fil:'🌐 Pandaigdigang Chat',ar:'🌐 الدردشة العالمية',es:'🌐 Chat Global',fr:'🌐 Chat Mondial',tr:'🌐 Küresel Sohbet'},
   gchat_subtitle:{ru:'Общайтесь с другими игроками в реальном времени.',en:'Chat with other players in real time.',de:'Chatte in Echtzeit mit anderen Spielern.',pl:'Rozmawiaj z innymi graczami w czasie rzeczywistym.',pt:'Converse com outros jogadores em tempo real.','pt-br':'Converse com outros jogadores em tempo real.',id:'Ngobrol dengan pemain lain secara real-time.',vi:'Trò chuyện với người chơi khác trong thời gian thực.',th:'พูดคุยกับผู้เล่นคนอื่นแบบเรียลไทม์',fil:'Makipag-chat sa ibang manlalaro nang real time.',ar:'تحدث مع لاعبين آخرين في الوقت الفعلي.',es:'Chatea con otros jugadores en tiempo real.',fr:'Discutez avec d\'autres joueurs en temps réel.',tr:'Diğer oyuncularla gerçek zamanlı sohbet et.'},
   gchat_ph:{ru:'Написать сообщение…',en:'Write a message…',de:'Nachricht schreiben…',pl:'Napisz wiadomość…',pt:'Escrever uma mensagem…','pt-br':'Escrever uma mensagem…',id:'Tulis pesan…',vi:'Viết tin nhắn…',th:'เขียนข้อความ…',fil:'Sumulat ng mensahe…',ar:'اكتب رسالة…',es:'Escribe un mensaje…',fr:'Écrire un message…',tr:'Mesaj yaz…'},
@@ -3930,6 +3938,7 @@ function applyStaticI18n(){
   document.getElementById('ideaBlockSearch').placeholder = mm.ideasSearchPh;
   const aiEmptyEl = document.querySelector('[data-i18n="ai_empty_state"]');
   if(aiEmptyEl) aiEmptyEl.textContent = mm.aiEmptyState;
+  if(typeof updateSiegeUI==='function') updateSiegeUI();
 }
 
 function setLanguageContent(lang){
@@ -6022,6 +6031,11 @@ document.getElementById('doneSortBtn').addEventListener('click', ()=>{
 ═══════════════════════════════════════════════════ */
 const SUPA_URL = 'https://vjpuqkzkrelfcklxvcvt.supabase.co';
 const SUPA_KEY = 'sb_publishable_-Kd6IPBLUvHXtN49pVm6Hw_5wSrXV69';
+// ▼▼▼ КАПЧА: вставь сюда Site Key из Cloudflare Turnstile, чтобы включить.
+// Пока строка пустая — капча выключена, регистрация/вход работают как раньше.
+// ВАЖНО: включай галочку CAPTCHA в Supabase ТОЛЬКО после того, как ключ тут
+// стоит и HTML залит на хостинг — иначе вход сломается у всех.
+const TURNSTILE_SITE_KEY = '0x4AAAAAAER0a8L4mtuMSyep';
 let _supa = null, _supaUser = null, _supaProfile = null;
 let _isAdmin = false, _isGuest = true, _supaInited = false;
 let _forumFilter = 'all', _forumSearchQ = '', _forumPosts = [];
@@ -6034,6 +6048,7 @@ let _onlineSet = new Set(), _presenceChannel = null;
 
 async function supaInit(){
   if(_supaInited) return; _supaInited = true;
+  initCaptcha();
   try{
     _supa = supabase.createClient(SUPA_URL, SUPA_KEY);
     const {data:{session}} = await _supa.auth.getSession();
@@ -6095,15 +6110,41 @@ function updateNickCount(inp){
   el.classList.toggle('warn',inp.value.length>=18);
 }
 
+/* ─── CAPTCHA (Cloudflare Turnstile) — включается, если задан ключ ─── */
+let _tsLoginWidget=null,_tsRegWidget=null;
+function initCaptcha(){
+  if(!TURNSTILE_SITE_KEY) return; // выключено — работаем как раньше
+  const s=document.createElement('script');
+  s.src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=_onTurnstileLoad';
+  s.async=true;s.defer=true;
+  document.head.appendChild(s);
+}
+window._onTurnstileLoad=function(){
+  if(typeof turnstile==='undefined') return;
+  try{ _tsLoginWidget=turnstile.render('#tsLogin',{sitekey:TURNSTILE_SITE_KEY,theme:'dark'}); }catch(e){}
+  try{ _tsRegWidget=turnstile.render('#tsReg',{sitekey:TURNSTILE_SITE_KEY,theme:'dark'}); }catch(e){}
+};
+function _captchaToken(which){
+  if(!TURNSTILE_SITE_KEY||typeof turnstile==='undefined') return '';
+  try{ return turnstile.getResponse(which==='reg'?_tsRegWidget:_tsLoginWidget)||''; }catch(e){ return ''; }
+}
+function _captchaReset(which){
+  if(!TURNSTILE_SITE_KEY||typeof turnstile==='undefined') return;
+  try{ turnstile.reset(which==='reg'?_tsRegWidget:_tsLoginWidget); }catch(e){}
+}
+
 async function doLogin(){
   const nick=document.getElementById('authNickLogin').value.trim();
   const pass=document.getElementById('authPassLogin').value;
   if(!nick||!pass){setAuthErr(t('auth_fill_all'));return;}
+  const captchaToken=_captchaToken('login');
+  if(TURNSTILE_SITE_KEY&&!captchaToken){setAuthErr(t('captcha_needed'));return;}
   const btn=document.getElementById('authLoginBtn');
   btn.disabled=true;btn.textContent=t('auth_logging_in');
-  const{error}=await _supa.auth.signInWithPassword({email:nickToEmail(nick),password:pass});
+  const opts=captchaToken?{captchaToken}:undefined;
+  const{error}=await _supa.auth.signInWithPassword({email:nickToEmail(nick),password:pass,options:opts});
   btn.disabled=false;btn.textContent=t('auth_login_btn');
-  if(error) setAuthErr(t('auth_wrong_creds'));
+  if(error){_captchaReset('login');setAuthErr(t('auth_wrong_creds'));}
 }
 
 async function doRegister(){
@@ -6114,14 +6155,18 @@ async function doRegister(){
   if(nick.length<2||nick.length>20){setAuthErr('Nickname: 2–20 characters');return;}
   if(pass.length<8){setAuthErr('Password: minimum 8 characters');return;}
   if(!/[!@#$%^&*()\-_=+\[\]{};:'"\\|,.<>/?`~]/.test(pass)){setAuthErr('Password must contain at least one special character (!@#$%…)');return;}
+  const captchaToken=_captchaToken('reg');
+  if(TURNSTILE_SITE_KEY&&!captchaToken){setAuthErr(t('captcha_needed'));return;}
   const btn=document.getElementById('authRegBtn');
   btn.disabled=true; btn.textContent='…';
   const{data:existing}=await _supa.from('profiles').select('user_id').ilike('nickname',nick).limit(1);
   if(existing?.length){btn.disabled=false;btn.textContent=t('auth_reg_btn');setAuthErr(t('auth_nick_taken'));return;}
   btn.textContent=t('auth_creating');
   const email=nickToEmail(nick);
-  const{data,error}=await _supa.auth.signUp({email,password:pass,options:{data:{nickname:nick}}});
-  if(error){btn.disabled=false;btn.textContent=t('auth_reg_btn');
+  const regOpts={data:{nickname:nick}};
+  if(captchaToken) regOpts.captchaToken=captchaToken;
+  const{data,error}=await _supa.auth.signUp({email,password:pass,options:regOpts});
+  if(error){btn.disabled=false;btn.textContent=t('auth_reg_btn');_captchaReset('reg');
     setAuthErr(error.message.includes('rate')?t('auth_too_many'):error.message);return;}
   // If email confirmation is OFF — session comes immediately via onAuthStateChange
   // If still ON — try to sign in directly
@@ -6198,6 +6243,7 @@ async function handleAuthUser(user){
   loadNotifications();
   setupPresence();
   setupNotifRealtime();
+  loadSiegeState();
   initFingerprint();
   // Realtime ban watch — мгновенный выброс при бане
   try{
@@ -6932,6 +6978,10 @@ async function submitPost(){
     } else {
       showTab('forum');loadForum();
     }
+  } else if(error.message?.includes('links_not_allowed')){
+    alert(t('links_not_allowed_msg'));
+  } else if(error.message?.includes('spam_limit_exceeded')){
+    alert(t('gchat_spam_err'));
   } else alert(t('error_prefix')+error.message);
 }
 
@@ -7267,7 +7317,7 @@ async function loadAnnouncement(){
 }
 
 /* ─── ADMIN ─── */
-function openAdminPanel(){ if(!_isAdmin) return; document.getElementById('adminPanel').classList.add('on'); loadAdminReports(); }
+function openAdminPanel(){ if(!_isAdmin) return; document.getElementById('adminPanel').classList.add('on'); loadAdminReports(); loadSiegeState(); }
 function switchAdminTab(tab,btn){
   document.querySelectorAll('.admin-tab-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
@@ -7576,6 +7626,35 @@ function showAdminToast(msg){
   if(!t){t=document.createElement('div');t.id='adminToast';t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-size:13px;color:var(--text);z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.4);transition:opacity .3s';document.body.appendChild(t);}
   t.textContent=msg;t.style.opacity='1';
   clearTimeout(t._hide);t._hide=setTimeout(()=>{t.style.opacity='0';},2500);
+}
+
+/* ─── РЕЖИМ «ОСАДА» ─── */
+let _siegeOn=false;
+async function loadSiegeState(){
+  if(!_supa) return;
+  try{
+    const{data}=await _supa.from('app_config').select('siege').eq('id',1).maybeSingle();
+    _siegeOn=!!data?.siege;
+  }catch(e){}
+  updateSiegeUI();
+}
+function updateSiegeUI(){
+  const banner=document.getElementById('siegeBanner');
+  if(banner){banner.style.display=_siegeOn?'block':'none';banner.textContent=t('siege_banner');}
+  const btn=document.getElementById('siegeToggleBtn');
+  if(btn){
+    btn.style.display=_isAdmin?'':'none';
+    btn.textContent=_siegeOn?'⚔️ Осада: ВКЛ':'⚔️ Осада: выкл';
+    btn.style.background=_siegeOn?'rgba(239,68,68,.28)':'rgba(239,68,68,.12)';
+  }
+}
+async function toggleSiege(){
+  if(!_isAdmin||!_supa) return;
+  const next=!_siegeOn;
+  const{error}=await _supa.from('app_config').update({siege:next}).eq('id',1);
+  if(error){showAdminToast('❌ '+error.message);return;}
+  _siegeOn=next;updateSiegeUI();
+  showAdminToast(next?'⚔️ Осада ВКЛ — новички заморожены на 24ч':'✅ Осада выключена');
 }
 
 async function loadAdminPosts(){
