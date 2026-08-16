@@ -126,17 +126,17 @@
   #forumNavBadge{position:absolute;top:-5px;right:-6px;background:#ef4444;color:#fff;font-size:9px;font-weight:800;min-width:15px;height:15px;border-radius:8px;align-items:center;justify-content:center;padding:0 3px;pointer-events:none;}
 
   /* ─ Global Chat ─ */
-  .gchat-wrap{display:flex;flex-direction:column;height:min(580px,60vh);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;background:var(--bg-card);}
-  .gchat-pinned{padding:10px 14px;background:rgba(176,122,255,.07);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px;cursor:pointer;flex-shrink:0;}
+  section#gchat.active{display:flex;flex-direction:column;}
+  .gchat-pinned{padding:10px 14px;background:rgba(176,122,255,.07);border:1px solid rgba(176,122,255,.18);border-radius:var(--radius-sm);display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:12px;}
   .gchat-pin-ico{font-size:14px;flex-shrink:0;margin-top:2px;}
   .gchat-pin-body{flex:1;min-width:0;}
   .gchat-pin-text{font-size:12.5px;color:var(--text);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .gchat-pin-meta{font-size:11px;color:var(--text-faint);margin-top:2px;display:flex;align-items:center;gap:4px;}
   .gchat-unpin-btn{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:auto;}
   .gchat-unpin-btn:hover{color:var(--text);background:var(--blue-dim);}
-  .gchat-messages{flex:1;overflow-y:auto;padding:8px 0;}
-  .gchat-msg{display:flex;gap:10px;padding:5px 14px;border-radius:8px;transition:background .12s;}
-  .gchat-msg:hover{background:var(--blue-dim);}
+  .gchat-messages{flex:1;padding:4px 0 8px;}
+  .gchat-msg{display:flex;gap:10px;padding:5px 0;border-radius:8px;transition:background .12s;}
+  .gchat-msg:hover{background:var(--blue-dim);padding-left:8px;padding-right:8px;margin:0 -8px;}
   .gchat-msg-ava{flex-shrink:0;margin-top:2px;}
   .gchat-msg-body{flex:1;min-width:0;}
   .gchat-msg-header{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:2px;}
@@ -148,10 +148,10 @@
   .gchat-msg:hover .gchat-pin-msg-btn{opacity:1;}
   .gchat-pin-msg-btn:hover{color:var(--accent);}
   .gchat-msg-text{font-size:13.5px;color:var(--text);word-break:break-word;white-space:pre-wrap;}
-  .gchat-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);align-items:flex-end;flex-shrink:0;}
-  .gchat-input{flex:1;resize:none;background:var(--bg-elev);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-size:13.5px;font-family:var(--font-body);line-height:1.4;min-height:36px;max-height:100px;overflow-y:auto;}
+  .gchat-input-row{display:flex;gap:8px;padding:12px 0 4px;border-top:1px solid var(--border);align-items:flex-end;position:sticky;bottom:0;background:var(--bg);margin-top:8px;}
+  .gchat-input{flex:1;resize:none;background:var(--bg-elev);border:1px solid var(--border);border-radius:12px;padding:9px 14px;color:var(--text);font-size:13.5px;font-family:var(--font-body);line-height:1.4;min-height:38px;max-height:120px;overflow-y:auto;}
   .gchat-input:focus{outline:none;border-color:var(--accent);}
-  .gchat-send-btn{background:linear-gradient(135deg,var(--accent),#7c3aed);border:none;border-radius:10px;padding:8px 14px;color:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+  .gchat-send-btn{background:linear-gradient(135deg,var(--accent),#7c3aed);border:none;border-radius:12px;padding:9px 16px;color:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
   .gchat-send-btn:hover{opacity:.85;transform:translateY(-1px);}
   .gchat-empty,.gchat-loading{padding:40px 20px;text-align:center;color:var(--text-faint);font-size:13px;}
 
@@ -1128,6 +1128,16 @@
   .admin-action-btn.success:hover{background:var(--green-dim);}
   .admin-action-btn.gold{color:var(--amber);border-color:rgba(255,194,102,.3);}
   .admin-action-btn.gold:hover{background:var(--amber-dim);}
+  #nukeModal{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:10000;display:flex;align-items:center;justify-content:center;}
+  .nuke-box{background:var(--bg-elev);border:1px solid rgba(239,68,68,.35);border-radius:16px;padding:28px 32px;width:400px;max-width:92vw;box-shadow:0 24px 64px rgba(0,0,0,.65);}
+  .nuke-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:5px;}
+  .nuke-subtitle{font-size:12.5px;color:var(--text-muted);margin-bottom:20px;line-height:1.5;}
+  .nuke-phase{font-size:13px;color:var(--text-dim);margin-bottom:8px;min-height:18px;}
+  .nuke-track{background:var(--bg);border-radius:8px;height:14px;overflow:hidden;margin:0 0 6px;}
+  .nuke-bar{height:100%;width:0%;background:linear-gradient(90deg,#ef4444,#f97316);border-radius:8px;transition:width .2s ease;}
+  .nuke-counts{font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:20px;font-variant-numeric:tabular-nums;}
+  .nuke-close-btn{width:100%;padding:11px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;cursor:pointer;transition:background .15s;}
+  .nuke-close-btn:hover{background:var(--blue-dim);}
   .admin-search-input{width:100%;background:rgba(176,122,255,.04);border:1px solid rgba(176,122,255,.1);border-radius:var(--radius);padding:10px 14px;color:var(--text);font-size:14px;margin-bottom:14px;box-sizing:border-box;transition:all .3s;}
   .admin-search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--glow-accent);}
   .admin-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px;}
@@ -1692,30 +1702,28 @@
       <h2>🌐 Глобальный чат</h2>
       <p>Общайтесь с другими игроками в реальном времени.</p>
     </div>
-    <div class="gchat-wrap">
-      <!-- Pinned message (hidden by default) -->
-      <div id="gchatPinned" class="gchat-pinned" style="display:none" onclick="gchatScrollToMsg(_gchatPinnedId)">
-        <div class="gchat-pin-ico">📌</div>
-        <div class="gchat-pin-body">
-          <div class="gchat-pin-text" id="gchatPinnedText"></div>
-          <div class="gchat-pin-meta">
-            <span id="gchatPinnedAuthor"></span>
-            <button id="gchatUnpinBtn" class="gchat-unpin-btn" style="display:none" onclick="event.stopPropagation();toggleGchatPin(_gchatPinnedId,true)">✕ Открепить</button>
-          </div>
+    <!-- Pinned message (hidden by default) -->
+    <div id="gchatPinned" class="gchat-pinned" style="display:none" onclick="gchatScrollToMsg(_gchatPinnedId)">
+      <div class="gchat-pin-ico">📌</div>
+      <div class="gchat-pin-body">
+        <div class="gchat-pin-text" id="gchatPinnedText"></div>
+        <div class="gchat-pin-meta">
+          <span id="gchatPinnedAuthor"></span>
+          <button id="gchatUnpinBtn" class="gchat-unpin-btn" style="display:none" onclick="event.stopPropagation();toggleGchatPin(_gchatPinnedId,true)">✕ Открепить</button>
         </div>
       </div>
-      <!-- Messages list -->
-      <div class="gchat-messages" id="gchatMessages">
-        <div class="gchat-loading">Загрузка чата…</div>
-      </div>
-      <!-- Input row -->
-      <div class="gchat-input-row">
-        <textarea id="gchatInput" class="gchat-input" placeholder="Написать сообщение…" rows="1"
-          onkeydown="gchatKeyDown(event)" oninput="gchatAutoResize(this)"></textarea>
-        <button class="gchat-send-btn" onclick="sendGchatMessage()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>
+    </div>
+    <!-- Messages list -->
+    <div class="gchat-messages" id="gchatMessages">
+      <div class="gchat-loading">Загрузка чата…</div>
+    </div>
+    <!-- Input row (sticky bottom) -->
+    <div class="gchat-input-row">
+      <textarea id="gchatInput" class="gchat-input" placeholder="Написать сообщение…" rows="1"
+        onkeydown="gchatKeyDown(event)" oninput="gchatAutoResize(this)"></textarea>
+      <button class="gchat-send-btn" onclick="sendGchatMessage()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
     </div>
   </section>
 
@@ -5991,6 +5999,7 @@ async function supaInit(){
         _supaUser=null;_supaProfile=null;_isAdmin=false;_isGuest=false;
         if(_banWatchChannel){try{_supa.removeChannel(_banWatchChannel);}catch(e){}  _banWatchChannel=null;}
         if(_presenceChannel){try{_supa.removeChannel(_presenceChannel);}catch(e){}_presenceChannel=null;}
+        if(_notifChannel){try{_supa.removeChannel(_notifChannel);}catch(e){}_notifChannel=null;}
         _onlineSet=new Set();
         updateNavUI();
         if(_justBanned){_justBanned=false;showBannedScreen();}
@@ -6559,7 +6568,18 @@ function handleCommentMedia(inp){
   </div>`;
 }
 
+const _commentTimestamps=[];
+function _spamCheck(){
+  const now=Date.now();
+  // keep only last 30 seconds
+  while(_commentTimestamps.length&&now-_commentTimestamps[0]>30000) _commentTimestamps.shift();
+  if(_commentTimestamps.length>=5) return false;
+  _commentTimestamps.push(now);
+  return true;
+}
+
 async function submitComment(postId){
+  if(!_spamCheck()){alert('Слишком много сообщений. Подожди 30 секунд.');return;}
   const ta=document.getElementById('commentText');
   const text=ta?.value.trim();
   if(!text&&!_cmMediaFile) return;
@@ -6576,6 +6596,10 @@ async function submitComment(postId){
     .insert({post_id:postId,user_id:_supaUser.id,content:text||'',media_urls:mediaUrls})
     .select().maybeSingle();
   if(btn){btn.disabled=false;btn.textContent=t('send_btn');}
+  if(error?.message?.includes('spam_limit_exceeded')){
+    alert('🚫 Ты отправляешь слишком быстро — аккаунт заблокирован для сообщений. Обратись к администратору.');
+    return;
+  }
   if(!error&&inserted){
     if(ta) ta.value='';
     _cmMediaFile=null;
@@ -7294,6 +7318,7 @@ async function loadAdminUsers(q=''){
             <button class="admin-action-btn gold" onclick="adminToggleVerify('${u.user_id}',${u.is_verified})">${u.is_verified?t('rm_verify_btn'):t('verify_btn')}</button>
             <button class="admin-action-btn ${u.is_muted?'success':'danger'}" onclick="adminToggleMute('${u.user_id}',${u.is_muted})">${u.is_muted?t('unmute_btn'):t('mute_btn')}</button>
             <button class="admin-action-btn ${u.is_banned?'success':'danger'}" onclick="adminToggleBan('${u.user_id}',${u.is_banned})">${u.is_banned?t('unban_btn'):t('ban_btn')}</button>
+            <button class="admin-action-btn danger" style="background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.5)" onclick="adminNukeUserContent('${u.user_id}','${escHtml(u.nickname||'?')}')">🧹 Нюк</button>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:10px;flex-shrink:0;min-width:52px">
@@ -7349,6 +7374,93 @@ async function adminToggleBan(uid,cur){
     if(valEl) valEl.textContent=count||0;
   }
 }
+async function adminNukeUserContent(uid,nick){
+  if(!_isAdmin||!_supa) return;
+  const confirmed=confirm(`🧹 НЮК: удалить ВСЕ посты и комментарии пользователя "${nick}"?\n\nЭто действие необратимо!`);
+  if(!confirmed) return;
+
+  const[{count:cc},{count:pc}]=await Promise.all([
+    _supa.from('comments').select('*',{count:'exact',head:true}).eq('user_id',uid),
+    _supa.from('forum_posts').select('*',{count:'exact',head:true}).eq('user_id',uid)
+  ]);
+  const total=(cc||0)+(pc||0);
+
+  _nukeShowModal(nick,total);
+
+  const BATCH=200;
+  let deleted=0;
+
+  _nukeSetPhase('💬 Удаляю комментарии…');
+  while(true){
+    const{data:rows,error}=await _supa.from('comments').select('id').eq('user_id',uid).limit(BATCH);
+    if(error||!rows?.length) break;
+    const{error:de}=await _supa.from('comments').delete().in('id',rows.map(r=>r.id));
+    if(de) break;
+    deleted+=rows.length;
+    _nukeUpdateProgress(deleted,total);
+  }
+
+  _nukeSetPhase('📄 Удаляю посты…');
+  while(true){
+    const{data:rows,error}=await _supa.from('forum_posts').select('id').eq('user_id',uid).limit(BATCH);
+    if(error||!rows?.length) break;
+    const{error:de}=await _supa.from('forum_posts').delete().in('id',rows.map(r=>r.id));
+    if(de) break;
+    deleted+=rows.length;
+    _nukeUpdateProgress(deleted,total);
+  }
+
+  _nukeFinish(deleted);
+  if(document.getElementById('forum')?.classList.contains('active')) loadForum();
+  loadAdminUsers();
+}
+
+function _nukeShowModal(nick,total){
+  let m=document.getElementById('nukeModal');
+  if(!m){
+    m=document.createElement('div');m.id='nukeModal';
+    m.innerHTML=`<div class="nuke-box">
+      <div class="nuke-title">🧹 Нюк</div>
+      <div class="nuke-subtitle" id="nukeSubtitle"></div>
+      <div class="nuke-phase" id="nukePhase">Подготовка…</div>
+      <div class="nuke-track"><div class="nuke-bar" id="nukeBar"></div></div>
+      <div class="nuke-counts" id="nukeCounts"></div>
+      <button class="nuke-close-btn" id="nukeCloseBtn" style="display:none" onclick="document.getElementById('nukeModal').style.display='none'">✓ Готово — закрыть</button>
+    </div>`;
+    document.body.appendChild(m);
+  }
+  const el=s=>document.getElementById(s);
+  el('nukeSubtitle').textContent=`Пользователь: ${nick} — всего ${total.toLocaleString()} записей`;
+  el('nukePhase').textContent='Подготовка…';
+  el('nukeBar').style.width='0%';
+  el('nukeCounts').textContent='0 / '+total.toLocaleString();
+  el('nukeCloseBtn').style.display='none';
+  m.style.display='flex';
+}
+
+function _nukeSetPhase(text){
+  const el=document.getElementById('nukePhase');
+  if(el) el.textContent=text;
+}
+
+function _nukeUpdateProgress(deleted,total){
+  const pct=total>0?Math.min(100,Math.round(deleted/total*100)):100;
+  const bar=document.getElementById('nukeBar');
+  const cnt=document.getElementById('nukeCounts');
+  if(bar) bar.style.width=pct+'%';
+  if(cnt) cnt.textContent=`${deleted.toLocaleString()} / ${total.toLocaleString()} (${pct}%)`;
+}
+
+function _nukeFinish(deleted){
+  _nukeSetPhase('✅ Готово!');
+  const bar=document.getElementById('nukeBar');
+  if(bar) bar.style.width='100%';
+  const cnt=document.getElementById('nukeCounts');
+  if(cnt) cnt.textContent=`Удалено: ${deleted.toLocaleString()} записей`;
+  const btn=document.getElementById('nukeCloseBtn');
+  if(btn) btn.style.display='block';
+}
+
 function showAdminToast(msg){
   let t=document.getElementById('adminToast');
   if(!t){t=document.createElement('div');t.id='adminToast';t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-size:13px;color:var(--text);z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.4);transition:opacity .3s';document.body.appendChild(t);}
@@ -7580,19 +7692,17 @@ function updateForumNavBadge(){
 }
 
 /* ─── NOTIF REALTIME (extracted so re-login also subscribes) ─── */
-let _notifRealtimeDone=false;
+let _notifChannel=null;
 function setupNotifRealtime(){
   if(!_supa||!_supaUser) return;
-  // Clean up previous channel if exists (re-login)
-  try{const ch=_supa.channel('notif-'+_supaUser.id);_supa.removeChannel(ch);}catch(e){}
-  _notifRealtimeDone=false;
+  // Remove previous subscription (re-login cleanup)
+  if(_notifChannel){try{_supa.removeChannel(_notifChannel);}catch(e){}_notifChannel=null;}
   try{
-    _supa.channel('notif-'+_supaUser.id)
+    _notifChannel=_supa.channel('notif-'+_supaUser.id)
       .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:`user_id=eq.${_supaUser.id}`},payload=>{
         handleNewNotif(payload.new);
       })
       .subscribe();
-    _notifRealtimeDone=true;
   }catch(e){}
 }
 
@@ -7765,8 +7875,14 @@ async function sendGchatMessage(){
   const inp=document.getElementById('gchatInput');
   const text=inp?.value.trim(); if(!text) return;
   inp.value='';gchatAutoResize(inp);
-  try{await _supa.from('global_chat').insert({user_id:_supaUser.id,message:text});}
-  catch(e){inp.value=text;}
+  try{
+    const{error}=await _supa.from('global_chat').insert({user_id:_supaUser.id,message:text});
+    if(error){
+      inp.value=text;
+      if(error.message?.includes('spam_limit_exceeded'))
+        alert('🚫 Ты отправляешь слишком быстро — аккаунт заблокирован для сообщений. Обратись к администратору.');
+    }
+  }catch(e){inp.value=text;}
 }
 
 async function toggleGchatPin(msgId,isCurrentlyPinned){
@@ -7821,6 +7937,7 @@ function showCommentReply(parentId,parentNick,postId){
   document.getElementById('rta-'+parentId)?.focus();
 }
 async function submitReply(parentId,postId,parentNick){
+  if(!_spamCheck()){alert('Слишком много сообщений. Подожди 30 секунд.');return;}
   const ta=document.getElementById('rta-'+parentId); if(!ta) return;
   const text=ta.value.trim(); if(!text) return;
   ta.disabled=true;
@@ -7829,6 +7946,11 @@ async function submitReply(parentId,postId,parentNick){
       post_id:postId,user_id:_supaUser.id,content:text,
       parent_comment_id:parentId,media_urls:[]
     });
+    if(error?.message?.includes('spam_limit_exceeded')){
+      ta.disabled=false;
+      alert('🚫 Ты отправляешь слишком быстро — аккаунт заблокирован для сообщений. Обратись к администратору.');
+      return;
+    }
     if(!error){
       const el=document.getElementById('cri-'+parentId);
       if(el){el.classList.remove('on');el.innerHTML='';}
